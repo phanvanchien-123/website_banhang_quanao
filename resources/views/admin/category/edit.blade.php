@@ -1,4 +1,4 @@
-@extends('Backend.layout.app_backend')
+@extends('admin.layout.main')
 @section('content')
 @php
   $action_url = route('admin.category.update',$category->id);
@@ -7,7 +7,7 @@
         <h2>Cập nhật danh mục</h2>
         <a href="{{ route('admin.category.index') }}">Trở về</a>
     </div>
-    @include('Backend.category.form')
+    @include('admin.category.form')
 
     {{-- <form method="POST" action="{{ route('admin.category.update',$category->id) }}" autocomplete="off">
         @csrf

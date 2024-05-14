@@ -21,7 +21,7 @@ class CategoryController extends Controller
 
         $categories = Category::paginate(10);
         // dd($categories);
-        return view('Backend.category.index',compact('categories'));
+        return view('admin.category.index',compact('categories'));
     }
 
     /**
@@ -30,7 +30,7 @@ class CategoryController extends Controller
     public function create()
     {
         //
-        return view('Backend.category.create');
+        return view('admin.category.create');
 
     }
 
@@ -41,17 +41,16 @@ class CategoryController extends Controller
     {
         //
         try {
-            $data = $request->except('_token', 'avatar');
-            $data['slug'] = Str::slug($request->name);
+            $data = $request->all();
     
             // Nếu tồn tại file avatar trong request
-            if ($request->hasFile('avatar')) {
-                // Sử dụng Helper function để tải ảnh lên Cloudinary
-                $imageUrl = CloudinaryHelper::uploadImage($request->file('avatar'));
+            // if ($request->hasFile('avatar')) {
+            //     // Sử dụng Helper function để tải ảnh lên Cloudinary
+            //     $imageUrl = CloudinaryHelper::uploadImage($request->file('avatar'));
                 
-                // Thêm đường dẫn của ảnh vào dữ liệu trước khi lưu
-                $data['avatar'] = $imageUrl;
-            }
+            //     // Thêm đường dẫn của ảnh vào dữ liệu trước khi lưu
+            //     $data['avatar'] = $imageUrl;
+            // }
     
             $category = Category::create($data);
         } catch (Exception $ex) {
@@ -78,30 +77,27 @@ class CategoryController extends Controller
     {
         //
         $category = Category::findOrFail($id);
-        return view('Backend.category.edit',compact('category'));
+        return view('admin.category.edit',compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(CategoryRequest $request, Category $category, $id)
+    public function update(CategoryRequest $request, $id)
     {
         $category = Category::findOrFail($id);
-        // dd($request->hasFile('avatar'));
-        //
-        $data = $request->except('_token','avatar');
-        $data['slug'] = Str::slug($request->name);
+        $data = $request->all();
 
-        if ($request->hasFile('avatar')) {
-                // Upload ảnh mới
-                $imageUrl = CloudinaryHelper::uploadImage($request->file('avatar'));
-                // Xóa ảnh cũ trước khi cập nhật ảnh mới
-                if (!empty($category->avatar)) {
-                    CloudinaryHelper::deleteImage($category->avatar);
-                }
+        // if ($request->hasFile('avatar')) {
+        //         // Upload ảnh mới
+        //         $imageUrl = CloudinaryHelper::uploadImage($request->file('avatar'));
+        //         // Xóa ảnh cũ trước khi cập nhật ảnh mới
+        //         if (!empty($category->avatar)) {
+        //             CloudinaryHelper::deleteImage($category->avatar);
+        //         }
                 
-                $data['avatar'] = $imageUrl;
-        }
+        //         $data['avatar'] = $imageUrl;
+        // }
 
         $category = Category::findOrFail($id);
         $category->update($data);
@@ -116,11 +112,6 @@ class CategoryController extends Controller
     {
         //
         $category = Category::findOrFail($id);
-        // Kiểm tra xem category có ảnh không
-        if ($category->avatar) {
-            // Nếu có, thực hiện xóa ảnh từ Cloudinary
-            CloudinaryHelper::deleteImage($category->avatar);
-        }
         $category->delete();
 
         return redirect()->route('admin.category.index');

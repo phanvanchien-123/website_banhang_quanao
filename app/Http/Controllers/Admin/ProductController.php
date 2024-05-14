@@ -34,7 +34,7 @@ class ProductController extends Controller
 
         $products = $products->paginate(10);
 
-        return view('Backend.product.index', compact('products'));
+        return view('admin.product.index', compact('products'));
     }
 
     /**
@@ -44,13 +44,13 @@ class ProductController extends Controller
     {
         //
         $categories = Category::all();
-        $provinces = Province::all();
-        $districts = District::all();
-        $wards = Ward::all();
+        // $provinces = Province::all();
+        // $districts = District::all();
+        // $wards = Ward::all();
 
 
-        $model = new Product();
-        $status = $model->getStatus();
+        // $model = new Product();
+        // $status = $model->getStatus();
 
         $viewData = [
             'categories' => $categories,

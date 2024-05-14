@@ -47,7 +47,6 @@ class UserController extends Controller
         //
         try {
             $data = $request->all();
-            // dd($data);
             $data['password'] = Hash::make('123456');
 
             // Nếu tồn tại file avatar trong request
@@ -68,7 +67,7 @@ class UserController extends Controller
             Log::error("ERROR => UserController@store =>". $ex->getMessage());
             return redirect()->route('admin.user.create');
         }
-        return redirect()->route('admin.user');
+        return redirect()->route('admin.user.index');
 
 
     }
@@ -135,7 +134,7 @@ class UserController extends Controller
         $update->update($data);
         $user->roles()->sync($data['role_ids'] ?? []);
 
-        return redirect()->route('admin.user');
+        return redirect()->route('admin.user.index');
 
     }
 
@@ -149,6 +148,6 @@ class UserController extends Controller
 
         $user->delete();
 
-        return redirect()->route('admin.user');
+        return redirect()->route('admin.user.index');
     }
 }

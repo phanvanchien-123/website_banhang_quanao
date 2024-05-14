@@ -5,7 +5,7 @@
 @endphp
     <div class="d-flex justify-content-between align-items-center">
         <h2>Cập nhật role</h2>
-        <a href="{{ route('admin.role') }}">Trở về</a>
+        <a href="{{ route('admin.role.index') }}">Trở về</a>
     </div>
     @include('admin.role.form')
 

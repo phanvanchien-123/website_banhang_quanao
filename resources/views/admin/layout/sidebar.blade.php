@@ -7,11 +7,11 @@
             </a>
         </li> --}}
         @foreach (config('nav') as $item)
-            <li class="nav-item {{ request()->routeIs($item['route']) ? 'active' : '' }}">
+            <li class="nav-item {{ request()->routeIs($item['routeGroup']) ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route($item['route']) }}">
                     {{-- <span data-feather="{{ $item['icon'] }}"></span>
                     {{ $item['name'] }} --}}
-                    <i class="{{ $item['icon'] }}"></i>
+                    <i class="{{ $item['icon'] }} menu-icon"></i>
                     <span class="menu-title">{{ $item['name'] }}</span>
                 </a>
             </li>

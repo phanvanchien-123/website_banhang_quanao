@@ -27,10 +27,10 @@ Route::middleware('auth')->group(function(){
 Auth::routes();
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
-    Route::get('',[Admin\HomeController::class,'index']) ->name('admin.home');
+    Route::get('',[Admin\HomeController::class,'index']) ->name('admin.home.index');
     
     Route::group(['prefix' => 'category' ] , function () {
-        Route::get('',[Admin\CategoryController::class,'index']) ->name('admin.category');
+        Route::get('',[Admin\CategoryController::class,'index']) ->name('admin.category.index');
         Route::get('create',[Admin\CategoryController::class,'create']) ->name('admin.category.create');
         Route::post('store',[Admin\CategoryController::class,'store']) ->name('admin.category.store');
 
@@ -41,7 +41,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     });
 
     Route::group(['prefix' => 'product' ] , function () {
-        Route::get('',[Admin\ProductController::class,'index']) ->name('admin.product');
+        Route::get('',[Admin\ProductController::class,'index']) ->name('admin.product.index');
 
         Route::get('create',[Admin\ProductController::class,'create']) ->name('admin.product.create');
         Route::post('store',[Admin\ProductController::class,'store']) ->name('admin.product.store');
@@ -53,7 +53,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     });
 
     Route::group(['prefix' => 'user' ] , function () {
-        Route::get('',[Admin\UserController::class,'index']) ->name('admin.user');
+        Route::get('',[Admin\UserController::class,'index']) ->name('admin.user.index');
 
         
         Route::get('create',[Admin\UserController::class,'create']) ->name('admin.user.create');
@@ -66,13 +66,13 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     });
 
     Route::group(['prefix' => 'profile' ] , function () {
-        Route::get('/{id}',[Admin\ProfileController::class,'show']) ->name('admin.profile.show');
+        Route::get('/{id}',[Admin\ProfileController::class,'show']) ->name('admin.profile.index');
         Route::get('/updatePass/{id}',[Admin\ProfileController::class,'updatePass']) ->name('admin.profile.updatePass');
         Route::post('/updatePass/{id}',[Admin\ProfileController::class,'update']);
     });
 
     Route::group(['prefix' => 'role'] , function () {
-        Route::get('',[Admin\RoleController::class,'index']) ->name('admin.role');
+        Route::get('',[Admin\RoleController::class,'index']) ->name('admin.role.index');
 
         
         Route::get('create',[Admin\RoleController::class,'create']) ->name('admin.role.create');
