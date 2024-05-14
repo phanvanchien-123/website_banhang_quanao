@@ -23,17 +23,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
 <body class="">
     <div class="container-scroller">
 
-        @include('admin.layout.frame')
-        
-        <!-- content -->
-        @yield('content')
+        @include('admin.layout.header')
 
-        
+        <div class="container-fluid page-body-wrapper">
+            @include('admin.layout.themeSetting')
+            
+
+            @include('admin.layout.sidebar')
+
+            <!-- partial -->
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    @yield('content')
+                </div>
+            </div>
+            <!-- main-panel ends -->
+        </div>
+
     </div>
 
 
