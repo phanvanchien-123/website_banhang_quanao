@@ -179,16 +179,41 @@
                                     </li>
                                     <li class="onhover-dropdown">
                                         <div class="cart-media name-usr">
-                                            <i data-feather="user"></i>
+                                          @auth
+                                              <span> {{ Auth::user()->name}}</span>
+                                          @endauth  <i data-feather="user"></i>
                                         </div>
                                         <div class="onhover-div profile-dropdown">
                                             <ul>
-                                                <li>
-                                                    <a href="login.html" class="d-block">Login</a>
-                                                </li>
-                                                <li>
-                                                    <a href="register.html" class="d-block">Register</a>
-                                                </li>
+                                                @if (Route::has('login'))
+                                                    @auth
+                                                        @if (Auth::user()->type != 'ADM')
+                                                        <li>
+                                                            <a href="{{route('dashboard.index')}}" class="d-block">My_Account </a>
+                                                        </li>
+                                                        @else
+                                                        <li>
+                                                            <a href="" class="d-block">Dashboard_Admin </a>
+                                                        </li>
+                                                        @endif
+                                                        <li>
+                                                            <a href="{{ route('logout') }}"
+                                                            onclick="event.preventDefault();
+                                                                          document.getElementById('logout-form').submit();">Đăng Xuất</a>
+                                                            <form id="logout-form" action="{{route('logout')}}" method="POST" >
+                                                            @csrf
+                                                        </form>
+                                                        </li>
+                                                        @else
+                                                        <li>
+                                                            <a href="{{route('login')}}" class="d-block">Đăng Nhập </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="{{route('register')}}" class="d-block">Đăng Kí</a>
+                                                        </li>
+                                                        @endauth
+                                                @endif
+                                               
 
                                             </ul>
                                         </div>

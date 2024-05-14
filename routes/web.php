@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Client\AccountController;
 use App\Http\Controllers\materController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,14 +15,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/',[materController::class,'index']);
+Route::middleware('auth')->group(function(){
+    Route::prefix('my_account')->group(function(){
+        Route::prefix('dashboard')->group(function(){
+            Route::get('/',[AccountController::class,'index'])->name('dashboard.index');
+        });
+    });
+});
+Auth::routes();
+
 Route::group(['namespace' => 'Backend', 'prefix' => 'admin'], function () {
     // Route::get('',[Backend\HomeController::class,'index']) ->name('admin.home.index');
     Route::get('', function () {
         return view('admin.dashboard.index');
     });
     // Route::get('',[Backend\HomeController::class,'index']) ->name('admin.home.index');
-
-
     Route::group(['prefix' => 'category' ] , function () {
         Route::get('',[Backend\CategoryController::class,'index']) ->name('admin.category.index');
         Route::get('create',[Backend\CategoryController::class,'create']) ->name('admin.category.create');
