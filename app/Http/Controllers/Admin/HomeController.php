@@ -15,10 +15,10 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         //
-        $users = User::orderByDesc('id')->limit('5')->get();
-        $products = Product::orderByDesc('id')->limit('5')->get();
+        // $users = User::orderByDesc('id')->limit('5')->get();
+        // $products = Product::orderByDesc('id')->limit('5')->get();
         
-        return view('Backend.home',compact('users','products'));
+        return view('admin.dashboard.index');
     }
 
     /**

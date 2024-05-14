@@ -4,31 +4,31 @@ return [
     [
         'icon' => 'home',
         'name' => 'Dash board',
-        // 'route' => 'admin.home.index',
+        'route' => 'admin.home',
         'prefix' => [''],
     ],
-    [
-        'icon' => 'shopping-cart',
-        'name' => 'Sản phẩm',
-        // 'route' => 'admin.product.index',
-        'prefix' => ['product'],
-    ],
+    // [
+    //     'icon' => 'shopping-cart',
+    //     'name' => 'Sản phẩm',
+    //     // 'route' => 'admin.product',
+    //     'prefix' => ['product'],
+    // ],
     [
         'icon' => 'users',
         'name' => 'Thành viên',
-        // 'route' => 'admin.user.index',
+        'route' => 'admin.user',
         'prefix' => ['user'],
     ],
-    [
-        'icon' => 'layers',
-        'name' => 'Danh mục',
-        // 'route' => 'admin.category.index',
-        'prefix' => ['category'],
-    ],
+    // [
+    //     'icon' => 'layers',
+    //     'name' => 'Danh mục',
+    //     'route' => 'admin.category',
+    //     'prefix' => ['category'],
+    // ],
     [
         'icon' => 'layers',
         'name' => 'Role',
-        // 'route' => 'admin.role.index',
+        'route' => 'admin.role',
         'prefix' => ['role'],
     ],
 ];

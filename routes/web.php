@@ -27,11 +27,8 @@ Route::middleware('auth')->group(function(){
 Auth::routes();
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
-    // Route::get('',[Admin\HomeController::class,'index']) ->name('admin.home.index');
-    Route::get('', function () {
-        return view('admin.dashboard.index');
-    });
-    // Route::get('',[Admin\HomeController::class,'index']) ->name('admin.home.index');
+    Route::get('',[Admin\HomeController::class,'index']) ->name('admin.home');
+    
     Route::group(['prefix' => 'category' ] , function () {
         Route::get('',[Admin\CategoryController::class,'index']) ->name('admin.category');
         Route::get('create',[Admin\CategoryController::class,'create']) ->name('admin.category.create');
