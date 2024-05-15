@@ -63,33 +63,38 @@
 <div class="login-section">
     <div class="materialContainer">
         <div class="box">
-            <form method="POST" action="http://localhost:8000/login">
-                <input type="hidden" name="_token" value="MkRqEzTGuoSx6LqJUm0OAKxSgNUYt26wTT7RMUZY">
+            <form method="POST" action="{{route('login')}}">
+               @csrf
                 <div class="login-title">
-                    <h2>Login</h2>
+                    <h2>Đăng Nhập</h2>
                 </div>
                 <div class="input">
                     <label for="name">Username</label>
                     <input type="email" id="name" name="email" :value="old('email')" required="" autofocus=""
                         autocomplete="name">
+                        @error('email') <span class="text-danger mt-3">{{$message}}</span>@enderror
                 </div>
 
                 <div class="input">
                     <label for="pass">Password</label>
                     <input type="password" id="pass" class="block mt-1 w-full" name="password" required=""
                         autocomplete="current-password">
+                        @error('password') <span class="text-danger mt-3">{{$message}}</span>@enderror
                 </div>
 
-                <a href="javascript:void(0)" class="pass-forgot">Forgot your password?</a>
+                <a href="{{ route('password.request') }}" class="pass-forgot">
+                    Quên mật khẩu?</a>
 
                 <div class="button login">
                     <button type="submit">
-                        <span>Log In</span>
+                        <span>Đăng nhập</span>
                         <i class="fa fa-check"></i>
                     </button>
                 </div>
 
-                <p>Not a member? <a href="register.html" class="theme-color">Sign up now</a></p>
+                <p>
+                    Không phải là thành viên? <a href="{{route('register')}}" class="theme-color">
+                        Đăng ký ngay</a></p>
             </form>
         </div>
     </div>
