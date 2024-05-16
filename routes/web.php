@@ -3,6 +3,7 @@
 use App\Http\Controllers\Client\AccountController;
 use App\Http\Controllers\materController;
 use App\Http\Controllers\Admin;
+use App\Http\Controllers\Client\ShopController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +18,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/',[materController::class,'index']);
+Route::prefix('/shop')->group(function(){
+        Route::get('',[ShopController::class,'index'])->name('client.shop.index');
+});
+
 Route::middleware('auth')->group(function(){
     Route::prefix('my_account')->group(function(){
         Route::prefix('dashboard')->group(function(){
@@ -33,7 +38,6 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('',[Admin\CategoryController::class,'index']) ->name('admin.category.index');
         Route::get('create',[Admin\CategoryController::class,'create']) ->name('admin.category.create');
         Route::post('store',[Admin\CategoryController::class,'store']) ->name('admin.category.store');
-
         Route::get('edit/{id}',[Admin\CategoryController::class,'edit']) ->name('admin.category.edit');
         Route::post('update/{id}',[Admin\CategoryController::class,'update']) ->name('admin.category.update');
 
@@ -65,11 +69,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('delete/{id}',[Admin\UserController::class,'delete']) ->name('admin.user.delete');      
     });
 
-    Route::group(['prefix' => 'profile' ] , function () {
-        Route::get('/{id}',[Admin\ProfileController::class,'show']) ->name('admin.profile.index');
-        Route::get('/updatePass/{id}',[Admin\ProfileController::class,'updatePass']) ->name('admin.profile.updatePass');
-        Route::post('/updatePass/{id}',[Admin\ProfileController::class,'update']);
-    });
+    // Route::group(['prefix' => 'profile' ] , function () {
+    //     Route::get('/{id}',[Admin\ProfileController::class,'show']) ->name('admin.profile.index');
+    //     Route::get('/updatePass/{id}',[Admin\ProfileController::class,'updatePass']) ->name('admin.profile.updatePass');
+    //     Route::post('/updatePass/{id}',[Admin\ProfileController::class,'update']);
+    // });
 
     Route::group(['prefix' => 'role'] , function () {
         Route::get('',[Admin\RoleController::class,'index']) ->name('admin.role.index');
