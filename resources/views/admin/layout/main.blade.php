@@ -24,7 +24,10 @@
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
+    
 </head>
 
 <body class="">
@@ -32,9 +35,9 @@
 
         @include('admin.layout.header')
 
-        <div class="container-fluid page-body-wrapper">
+        <div class="container-fluid page-body-wrapper ps-0">
             @include('admin.layout.themeSetting')
-            
+
 
             @include('admin.layout.sidebar')
 
@@ -64,12 +67,21 @@
     <!-- End plugin js for this page -->
     <!-- inject:js -->
     <script src="{{ asset('theme_admin/theme/js/off-canvas.js') }}"></script>
-    <script src="{{ asset('theme_admin/theme/js/off-canvas.js') }}"></script>
-    <script src="{{ asset('theme_admin/theme/js/off-canvas.js') }}"></script>
-    <script src="{{ asset('theme_admin/theme/js/off-canvas.js') }}"></script>
-    <script src="{{ asset('theme_admin/theme/js/off-canvas.js') }}"></script>
-    <script src="{{ asset('theme_admin/theme/js/off-canvas.js') }}"></script>
-    <script src="{{ asset('theme_admin/theme/js/off-canvas.js') }}"></script>
+    <script src="{{ asset('theme_admin/theme/js/hoverable-collapse.js') }}"></script>
+    <script src="{{ asset('theme_admin/theme/js/template.js') }}"></script>
+    <script src="{{ asset('theme_admin/theme/js/settings.js') }}"></script>
+    <script src="{{ asset('theme_admin/theme/js/todolist.js') }}"></script>
+
+
+    {{-- <script src="{{ asset('theme_admin/theme/js/') }}"></script>
+    <script src="{{ asset('theme_admin/theme/js/') }}"></script>
+
+
+    <script src="../../js/off-canvas.js"></script>
+    <script src="../../js/hoverable-collapse.js"></script>
+    <script src="../../js/template.js"></script>
+    <script src="../../js/settings.js"></script>
+    <script src="../../js/todolist.js"></script> --}}
 </body>
 
 </html>

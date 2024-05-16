@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Ward;
+// use App\Models\Ward;
 use App\Models\Image;
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\District;
-use App\Models\Province;
-use Illuminate\Support\Str;
+// use App\Models\District;
+// use App\Models\Province;
+// use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Helpers\CloudinaryHelper;
+// use App\Helpers\CloudinaryHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ProductRequest;
@@ -52,14 +52,14 @@ class ProductController extends Controller
         // $model = new Product();
         // $status = $model->getStatus();
 
-        $viewData = [
-            'categories' => $categories,
-            'status' => $status,
-            'provinces' => $provinces,
-            'districts' => $districts,
-            'wards' => $wards,
-        ];
-        return view('Backend.product.create', $viewData);
+        // $viewData = [
+        //     'categories' => $categories,
+        //     'status' => $status,
+        //     'provinces' => $provinces,
+        //     'districts' => $districts,
+        //     'wards' => $wards,
+        // ];
+        return view('admin.product.create', $categories);
 
     }
 
@@ -71,40 +71,12 @@ class ProductController extends Controller
         //
         // dd($request->all());
         try {
-            $data = $request->except('_toke','avatar','avatars');
-            $data['slug'] = Str::slug($request->name) ;
+            $data = $request->all();
 
-            $data['user_id'] = Auth::user()->id;
 
-            if ($request->hasFile('avatar')) {
-                // Sử dụng Helper function để tải ảnh lên Cloudinary
-                $imageUrl = CloudinaryHelper::uploadImage($request->file('avatar'));
-                
-                // Thêm đường dẫn của ảnh vào dữ liệu trước khi lưu
-                $data['avatar'] = $imageUrl;
-            }
             $product = Product::create($data);
 
-            if ($request->hasFile('avatars')){
-                // Lặp qua từng file ảnh được gửi từ form
-                foreach ($request->file('avatars') as $avatar) {
-                    // Upload ảnh lên Cloudinary
-                    $uploadResult = CloudinaryHelper::uploadImage($avatar);
-
-                    // Nếu upload thành công, lưu đường dẫn và tên của ảnh vào CSDL
-                    if ($uploadResult) {
-                        // Lưu đường dẫn và tên ảnh vào CSDL
-                        $imageModel = new Image();
-                        $imageModel->path = $uploadResult;
-                        $imageModel->name = $avatar->getClientOriginalName();
-                        $imageModel->product_id = $product->id;
-                        $imageModel->save();
-                    }
-                }      
-            }
             
-
-
         } catch (Exception $ex) {
             Log::error("ERROR => ProductController@store =>". $ex->getMessage());
             return redirect()->route('admin.product.create');

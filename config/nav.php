@@ -6,7 +6,7 @@ return [
         'name' => 'Home',
         'route' => 'admin.home.index',
         'routeGroup' => 'admin.home.*',
-        'prefix' => [''],
+        'prefix' => ['home'],
     ],
     [
         'icon' => 'shopping-cart',

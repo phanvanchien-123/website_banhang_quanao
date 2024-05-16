@@ -32,7 +32,7 @@ Route::middleware('auth')->group(function(){
 Auth::routes();
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
-    Route::get('',[Admin\HomeController::class,'index']) ->name('admin.home.index');
+    Route::get('home',[Admin\HomeController::class,'index']) ->name('admin.home.index');
     
     Route::group(['prefix' => 'category' ] , function () {
         Route::get('',[Admin\CategoryController::class,'index']) ->name('admin.category.index');
