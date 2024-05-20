@@ -11,6 +11,7 @@ use App\Models\Category;
 // use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 // use App\Helpers\CloudinaryHelper;
+use App\Models\ProductDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ProductRequest;
@@ -59,22 +60,36 @@ class ProductController extends Controller
         //     'districts' => $districts,
         //     'wards' => $wards,
         // ];
-        return view('admin.product.create', $categories);
+        return view('admin.product.create', compact('categories'));
 
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ProductRequest $request)
+    public function store(Request $request)
     {
         //
         // dd($request->all());
+        // dd($request->all());
         try {
-            $data = $request->all();
+            $data = $request->except('size','color','qty2');
 
 
             $product = Product::create($data);
+
+            $dataDetails = $request->only('size', 'color', 'qty2');
+
+            // Lặp qua các mảng size, color và qty2 để lưu vào bảng product_detail
+            foreach ($dataDetails['size'] as $index => $size) {
+                ProductDetail::create([
+                    'product_id' => $product->id, 
+                    'size' => $size,
+                    'color' => $dataDetails['color'][$index],
+                    'qty' => $dataDetails['qty2'][$index],
+                ]);
+            }
+
 
             
         } catch (Exception $ex) {
@@ -101,74 +116,33 @@ class ProductController extends Controller
     {
         //
         $categories = Category::all();
-        $provinces = Province::all();
-        $districts = District::all();
-        $wards = Ward::all();
-
-
         $product = Product::findOrFail($id);
-        $imgs = Image::get()->where('product_id',$product->id);
-        // dd($imgs);
-        $model = new Product();
-        $status = $model->getStatus();
-        return view('Backend.product.edit',compact('product','categories','status','imgs','provinces','districts','wards'));
+        $detail = ProductDetail::where('product_id', $id);
+
+        return view('admin.product.edit',compact('product','categories','detail'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(ProductRequest $request, Product $product, $id)
+    public function update(Request $request, $id)
     {
         //
         $product = Product::findOrFail($id);
-     
-        $data = $request->except('_token','avatar','avatars');
-        $data['slug'] = Str::slug($request->name);
 
-        if ($request->hasFile('avatar')) {
-            // Upload ảnh mới
-            $imageUrl = CloudinaryHelper::uploadImage($request->file('avatar'));
-            // Xóa ảnh cũ
-            if (!empty($product->avatar)) {
-                CloudinaryHelper::deleteImage($product->avatar);
-            }
-            
-            $data['avatar'] = $imageUrl;
+        $dataUpdate = $request->except('size', 'color', 'qty2');
+
+        $product->update($dataUpdate);
+
+        $dataDetails = $request->only('size', 'color', 'qty2');
+
+        foreach ($dataDetails['size'] as $index => $size) {
+            $productDetail = ProductDetail::updateOrCreate(
+                ['product_id' => $product->id, 'size' => $size],
+                ['color' => $dataDetails['color'][$index], 'qty' => $dataDetails['qty2'][$index]]
+            );
         }
-
-        // $product = Product::findOrFail($id);
-        $product->update($data);
-        
-        if ($request->hasFile('avatars')){
-            if(!empty($product->images)){
-                foreach($product->images as $image){
-                    $upload = CloudinaryHelper::deleteImage($image->path);
-                    Image::destroy($image->id);
-                }
-            }
-
-            // Lặp qua từng file ảnh được gửi từ form
-            foreach ($request->file('avatars') as $avatar) {
-                // Upload ảnh lên Cloudinary
-                $uploadResult = CloudinaryHelper::uploadImage($avatar);
-
-                // Nếu upload thành công, lưu đường dẫn và tên của ảnh vào CSDL
-                if ($uploadResult) {
-                    // Lưu đường dẫn và tên ảnh vào CSDL
-                    $imageModel = new Image();
-                    $imageModel->path = $uploadResult;
-                    $imageModel->name = $avatar->getClientOriginalName();
-                    $imageModel->product_id = $product->id;
-                    $imageModel->save();
-                }
-            }
-            
-            
-            
-        }
-
         return redirect()->route('admin.product.index');
-
     }
 
     /**
@@ -176,23 +150,8 @@ class ProductController extends Controller
      */
     public function delete(Product $product, $id)
     {
-        //
-        // $product = Product::destroy($id);
-        // $product->delete();
-
-
-        $product = Product::findOrFail($id)->load('images');
-        // dd($product);
-        // Kiểm tra xem product có ảnh không
-        if ($product->avatar) {
-            // Nếu có, thực hiện xóa ảnh từ Cloudinary
-            CloudinaryHelper::deleteImage($product->avatar);
-        }
-        if($product->images){
-            foreach ($product->images as $image) {
-                CloudinaryHelper::deleteImage($image->path);
-            }
-        }
+        $product = Product::findOrFail($id);
+        ProductDetail::where('product_id', $product->id)->delete();
 
         $product->delete();
 

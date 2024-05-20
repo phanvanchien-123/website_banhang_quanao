@@ -45,11 +45,11 @@
             <div class="mb-3">
                 <label for="exampleFormControlInput6" class="form-label">Danh mục</label></br>
                 <select class="form-select w-50" aria-label="Default select example" id="exampleFormControlInput6"
-                    name="category_id">
+                    name="product_category_id">
                     <option selected value="0">Chọn danh mục</option>
-                    @foreach ($categories ?? [] as $item)
+                    @foreach ($categories as $item)
                         <option value="{{ $item->id }}"
-                            {{ isset($product) && $product->category_id == $item->id ? 'selected' : '' }}>
+                            {{ isset($product) && $product->product_category_id == $item->id ? 'selected' : '' }}>
                             {{ $item->name }}</option>
                     @endforeach
 
@@ -58,14 +58,14 @@
             <div class="mb-3">
                 <label for="exampleFormControlInput6" class="form-label">Brand</label></br>
                 <select class="form-select w-50" aria-label="Default select example" id="exampleFormControlInput6"
-                    name="category_id">
+                    name="brand_id">
                     <option selected value="0">Chọn Brand</option>
                     @foreach ($brands ?? [] as $item)
                         <option value="{{ $item->id }}"
                             {{ isset($product) && $product->brand_id == $item->id ? 'selected' : '' }}>
                             {{ $item->name }}</option>
                     @endforeach
-
+                    <option value="1">1</option>
                 </select>
             </div>
             <div class="mb-3">
@@ -114,9 +114,9 @@
                 <div class="mb-3">
                     <label for="exampleFormControlInput4" class="form-label">Số lượng</label>
                     <input type="number" class="form-control" id="exampleFormControlInput4" placeholder=""
-                        name="number" value="{{ isset($product) ? $product->number : '' }}">
-                    @error('number')
-                        <small class="text-danger">{{ $errors->first('number') }}</small>
+                        name="qty" value="{{ isset($product) ? $product->qty : '' }}">
+                    @error('qty')
+                        <small class="text-danger">{{ $errors->first('qty') }}</small>
                     @enderror
                 </div>
                 <div class="mb-3">
@@ -138,23 +138,23 @@
                 <div class="mb-3">
                     <label for="editor" class="form-label">tag</label>
                     <input type="text" class="form-control" id="exampleFormControlInput1" placeholder=""
-                        name="sku" value="{{ isset($product) ? $product->sku : '' }}">
-                    @error('sku')
-                        <small class="text-danger">{{ $errors->first('sku') }}</small>
+                        name="tag" value="{{ isset($product) ? $product->tag : '' }}">
+                    @error('tag')
+                        <small class="text-danger">{{ $errors->first('tag') }}</small>
                     @enderror
                 </div>
                 <div class="mb-3">
                     <label for="editor" class="form-label">featured</label>
                     <div class="d-flex">
                         <div class="form-check ms-5">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault"
+                            <input class="form-check-input" type="radio" name="featured" value="1"
                                 id="flexRadioDefault1">
                             <label class="form-check-label" for="flexRadioDefault1">
                                 có
                             </label>
                         </div>
                         <div class="form-check ms-5">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault"
+                            <input class="form-check-input" type="radio" name="featured" value="0"
                                 id="flexRadioDefault2" checked>
                             <label class="form-check-label" for="flexRadioDefault2">
                                 không
@@ -176,21 +176,24 @@
 
             <div class="border border-top-0 px-3">
                 <div id="attributeContainer">
-                    <div class="d-flex justify-content-around">
+                    <div class="d-flex ">
                         <div class="mb-3">
                             <label for="exampleFormControlInput1" class="form-label">Size: </label>
                             <input type="text" class="form-control" id="exampleFormControlInput1" placeholder=""
-                                name="size" value="{{ isset($product) ? $product->size : '' }}">
+                                name="size[]" value="{{ isset($product) ? $product->size : '' }}">
                         </div>
                         <div class="mb-3">
                             <label for="exampleFormControlInput3" class="form-label">Color</label>
                             <input type="number" class="form-control" id="exampleFormControlInput3" placeholder=""
-                                name="color" value="{{ isset($product) ? $product->color : '' }}">
+                                name="color[]" value="{{ isset($product) ? $product->color : '' }}">
                         </div>
                         <div class="mb-3">
                             <label for="exampleFormControlInput4" class="form-label">Số lượng</label>
                             <input type="number" class="form-control" id="exampleFormControlInput4" placeholder=""
-                                name="qty" value="{{ isset($product) ? $product->qty : '' }}">
+                                name="qty2[]" value="{{ isset($product) ? $product->qty : '' }}">
+                        </div>
+                        <div class="mb-3 ">
+                            <button type="button " class="btn-close removeAttributeBtn" aria-label="Close"></button>
                         </div>
                     </div>
                 </div>
@@ -201,9 +204,23 @@
                 $(document).ready(function() {
                     $('#addAttributeBtn').click(function() {
                         // Sao chép phần tử div chứa các input
-                        var attributeDivClone = $('#attributeContainer').children().clone();
+                        var attributeDivClone = $('#attributeContainer').children().first().clone();
+                        // Thay đổi tên của các trường input trong phần tử div sao chép để chúng phản ánh một mảng mới
+                        $(attributeDivClone).find('input').each(function() {
+                            var originalName = $(this).attr('name');
+                            var newName = originalName.replace(/\[\d+\]/, '[' + $('#attributeContainer').children().length + ']');
+                            $(this).attr('name', newName);
+                        });
+                        // Thêm nút "Xóa" vào phần tử clone
+                        $(attributeDivClone).find('.removeAttributeBtn').click(function() {
+                            $(this).closest('.d-flex').remove(); // Xóa phần tử cha chứa nút "Xóa"
+                        });
                         // Thêm phần tử div được sao chép vào cuối của container
                         $('#attributeContainer').append(attributeDivClone);
+                    });
+                    // Thêm sự kiện click cho nút "Xóa" của phần tử ban đầu
+                    $('.removeAttributeBtn').click(function() {
+                        $(this).closest('.d-flex').remove(); // Xóa phần tử cha chứa nút "Xóa"
                     });
                 });
             </script>
@@ -304,4 +321,9 @@
     .ck-editor__editable {
         min-height: 300px;
     }
+    /* Ẩn nút "Xóa" ở phần tử gốc */
+    #attributeContainer > .d-flex:first-child .removeAttributeBtn {
+        display: none;
+    }
+
 </style>
