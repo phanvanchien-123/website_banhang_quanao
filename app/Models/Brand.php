@@ -5,21 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductDetail extends Model
+class Brand extends Model
 {
     use HasFactory;
-    protected $table = 'product_details';
+    protected $table ='brands';
     protected $primaryKey ='id';
     public $timestamps = true;
     protected $fillable=[
         'id',
-        'color',
-        'size',
-        'qty',
-        'product_id',
+        'name',
     ];
-    public function product(){
-        return $this ->belongsTo(Product::class,'product_id','id');
-    
+    public function products(){
+        return $this ->hasMany(Product::class,'brand_id','id');
     }
 }
+
