@@ -56,6 +56,18 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('delete/{id}',[Admin\ProductController::class,'delete']) ->name('admin.product.delete');      
     });
 
+    Route::group(['prefix' => 'brand' ] , function () {
+        Route::get('',[Admin\BrandController::class,'index']) ->name('admin.brand.index');
+
+        Route::get('create',[Admin\BrandController::class,'create']) ->name('admin.brand.create');
+        Route::post('store',[Admin\BrandController::class,'store']) ->name('admin.brand.store');
+
+        Route::get('edit/{id}',[Admin\BrandController::class,'edit']) ->name('admin.brand.edit');
+        Route::post('update/{id}',[Admin\BrandController::class,'update']) ->name('admin.brand.update');
+
+        Route::get('delete/{id}',[Admin\BrandController::class,'delete']) ->name('admin.brand.delete');      
+    });
+
     Route::group(['prefix' => 'user' ] , function () {
         Route::get('',[Admin\UserController::class,'index']) ->name('admin.user.index');
 
