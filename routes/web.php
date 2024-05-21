@@ -20,6 +20,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/',[materController::class,'index']);
 Route::prefix('/shop')->group(function(){
         Route::get('',[ShopController::class,'index'])->name('client.shop.index');
+        Route::get('/details/{id}',[ShopController::class,'show'])->name('Client.shop.show');
+        Route::post('/details/{id}/Comment',[ShopController::class,'postComment'])->name('Client.Comment');
+      
+       Route::post('/details/{id}',[ShopController::class,'show'])->name('Client.shop.show');
 });
 
 Route::middleware('auth')->group(function(){
