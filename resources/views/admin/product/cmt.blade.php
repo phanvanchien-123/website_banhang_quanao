@@ -20,7 +20,7 @@
                     <tr>
                         <th scope="row">{{ $item->id }}</th>
                         <td>{{ $item->user->name }}</td>
-                        <td>{{ $item->messages }}</td>
+                        <td  class="text-wrap w-50">{{ $item->messages }}</td>
                         <td>{{ $item->product->name }}</td>
                         <td>{{ $item->created_at }}</td>
                         <td>
