@@ -141,7 +141,7 @@
                                             </li>
                                             <li><a href="/" class="nav-link menu-title">Home</a></li>
                                             <li><a href="{{route('client.shop.index')}}" class="nav-link menu-title">Shop</a></li>
-                                            <li><a href="cart/list.html" class="nav-link menu-title">Cart</a></li>
+                                            <li><a href="/Cart" class="nav-link menu-title">Cart</a></li>
                                             <li><a href="about-us.html" class="nav-link menu-title">About Us</a></li>
                                             <li><a href="contact-us.html" class="nav-link menu-title">Contact Us</a>
                                             </li>

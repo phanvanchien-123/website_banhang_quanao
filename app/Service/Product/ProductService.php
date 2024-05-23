@@ -24,6 +24,19 @@ class ProductService extends BaseService implements ProductServiceInterface {
         $product->avgRating =$avgRating;
         return $product;
     }
+    public function all()
+{
+    $products = $this->repository->all(); // Assuming this gets all products
+
+    foreach ($products as $product) {
+        $sumRating = array_sum(array_column($product->productComments->toArray(), 'rating'));
+        $countRating = count($product->productComments);
+        $avgRating = $countRating ? $sumRating / $countRating : 0;
+        $product->avgRating = $avgRating;
+    }
+
+    return $products;
+}
     
     public function getRelatedProducts($product ,$limit = 4){
       return  $this ->repository ->getRelatedProducts($product,$limit);

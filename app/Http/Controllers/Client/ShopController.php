@@ -24,6 +24,7 @@ class ShopController extends Controller
     }
     public function index(){
         $products = $this->productServices->all();
+  
         return view ('Client.shop.shop',compact('products'));
     }
     public function show($id, Request $request)
@@ -34,6 +35,7 @@ class ShopController extends Controller
         $sizes = [];
         $quantity = 0;
         $comments = $this->productCommentService->getCommentsByProductId($id,2);
+        $relatedproducts= $this->productServices->getRelatedProducts($products);
         if ($selectedColor) {
             $sizes = ProductDetail::where('product_id', $id)
                 ->where('color', $selectedColor)
@@ -52,7 +54,7 @@ class ShopController extends Controller
         }
       
 
-        return view('Client.shop.details', compact('products', 'selectedColor', 'selectedSize', 'sizes', 'quantity','comments'));
+        return view('Client.shop.details', compact('products', 'selectedColor', 'selectedSize', 'sizes', 'quantity','comments','relatedproducts'));
     }
     // public function filterSizes(Request $request, $productId){
     //     $selectedColor = $request->input('color');

@@ -446,7 +446,7 @@
                     <div class="product-box">
                         <div class="img-wrapper">
                             <div class="front">
-                                <a href="product/nihil-beatae-sit-sed.html">
+                                <a href="/shop/details/{{$item->id}}">
                                     <img src="assets/images/fashion/product/front/{{$item->avatar}}"
                                         class="bg-img blur-up lazyload" alt="">
                                 </a>
@@ -464,7 +464,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="javascript:void(0)">
+                                        <a href="/shop/details/{{$item->id}}">
                                             <i data-feather="eye"></i>
                                         </a>
                                     </li>
@@ -479,23 +479,26 @@
                         <div class="product-details">
                             <div class="rating-details">
                                 <span class="font-light grid-content">{{$item->productCategory->name}}</span>
-                                <ul class="rating mt-0">
-                                    <li>
-                                        <i class="fas fa-star theme-color"></i>
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-star theme-color"></i>
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-star"></i>
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-star"></i>
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-star"></i>
-                                    </li>
-                                </ul>
+                                <div class="label-section">
+                                    {{-- <span class="badge badge-grey-color">#1 Best seller</span>
+                                    <span class="label-text">in fashion</span> --}}
+                                    <ul class="rating my-2 d-inline-block">
+                                        @for($i =1 ;$i<=5;$i++)
+                                         @if($i <=$item->avgRating)
+                                            <li>
+                                                <i class="fas fa-star theme-color"></i>
+                                            </li>
+                                            @else
+                                            <li>
+                                                <i class="fas fa-star "></i>
+                                            </li>
+                                            @endif
+                                            @endfor
+                                            <li>
+                                                (<span>{{count($item->productComments)}}</span>)
+                                            </li>
+                                    </ul>
+                                </div>
                             </div>
                             <div class="main-price">
                                 <a href="product/nihil-beatae-sit-sed.html" class="font-default">
@@ -507,16 +510,19 @@
                                         itaque maxime ea at inventore nam. Repudiandae dolor recusandae sint
                                         magnam praesentium.</p>
                                 </div>
-                                <h3 class="theme-color">
+                                <h4 class="price-detail">
+
                                     @if ($item->discount)
-                                    ${{$item->discount}}
-                                    <del>${{$item->price}}</del>
-                                   <div class=""> Giảm {{ round((($item->price - $item->discount) / $item->price)*100)}}</span>
-                                    % off</div></h3>                               
+                                  <h4>  {{number_format($item->discount,3)}} VND</h4>
+                                    <del> {{number_format($item->price,3)}} VND</del>
+                                    <span> giảm {{ round((($item->price - $item->discount) /
+                                        $item->price)*100)}}%</span>
                                     @else
-                                        ${{$item->price}}
+                                    {{number_format($item->price,3)}} VND
                                     @endif
-                                </h3>
+
+
+                                </h4>
                                 <button class="btn listing-content">Add To Cart</button>
                             </div>
                         </div>

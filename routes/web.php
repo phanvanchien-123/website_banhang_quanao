@@ -3,6 +3,7 @@
 use App\Http\Controllers\Client\AccountController;
 use App\Http\Controllers\materController;
 use App\Http\Controllers\Admin;
+use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\ShopController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,8 +23,15 @@ Route::prefix('/shop')->group(function(){
         Route::get('',[ShopController::class,'index'])->name('client.shop.index');
         Route::get('/details/{id}',[ShopController::class,'show'])->name('Client.shop.show');
         Route::post('/details/{id}/Comment',[ShopController::class,'postComment'])->name('Client.Comment');
-      
        Route::post('/details/{id}',[ShopController::class,'show'])->name('Client.shop.show');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('Cart')->group(function (){
+        Route::get('',[CartController::class,'index']);
+        Route::post('add/{id}',[CartController::class,'add'])->name('cart.add'); 
+    });
+
 });
 
 Route::middleware('auth')->group(function(){
