@@ -37,6 +37,23 @@ Auth::routes();
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::get('home',[Admin\HomeController::class,'index']) ->name('admin.home.index');
+
+    Route::group(['prefix' => 'blog' ] , function () {
+        Route::get('',[Admin\BlogController::class,'index']) ->name('admin.blog.index');
+
+        Route::get('create',[Admin\BlogController::class,'create']) ->name('admin.blog.create');
+        Route::post('store',[Admin\BlogController::class,'store']) ->name('admin.blog.store');
+
+        Route::get('edit/{id}',[Admin\BlogController::class,'edit']) ->name('admin.blog.edit');
+        Route::post('update/{id}',[Admin\BlogController::class,'update']) ->name('admin.blog.update');
+
+        Route::get('delete/{id}',[Admin\BlogController::class,'delete']) ->name('admin.blog.delete');
+
+        Route::get('cmt',[Admin\BlogController::class,'cmt']) ->name('admin.blog.cmt');
+        Route::patch('cmt/{id}', [Admin\BlogController::class, 'updateCmt'])->name('admin.blog.updateCmt');  
+
+
+    });
     
     Route::group(['prefix' => 'category' ] , function () {
         Route::get('',[Admin\CategoryController::class,'index']) ->name('admin.category.index');
@@ -57,7 +74,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('edit/{id}',[Admin\ProductController::class,'edit']) ->name('admin.product.edit');
         Route::post('update/{id}',[Admin\ProductController::class,'update']) ->name('admin.product.update');
 
-        Route::get('delete/{id}',[Admin\ProductController::class,'delete']) ->name('admin.product.delete');      
+        Route::get('delete/{id}',[Admin\ProductController::class,'delete']) ->name('admin.product.delete');   
+
+        Route::get('cmt',[Admin\ProductController::class,'cmt']) ->name('admin.product.cmt');
+        Route::patch('cmt/{id}', [Admin\ProductController::class, 'updateCmt'])->name('admin.product.updateCmt');  
+      
     });
 
     Route::group(['prefix' => 'brand' ] , function () {

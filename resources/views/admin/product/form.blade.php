@@ -5,9 +5,9 @@
 
             <div class="mb-3">
                 <div class="h5 pb-2 mb-4 text-success border-bottom border-success">
-                    <label for="editor" class="form-label">Tên sản phẩm</label>
+                    <label for="name" class="form-label">Tên sản phẩm</label>
                 </div>
-                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" name="name"
+                <input type="text" class="form-control form-control-lg" id="name" placeholder="" name="name"
                     value="{{ isset($product) ? $product->name : '' }}">
                 @error('name')
                     <small class="text-danger">{{ $errors->first('name') }}</small>
@@ -26,27 +26,15 @@
                 </div>
 
                 <textarea class="form-control" id="editor" rows="30" name="description">{{ isset($product) ? $product->description : '' }}</textarea>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        // Tìm phần tử textarea với id="editor"
-                        const editorTextarea = document.querySelector('#editor');
-                        // Tăng chiều cao của textarea lên 500px
-                        editorTextarea.style.height = '500px';
-                        ClassicEditor
-                            .create(document.querySelector('#editor'))
-                            .catch(error => {
-                                console.error(error);
-                            });
-                    });
-                </script>
+                <script src="{{ asset('theme_admin/theme/js/styleCKedit.js') }}"></script>
             </div>
         </div>
         <div class="col-md-5">
             <div class="mb-3">
-                <label for="exampleFormControlInput6" class="form-label">Danh mục</label></br>
-                <select class="form-select w-50" aria-label="Default select example" id="exampleFormControlInput6"
+                <label for="category" class="form-label">Danh mục</label></br>
+                <select class="form-select w-50" aria-label="Default select example" id="category"
                     name="product_category_id">
-                    <option selected value="0">Chọn danh mục</option>
+                    <option selected value="">Chọn danh mục</option>
                     @foreach ($categories as $item)
                         <option value="{{ $item->id }}"
                             {{ isset($product) && $product->product_category_id == $item->id ? 'selected' : '' }}>
@@ -54,37 +42,53 @@
                     @endforeach
 
                 </select>
+                @error('product_category_id')
+                    <small class="text-danger">{{ $errors->first('product_category_id') }}</small>
+                @enderror
             </div>
             <div class="mb-3">
-                <label for="exampleFormControlInput6" class="form-label">Brand</label></br>
-                <select class="form-select w-50" aria-label="Default select example" id="exampleFormControlInput6"
-                    name="brand_id">
-                    <option selected value="0">Chọn Brand</option>
+                <label for="brand" class="form-label">Brand</label></br>
+                <select class="form-select w-50" aria-label="Default select example" id="brand" name="brand_id">
+                    <option selected value="">Chọn Brand</option>
                     @foreach ($brands ?? [] as $item)
                         <option value="{{ $item->id }}"
                             {{ isset($product) && $product->brand_id == $item->id ? 'selected' : '' }}>
                             {{ $item->name }}</option>
                     @endforeach
-                    <option value="1">1</option>
                 </select>
+                @error('brand_id')
+                    <small class="text-danger">{{ $errors->first('brand_id') }}</small>
+                @enderror
             </div>
             <div class="mb-3">
-                <label for="exampleFormControlInput2" class="form-label">Hình ảnh</label>
-                <input type="file" class="form-control" id="exampleFormControlInput2" placeholder="" name="avatar"
-                    value="{{ isset($product) ? $product->avatar : '' }}">
+                <label for="avatar" class="form-label">Hình ảnh</label>
+                <div id="avatarWrapper" class="border-bottom d-flex"
+                    style="display: {{ isset($product) ? 'flex' : 'none' }};">
+                    @if (isset($product->avatar))
+                        <img src="{{ asset('storage/' . $product->avatar) }}" alt="" class="m-3"
+                            width="120px" height="120px">
+                    @endif
+                </div>
+                <input type="file" class="form-control" id="avatar" name="avatar"
+                    onchange="previewAvatar(event)">
             </div>
             <div class="mb-3">
-                <label for="exampleFormControlInput2" class="form-label">Album</label>
+                <label for="album" class="form-label">Album</label>
                 <div class="border rounded">
-                    <div id="imageWrapper" class="border-bottom d-flex" style="display: none;">
-                        @foreach ($imgs ?? [] as $img)
-                            <img src="{{ $img->path }}" alt="" class="m-3" width="120px" height="120px">
-                        @endforeach
+                    <div id="albumWrapper" class="border-bottom d-flex"
+                        style="display: {{ isset($product->productImages) && count($product->productImages) > 0 ? 'flex' : 'none' }};">
+                        @if (isset($product->productImages))
+                            @foreach ($product->productImages as $img)
+                                <img src="{{ asset('storage/' . $img->path) }}" alt="" class="m-3"
+                                    width="120px" height="120px">
+                            @endforeach
+                        @endif
                     </div>
-                    <input type="file" multiple class="form-control" id="exampleFormControlInput2" placeholder=""
-                        name="avatars[]" value="" onchange="previewImages(event)">
+                    <input type="file" multiple class="form-control" id="album" name="images[]"
+                        onchange="previewImages(event)">
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -95,9 +99,9 @@
             </div>
             <div class="border border-top-0 px-3">
                 <div class="mb-3">
-                    <label for="editor" class="form-label">Mã sản phẩm</label>
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder=""
-                        name="sku" value="{{ isset($product) ? $product->sku : '' }}">
+                    <label for="sku" class="form-label">Mã sản phẩm</label>
+                    <input type="text" class="form-control" id="sku" placeholder="" name="sku"
+                        value="{{ isset($product) ? $product->sku : '' }}">
                     @error('sku')
                         <small class="text-danger">{{ $errors->first('sku') }}</small>
                     @enderror
@@ -176,26 +180,54 @@
 
             <div class="border border-top-0 px-3">
                 <div id="attributeContainer">
-                    <div class="d-flex ">
-                        <div class="mb-3">
-                            <label for="exampleFormControlInput1" class="form-label">Size: </label>
-                            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder=""
-                                name="size[]" value="{{ isset($product) ? $product->size : '' }}">
+                    @forelse ($product->productDetails ?? [] as $index => $item)
+                        <div class="d-flex">
+                            <div class="mb-3">
+                                <label for="size{{ $index }}" class="form-label">Size: </label>
+                                <input type="text" class="form-control" id="size{{ $index }}"
+                                    placeholder="" name="size[]" value="{{ $item->size }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="color{{ $index }}" class="form-label">Color</label>
+                                <input type="text" class="form-control" id="color{{ $index }}"
+                                    placeholder="" name="color[]" value="{{ $item->color }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="qty{{ $index }}" class="form-label">Số lượng</label>
+                                <input type="number" class="form-control" id="qty{{ $index }}"
+                                    placeholder="" name="qty2[]" value="{{ $item->qty }}">
+                            </div>
+                            <div class="mb-3">
+                                <button type="button" class="btn-close removeAttributeBtn"
+                                    aria-label="Close"></button>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="exampleFormControlInput3" class="form-label">Color</label>
-                            <input type="number" class="form-control" id="exampleFormControlInput3" placeholder=""
-                                name="color[]" value="{{ isset($product) ? $product->color : '' }}">
+                    @empty
+                        <div class="d-flex">
+                            <div class="mb-3">
+                                <label for="size0" class="form-label">Size: </label>
+                                <input type="text" class="form-control" id="size0" placeholder=""
+                                    name="size[]" value="">
+                            </div>
+                            <div class="mb-3">
+                                <label for="color0" class="form-label">Color</label>
+                                <input type="text" class="form-control" id="color0" placeholder=""
+                                    name="color[]" value="">
+                            </div>
+                            <div class="mb-3">
+                                <label for="qty0" class="form-label">Số lượng</label>
+                                <input type="number" class="form-control" id="qty0" placeholder=""
+                                    name="qty2[]" value="">
+                            </div>
+                            <div class="mb-3">
+                                <button type="button" class="btn-close removeAttributeBtn"
+                                    aria-label="Close"></button>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="exampleFormControlInput4" class="form-label">Số lượng</label>
-                            <input type="number" class="form-control" id="exampleFormControlInput4" placeholder=""
-                                name="qty2[]" value="{{ isset($product) ? $product->qty : '' }}">
-                        </div>
-                        <div class="mb-3 ">
-                            <button type="button " class="btn-close removeAttributeBtn" aria-label="Close"></button>
-                        </div>
-                    </div>
+                    @endforelse
+
+
+
                 </div>
             </div>
 
@@ -208,7 +240,8 @@
                         // Thay đổi tên của các trường input trong phần tử div sao chép để chúng phản ánh một mảng mới
                         $(attributeDivClone).find('input').each(function() {
                             var originalName = $(this).attr('name');
-                            var newName = originalName.replace(/\[\d+\]/, '[' + $('#attributeContainer').children().length + ']');
+                            var newName = originalName.replace(/\[\d+\]/, '[' + $('#attributeContainer')
+                                .children().length + ']');
                             $(this).attr('name', newName);
                         });
                         // Thêm nút "Xóa" vào phần tử clone
@@ -228,92 +261,6 @@
     </div>
     <button type="submit" class="btn btn-outline-primary mt-3">Lưu dữ liệu</button>
 
-
-
-
-    <script>
-        function previewImages(event) {
-            const input = event.target;
-            const imageWrapper = document.getElementById('imageWrapper');
-
-            // Xóa các ảnh hiển thị trước đó
-            imageWrapper.innerHTML = '';
-
-            if (input.files && input.files.length > 0) {
-                // Hiển thị phần tử chứa ảnh
-                imageWrapper.style.display = 'flex';
-
-                // Duyệt qua từng tệp hình ảnh và hiển thị
-                for (let i = 0; i < input.files.length; i++) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.alt = 'Uploaded Image';
-                        img.className = 'm-3';
-                        img.width = '120';
-                        img.height = '120';
-                        imageWrapper.appendChild(img);
-                    }
-                    reader.readAsDataURL(input.files[i]);
-                }
-            } else {
-                // Nếu không có tệp hình ảnh nào được chọn, ẩn phần tử chứa ảnh
-                imageWrapper.style.display = 'none';
-            }
-        }
-    </script>
-
-    {{-- <script>
-      // Lấy các select box và gán các sự kiện onchange
-      var provinceSelect = document.getElementById('address');
-      var districtSelect = document.getElementById('district');
-      var wardSelect = document.getElementById('ward');
-
-      provinceSelect.onchange = function() {
-          // Xóa tất cả các lựa chọn cũ của quận/huyện và xã/phường
-          districtSelect.innerHTML = '<option selected value="0">Chọn Quận/Huyện</option>';
-          wardSelect.innerHTML = '<option selected  value="0">Chọn Xã/Phường</option>';
-
-          // Lấy giá trị của tỉnh/thành phố được chọn
-          var selectedProvinceId = provinceSelect.value;
-
-          // Lọc danh sách quận/huyện tương ứng với tỉnh/thành phố được chọn
-          var districts = {!! json_encode($districts) !!}; // Dữ liệu các quận/huyện, bạn cần đảm bảo dữ liệu này được truyền từ phía server
-
-          // Lặp qua danh sách quận/huyện và thêm vào select box
-          districts.forEach(function(district) {
-              if (district.province_id == selectedProvinceId) {
-                  var option = document.createElement('option');
-                  option.text = district.name;
-                  option.value = district.district_id;
-                  districtSelect.add(option);
-              }
-          });
-      };
-
-      districtSelect.onchange = function() {
-          // Xóa tất cả các lựa chọn cũ của xã/phường
-          wardSelect.innerHTML = '<option selected  value="0">Chọn Xã/Phường</option>';
-
-          // Lấy giá trị của quận/huyện được chọn
-          var selectedDistrictId = districtSelect.value;
-
-          // Lọc danh sách xã/phường tương ứng với quận/huyện được chọn
-          var wards = {!! json_encode($wards) !!}; // Dữ liệu các xã/phường, bạn cần đảm bảo dữ liệu này được truyền từ phía server
-
-          // Lặp qua danh sách xã/phường và thêm vào select box
-          wards.forEach(function(ward) {
-              if (ward.district_id == selectedDistrictId) {
-                  var option = document.createElement('option');
-                  option.text = ward.name;
-                  option.value = ward.wards_id;
-                  wardSelect.add(option);
-              }
-          });
-      };
-
-    </script> --}}
 </form>
 
 <style>
@@ -321,9 +268,9 @@
     .ck-editor__editable {
         min-height: 300px;
     }
+
     /* Ẩn nút "Xóa" ở phần tử gốc */
-    #attributeContainer > .d-flex:first-child .removeAttributeBtn {
+    #attributeContainer>.d-flex:first-child .removeAttributeBtn {
         display: none;
     }
-
 </style>

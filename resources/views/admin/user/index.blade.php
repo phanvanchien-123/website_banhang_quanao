@@ -19,7 +19,7 @@
                 @foreach ($users ?? [] as $item)
                     <tr>
                   <th scope="row">{{ $item->id }}</th>
-                  <td><img src="{{ $item->avatar ?? 'https://png.pngtree.com/png-vector/20210228/ourlarge/pngtree-load-the-png-image_2976163.jpg' }}" alt="" width="60px" height="60px"></td>
+                  <td><img src="{{ asset('storage/' . $item->avatar) }}" alt="" width="60px" height="60px"></td>
                   <td>{{ $item->name }}</td>
                   <td>{{ $item->email }}</td>
                   <td>

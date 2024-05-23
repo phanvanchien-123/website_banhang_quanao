@@ -11,6 +11,16 @@ class Blog extends Model
     protected $table ='blogs';
     protected $primaryKey ='id';
     protected $quarded =[];
+    protected $fillable=[
+        'id',
+        'title',
+        'subtitle',
+        'image',
+        'category',
+        'content',
+        'user_id',
+    ];
+
     public function blogComments(){
         return $this ->hasMany(blog_comment::class,'blog_id','id');
     }

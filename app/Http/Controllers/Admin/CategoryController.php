@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Category;
 use Illuminate\Support\Str;
+use App\Traits\ImageHandler;
 use Illuminate\Http\Request;
 use App\Helpers\CloudinaryHelper;
 use App\Http\Controllers\Controller;
@@ -11,14 +12,15 @@ use App\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
+
+    use ImageHandler;
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
         //
-        // dd($request->cookie());
-
         $categories = Category::paginate(10);
         // dd($categories);
         return view('admin.category.index',compact('categories'));
@@ -41,16 +43,9 @@ class CategoryController extends Controller
     {
         //
         try {
-            $data = $request->all();
-    
-            // Nếu tồn tại file avatar trong request
-            // if ($request->hasFile('avatar')) {
-            //     // Sử dụng Helper function để tải ảnh lên Cloudinary
-            //     $imageUrl = CloudinaryHelper::uploadImage($request->file('avatar'));
-                
-            //     // Thêm đường dẫn của ảnh vào dữ liệu trước khi lưu
-            //     $data['avatar'] = $imageUrl;
-            // }
+            $data = $request->except('avatar');
+            $imagePath = $this->uploadImage($request->file('avatar'), 'theme_admin/upload/category');
+            $data['avatar'] = $imagePath ;    
     
             $category = Category::create($data);
         } catch (Exception $ex) {
@@ -86,20 +81,15 @@ class CategoryController extends Controller
     public function update(CategoryRequest $request, $id)
     {
         $category = Category::findOrFail($id);
-        $data = $request->all();
+        $data = $request->except('avatar');
+        $imagePath = $category->avatar;
 
-        // if ($request->hasFile('avatar')) {
-        //         // Upload ảnh mới
-        //         $imageUrl = CloudinaryHelper::uploadImage($request->file('avatar'));
-        //         // Xóa ảnh cũ trước khi cập nhật ảnh mới
-        //         if (!empty($category->avatar)) {
-        //             CloudinaryHelper::deleteImage($category->avatar);
-        //         }
-                
-        //         $data['avatar'] = $imageUrl;
-        // }
+        if ($request->hasFile('avatar')) {
+            $imagePath = $this->updateImage($request->file('avatar'), $category->avatar, 'theme_admin/upload/category');
+        }
+        $data['avatar'] = $imagePath ;
 
-        $category = Category::findOrFail($id);
+
         $category->update($data);
         return redirect()->route('admin.category.index');
 
@@ -112,6 +102,8 @@ class CategoryController extends Controller
     {
         //
         $category = Category::findOrFail($id);
+        $this->deleteImage($category->avatar);
+
         $category->delete();
 
         return redirect()->route('admin.category.index');

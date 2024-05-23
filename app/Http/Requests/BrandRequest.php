@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryRequest extends FormRequest
+class BrandRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,14 +24,15 @@ class CategoryRequest extends FormRequest
         return [
             'name' => 'required',
             'avatar' => 'required',
+
             
         ];
     }
 
     public function messages(){
         return [
-            'name.required' => 'Tên danh mục không được để trống',
-            'name.required' => 'hình ảnh không được để trống',
+            'name.required' => 'Tên thương hiệu không được để trống',
+            'avatar.required' => ' Hình ảnh không được để trống',
         ];
     }
 }

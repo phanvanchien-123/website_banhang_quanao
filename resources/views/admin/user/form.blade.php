@@ -60,9 +60,10 @@
                 <label for="exampleFormControlInput2" class="form-label">Hình ảnh</label>
                 <div class="border rounded">
                     <div id="imageWrapper" class="border-bottom d-flex" style="display: none;">
-                        @if (isset($user->avatar))
-                            <img src="{{ $user->avatar }}" alt="" class="m-3" width="120px" height="120px">
+                        @if (isset($user))
+                             <img src="{{ asset('storage/' . $user->avatar)  }}" alt="" class="m-3" width="120px" height="120px">
                         @endif
+                           
                     </div>
                     <input type="file" class="form-control" id="exampleFormControlInput2" placeholder=""
                         name="avatar" value="" onchange="previewImages(event)">

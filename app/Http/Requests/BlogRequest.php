@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryRequest extends FormRequest
+class BlogRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,16 +22,22 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'avatar' => 'required',
+            'title' => 'required',
+            'subtitle' => 'required',
+            'image' => 'required',
+            'content' => 'required',
+            // 'title' => 'required'
             
         ];
     }
 
     public function messages(){
         return [
-            'name.required' => 'Tên danh mục không được để trống',
-            'name.required' => 'hình ảnh không được để trống',
+            'title.required' => 'Tiêu đề không được để trống',
+            'subtitle.required' => ' Phụ đề không được để trống',
+            'image.required' => ' Hình ảnh không được để trống',
+            'content.required' => ' Nội dung không được để trống',
+
         ];
     }
 }

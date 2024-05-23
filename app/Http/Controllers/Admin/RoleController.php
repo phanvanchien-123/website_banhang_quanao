@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\RoleRequest;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Cache;
+use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
@@ -27,7 +28,7 @@ class RoleController extends Controller
     }
 
     // Lưu vai trò mới vào cơ sở dữ liệu
-    public function store(Request $request)
+    public function store(RoleRequest $request)
     {
         
         $request->validate([
@@ -55,7 +56,7 @@ class RoleController extends Controller
     }
 
     // Cập nhật vai trò trong cơ sở dữ liệu
-    public function update(Request $request, $id)
+    public function update(RoleRequest $request, $id)
     {
         $request->validate([
             'name' => 'required',

@@ -30,7 +30,7 @@
                 @foreach ($products ?? [] as $item)
                     <tr>
                   <th scope="row">{{ $item->id }}</th>
-                  <td><img src="{{ $item->avatar }}" alt="" width="60px" height="60px"></td>
+                  <td><img src="{{ asset('storage/' . $item->avatar) }}" alt="" width="60px" height="60px"></td>
                   <td>{{ $item->name }}</td>
                   <td>{{ $item->category->name ?? '' }}</td>
                   <td>{{ number_format($item->price, 0, ',', '.') }} đ</td>
