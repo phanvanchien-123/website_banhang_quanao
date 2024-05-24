@@ -30,6 +30,10 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('Cart')->group(function (){
         Route::get('',[CartController::class,'index']);
         Route::post('add/{id}',[CartController::class,'add'])->name('cart.add'); 
+        Route::post('update/{id}',[CartController::class,'update'])->name('cart.update'); 
+        Route::delete('delete/{id}',[CartController::class,'delete'])->name('cart.delete');
+        Route::delete('delete',[CartController::class,'clearCart'])->name('cart.clearCart');
+
     });
 
 });

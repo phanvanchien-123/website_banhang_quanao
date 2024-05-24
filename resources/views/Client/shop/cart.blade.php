@@ -87,10 +87,13 @@
                             </td>
                             <td>
                                 <div class="qty-box">
+
                                     <div class="input-group">
+                                        <form action="{{ route('cart.update', $item->id) }}" method="POST">
+                                            @csrf
                                         <input type="number" name="quantity"
-                                            data-rowid="ba02b0dddb000b25445168300c65386d"
-                                            class="form-control input-number" value="{{$item->quantity}}">
+                                            data-rowid="ba02b0dddb000b25445168300c65386d" required onchange="this.form.submit()" min="1" max="{{ $maxQuantities[$item->id]}}"
+                                            class="form-control input-number" value="{{$item->quantity}}"></form>
                                     </div>
                                 </div>
                             </td>
@@ -98,9 +101,11 @@
                                 <h2 class="td-color">{{ number_format(($item->quantity)*($item->price),3)}} VND</h2>
                             </td>
                             <td>
-                                <a href="javascript:void(0)">
-                                    <i class="fas fa-times"></i>
-                                </a>
+                             <form action="{{route('cart.delete',$item->id)}}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger"> <i class="fas fa-times"></i></button>
+                            </form>
                             </td>
                         </tr>
                         @endforeach
@@ -114,9 +119,12 @@
                 <div class="row">
                     <div class="col-sm-7 col-5 order-1">
                         <div class="left-side-button text-end d-flex d-block justify-content-end">
-                            <a href="javascript:void(0)"
-                                class="text-decoration-underline theme-color d-block text-capitalize">clear
-                                all items</a>
+                            <form action="{{route('cart.clearCart')}}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger"> Clear Cart</button>
+                            </form>
+                           
                         </div>
                     </div>
                     <div class="col-sm-5 col-7">

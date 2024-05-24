@@ -32,6 +32,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('/assets/css/vendors/animate.css')}}">
     <link rel="stylesheet" type="text/css" href="{{ asset('/assets/css/vendors/slick/slick.css')}}">
     <link rel="stylesheet" type="text/css" href="{{ asset('/assets/css/vendors/slick/slick-theme.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('/assets/css/vendors/slick/main.css')}}">
     <link id="color-link" rel="stylesheet" type="text/css" href="{{ asset('/assets/css/demo4.css')}}">
     <style>
         .h-logo {
@@ -48,7 +49,7 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="{{asset('/assets/css/custom.css ')}}">
+    <link rel="stylesheet" href="{{asset('/assets/css/custom.css')}}">
 
 
     @stack('styles')
@@ -168,15 +169,68 @@
                                         </div>
                                     </li>
                                     <li class="onhover-dropdown wislist-dropdown">
-                                        <div class="cart-media">
-                                            <a href="cart/list.html">
-                                                <i data-feather="shopping-cart"></i>
-                                                <span id="cart-count" class="label label-theme rounded-pill">
-                                                    0
-                                                </span>
-                                            </a>
+                                        <div class="header-action-2">
+                                            
+                                            <div class="header-action-icon-2">
+                                                <div class="cart-media">
+                                                    <a href="/Cart">
+                                                        <i data-feather="shopping-cart"></i>
+                                                        <?php
+                                                            // Lấy user_id của người dùng hiện tại
+                                                            $userId = Auth::id();
+
+                                                            // Truy vấn tổng số lượng mục trong giỏ hàng của người dùng
+                                                          
+                                                            $cart = \App\Models\Carts::where('user_id', $userId)->first();
+                                                            $totalItems = $cart->cartItems->sum('quantity');
+                                                        ?>
+                                                        <span id="cart-count" class="label label-theme rounded-pill">
+                                                           {{ $totalItems}} 
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                                <div class="cart-dropdown-wrap cart-dropdown-hm2">
+                                                    <?php
+                                                        $userId = Auth::id();
+                                                        $cart = \App\Models\Carts::where('user_id', $userId)->firstOrFail(); // Lấy giỏ hàng của người dùng
+                                                        // Lấy tất cả các mục trong giỏ hàng và tính tổng giá
+                                                        $cartItems = $cart->cartItems;
+                                                        $totalPrice = $cartItems->sum(function ($item){
+                                                        return $item->product->price * $item->quantity;
+                                                        });
+                                                    ?>
+                                                    <ul>
+                                                        @foreach ($cartItems as $item)
+                                                        <li>
+                                                            <div class="shopping-cart-img">
+                                                                <a href="/shop/details/{{$item->product->id}}"><img alt="Surfside Media" src="/assets/images/fashion/product/front/{{$item->product->avatar}}"></a>
+                                                            </div>
+                                                            <div class="shopping-cart-title">
+                                                                <h4><a href="/shop/details/{{$item->product->id}}">{{$item->name}} <br> {{$item->color}}-{{$item->size}}</a></h4>
+                                                                <h4><span>{{$item->quantity}} × </span>{{ number_format($item->price,3)}} VND</h4>
+                                                            </div>
+                                                            <div class="shopping-cart-delete">
+                                                                <a href="#"><i class="fi-rs-cross-small"></i></a>
+                                                            </div>
+                                                        </li>
+                                                        @endforeach
+                                                       
+                                                    </ul>
+                                                    <div class="shopping-cart-footer">
+                                                        <div class="shopping-cart-total">
+                                                            <h4>Tổng <span class="cart-price">{{ number_format($totalPrice,3)}} VND</span></h4>
+                                                        </div>
+                                                        <div class="shopping-cart-button">
+                                                            <a href="/Cart" class="outline">View cart</a>
+                                                            <a href="">Checkout</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </li>
+                                   
+                                   
                                     <li class="onhover-dropdown">
                                         <div class="cart-media name-usr">
                                           @auth
