@@ -53,7 +53,7 @@
                         <tr>
                             <td>
                                 <a href="../product/details.html">
-                                    <img src="/assets/images/fashion/product/front/{{$item->product->avatar}}" class="blur-up lazyloaded"
+                                    <img src="{{asset('storage/'.$item->product->avatar)}}" class="blur-up lazyloaded"
                                         alt="">
                                 </a>
                             </td>
@@ -101,9 +101,9 @@
                                 <h2 class="td-color">{{ number_format(($item->quantity)*($item->price),3)}} VND</h2>
                             </td>
                             <td>
-                             <form action="{{route('cart.delete',$item->id)}}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
+                             <form action="{{ route('cart.delete',$item->id)}}" method="POST">
+                                @csrf
+                                @method('DELETE')
                                     <button type="submit" class="btn btn-danger"> <i class="fas fa-times"></i></button>
                             </form>
                             </td>
@@ -120,8 +120,7 @@
                     <div class="col-sm-7 col-5 order-1">
                         <div class="left-side-button text-end d-flex d-block justify-content-end">
                             <form action="{{route('cart.clearCart')}}" method="POST">
-                            @csrf
-                            @method('DELETE')
+                                @csrf
                             <button type="submit" class="btn btn-danger"> Clear Cart</button>
                             </form>
                            
@@ -153,7 +152,7 @@
 
                     <div class="col-lg-4 col-sm-6 ">
                         <div class="checkout-button">
-                            <a href="checkout" class="btn btn-solid-default btn fw-bold">
+                            <a href="{{route('list')}}" class="btn btn-solid-default btn fw-bold">
                                 Check Out <i class="fas fa-arrow-right ms-1"></i></a>
                         </div>
                     </div>

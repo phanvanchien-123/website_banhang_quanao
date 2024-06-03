@@ -4,6 +4,8 @@ use App\Http\Controllers\Client\AccountController;
 use App\Http\Controllers\materController;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Client\CartController;
+use App\Http\Controllers\Client\CheckOutController;
+use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\ShopController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,12 +20,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/',[materController::class,'index']);
+Route::get('/',[HomeController::class,'index']);
 Route::prefix('/shop')->group(function(){
         Route::get('',[ShopController::class,'index'])->name('client.shop.index');
         Route::get('/details/{id}',[ShopController::class,'show'])->name('Client.shop.show');
         Route::post('/details/{id}/Comment',[ShopController::class,'postComment'])->name('Client.Comment');
        Route::post('/details/{id}',[ShopController::class,'show'])->name('Client.shop.show');
+       Route::get('category/{categoryName}',[ShopController::class,'category']);
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -32,8 +35,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('add/{id}',[CartController::class,'add'])->name('cart.add'); 
         Route::post('update/{id}',[CartController::class,'update'])->name('cart.update'); 
         Route::delete('delete/{id}',[CartController::class,'delete'])->name('cart.delete');
-        Route::delete('delete',[CartController::class,'clearCart'])->name('cart.clearCart');
+        Route::post('clear',[CartController::class,'clearCart'])->name('cart.clearCart');
 
+    });
+    Route::prefix('checkout')->group(function(){
+        Route::get('',[CheckOutController::class,'index'])->name('list');
+        Route::post('/',[CheckOutController::class,'addOrder']);
+        Route::post('/vnPayCheck',[CheckOutController::class,'vnPayCheck'])->name('vnPayCheck.index');
+        Route::get('/Vnpay',[CheckOutController::class,'returnVNPay']);
     });
 
 });
@@ -49,6 +58,23 @@ Auth::routes();
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::get('home',[Admin\HomeController::class,'index']) ->name('admin.home.index');
+
+    Route::group(['prefix' => 'blog' ] , function () {
+        Route::get('',[Admin\BlogController::class,'index']) ->name('admin.blog.index');
+
+        Route::get('create',[Admin\BlogController::class,'create']) ->name('admin.blog.create');
+        Route::post('store',[Admin\BlogController::class,'store']) ->name('admin.blog.store');
+
+        Route::get('edit/{id}',[Admin\BlogController::class,'edit']) ->name('admin.blog.edit');
+        Route::post('update/{id}',[Admin\BlogController::class,'update']) ->name('admin.blog.update');
+
+        Route::get('delete/{id}',[Admin\BlogController::class,'delete']) ->name('admin.blog.delete');
+
+        Route::get('cmt',[Admin\BlogController::class,'cmt']) ->name('admin.blog.cmt');
+        Route::patch('cmt/{id}', [Admin\BlogController::class, 'updateCmt'])->name('admin.blog.updateCmt');  
+
+
+    });
     
     Route::group(['prefix' => 'category' ] , function () {
         Route::get('',[Admin\CategoryController::class,'index']) ->name('admin.category.index');
@@ -69,7 +95,23 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('edit/{id}',[Admin\ProductController::class,'edit']) ->name('admin.product.edit');
         Route::post('update/{id}',[Admin\ProductController::class,'update']) ->name('admin.product.update');
 
-        Route::get('delete/{id}',[Admin\ProductController::class,'delete']) ->name('admin.product.delete');      
+        Route::get('delete/{id}',[Admin\ProductController::class,'delete']) ->name('admin.product.delete');   
+
+        Route::get('cmt',[Admin\ProductController::class,'cmt']) ->name('admin.product.cmt');
+        Route::patch('cmt/{id}', [Admin\ProductController::class, 'updateCmt'])->name('admin.product.updateCmt');  
+      
+    });
+
+    Route::group(['prefix' => 'brand' ] , function () {
+        Route::get('',[Admin\BrandController::class,'index']) ->name('admin.brand.index');
+
+        Route::get('create',[Admin\BrandController::class,'create']) ->name('admin.brand.create');
+        Route::post('store',[Admin\BrandController::class,'store']) ->name('admin.brand.store');
+
+        Route::get('edit/{id}',[Admin\BrandController::class,'edit']) ->name('admin.brand.edit');
+        Route::post('update/{id}',[Admin\BrandController::class,'update']) ->name('admin.brand.update');
+
+        Route::get('delete/{id}',[Admin\BrandController::class,'delete']) ->name('admin.brand.delete');      
     });
 
     Route::group(['prefix' => 'user' ] , function () {

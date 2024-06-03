@@ -22,6 +22,15 @@ class ProductService extends BaseService implements ProductServiceInterface {
             $avgRating =$sumRating/$countRating;
         }
         $product->avgRating =$avgRating;
+        $stars = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
+            foreach ($product->productComments as $comment) {
+                $stars[$comment->rating]++;
+            }
+            foreach ($stars as $star => $count) {
+                $stars[$star] = $countRating ? ($count / $countRating) * 100 : 0;
+            }
+            $product->starPercentage = $stars;
+        
         return $product;
     }
     public function all()
@@ -41,10 +50,19 @@ class ProductService extends BaseService implements ProductServiceInterface {
     public function getRelatedProducts($product ,$limit = 4){
       return  $this ->repository ->getRelatedProducts($product,$limit);
     }
+      public function getLatestProducts($limit = 10){
+        return $this ->repository->getLatestProducts($limit);
+    }
+    public function getLatestFeaturedProduct($limit = 10){
+        return $this->repository->getLatestFeaturedProduct($limit);
+    }
+    public function getProductsDiscountedOver30($limit = 10){
+        return $this->repository->getProductsDiscountedOver30($limit);
+    }
     public function getFeaturedProducts(){
         return[
-            "men"=> $this ->repository->getFeaturedProductsByCategory(1),
-            "women"=> $this ->repository->getFeaturedProductsByCategory(2),
+            "Men"=> $this ->repository->getFeaturedProductsByCategory(5),
+            "Women"=> $this ->repository->getFeaturedProductsByCategory(6),
             
         ];
     }

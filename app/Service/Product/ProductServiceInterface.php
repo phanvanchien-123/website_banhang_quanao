@@ -8,5 +8,8 @@ interface ProductServiceInterface extends ServiceInterface{
     public function getFeaturedProducts();
     public function getPagination($request);
     public function getProductsByCategory($categoryName,$request);
+    public function getLatestProducts($limit = 10);
+    public function getLatestFeaturedProduct($limit = 10);
+    public function getProductsDiscountedOver30($limit = 10);
 
 }

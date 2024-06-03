@@ -15,6 +15,15 @@
     <link rel="stylesheet" href="{{ asset('theme_admin/theme/vendors/datatables.net-bs4/dataTables.bootstrap4.css') }}">
     <link rel="stylesheet" href="{{ asset('theme_admin/theme/vendors/ti-icons/css/themify-icons.css') }} ">
     <link rel="stylesheet" type="text/css" href="{{ asset('theme_admin/theme/js/select.dataTables.min.css') }} ">
+    <link id="rtl-link" rel="stylesheet" type="text/css" href="{{ asset('/assets/css/vendors/bootstrap.css')}}">
+    <link rel="stylesheet" href="{{ asset('/assets/css/vendors/ion.rangeSlider.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('/assets/css/vendors/font-awesome.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('/assets/css/vendors/feather-icon.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('/assets/css/vendors/animate.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('/assets/css/vendors/slick/slick.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('/assets/css/vendors/slick/slick-theme.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('/assets/css/vendors/slick/main.css')}}">
+    <link id="color-link" rel="stylesheet" type="text/css" href="{{ asset('/assets/css/demo4.css')}}">
     <!-- End plugin css for this page -->
     <!-- inject:css -->
     <link rel="stylesheet" href="{{ asset('theme_admin/theme/css/vertical-layout-light/style.css') }} ">
@@ -27,7 +36,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
-    
+    <script src="https://kit.fontawesome.com/3b9dff52ce.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+
+
 </head>
 
 <body class="">
@@ -59,10 +71,10 @@
     <script src="{{ asset('theme_admin/theme/vendors/js/vendor.bundle.base.js') }}"></script>
     <!-- endinject -->
     <!-- Plugin js for this page -->
-    <script src="{{ asset('theme_admin/theme/vendors/chart.js/Chart.min.js') }}"></script>
+    {{-- <script src="{{ asset('theme_admin/theme/vendors/chart.js/Chart.min.js') }}"></script>
     <script src="{{ asset('theme_admin/theme/vendors/datatables.net/jquery.dataTables.js') }} "></script>
     <script src="{{ asset('theme_admin/theme/vendors/datatables.net-bs4/dataTables.bootstrap4.js') }} "></script>
-    <script src="{{ asset('theme_admin/theme/js/dataTables.select.min.js') }} "></script>
+    <script src="{{ asset('theme_admin/theme/js/dataTables.select.min.js') }} "></script> --}}
 
     <!-- End plugin js for this page -->
     <!-- inject:js -->
@@ -71,6 +83,8 @@
     <script src="{{ asset('theme_admin/theme/js/template.js') }}"></script>
     <script src="{{ asset('theme_admin/theme/js/settings.js') }}"></script>
     <script src="{{ asset('theme_admin/theme/js/todolist.js') }}"></script>
+    <script src="{{ asset('theme_admin/theme/js/todolist.js') }}"></script>
+    <script src="{{ asset('theme_admin/theme/js/previewFileImage.js') }}"></script>
 
 
     {{-- <script src="{{ asset('theme_admin/theme/js/') }}"></script>

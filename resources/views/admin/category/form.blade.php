@@ -2,7 +2,7 @@
     @csrf
     <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">Tên danh mục</label>
-        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="quần áo, xe,..." name="name"  value="{{ isset($category) ? $category->name : ''}}">
+        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" name="name"  value="{{ isset($category) ? $category->name : ''}}">
         @error('name')
                 <small class="text-danger">{{ $errors->first('name')  }}</small>
         @enderror
@@ -12,11 +12,14 @@
         <div class="border rounded">
             <div id="imageWrapper" class="border-bottom d-flex" style="display: none;">
                 @if (isset($category->avatar))
-                    <img src="{{ $category->avatar }}" alt="" class="m-3" width="120px" height="120px">    
+                    <img src="{{ asset('storage/' . $category->avatar) }}" alt="" class="m-3" width="120px" height="120px">    
                 @endif                    
             </div>
             <input type="file"  class="form-control" id="exampleFormControlInput2" placeholder="" name="avatar" value="" onchange="previewImages(event)">
         </div>
+        @error('avatar')
+                <small class="text-danger">{{ $errors->first('avatar')  }}</small>
+        @enderror
       </div>
       <div class="mb-3">
         <label for="exampleFormControlTextarea1" class="form-label">mô tả</label>

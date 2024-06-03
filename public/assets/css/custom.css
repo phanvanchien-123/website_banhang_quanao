@@ -15,6 +15,7 @@ section{padding-top:40px;}
 @media (max-width: 575px){
 section{padding-top:30px;}
 }
+
 a{color:var(--theme-color);-webkit-transition:0.5s ease;transition:0.5s ease;text-decoration:none;}
 a:hover{text-decoration:none;-webkit-transition:0.5s ease;transition:0.5s ease;}
 a:focus{outline:none;}
@@ -97,3 +98,268 @@ span{display:inline-block;}
 .category-wrap .category-content.category-text-1 h3{margin-top:-4px;}
 .category-wrap .category-content.category-text-1 span{display:block;margin-bottom:-6px;}
 .category-wrap .category-content h3{margin-bottom:2px;font-weight:600;font-size:calc(14px + (24 - 14) * ((100vw - 320px) / (1920 - 320)));}
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    outline: 0;
+    box-shadow: none;
+    border: 0 !important;
+    background: #e87316;
+    background-image: none;
+   
+}
+
+.select {
+    position: relative;
+    display: flex;
+    width: 11em;
+    height: 3em;
+    line-height: 3;
+    background: #fff;
+    overflow: hidden;
+    border-radius: .50em;
+}
+
+select {
+    flex: 1;
+    padding: 0 .5em;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* thiết kế dấu mũi tên */
+.select::after {
+    content: '\25BC';
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0 1em;
+    background: #e87316;
+    cursor: pointer;
+    pointer-events: none;
+    -webkit-transition: .25s all ease;
+    -o-transition: .25s all ease;
+    transition: .25s all ease;
+    color: white;
+}
+
+/* Transition */
+.select:hover::after {
+    color: Gainsboro;
+}
+.color-picker {
+margin-bottom: 20px;
+}
+
+.color-picker input[type="radio"] {
+display: none;
+}
+
+.color-picker label {
+display: inline-block;
+width: 30px;
+height: 30px;
+border-radius: 50%;
+margin-right: 10px;
+cursor: pointer;
+}
+
+.color-red {
+    background-color: red;
+}
+
+.color-blue {
+    background-color: blue;
+}
+
+.color-violet {
+    background-color: violet;
+}
+
+.color-yellow {
+    background-color: yellow;
+}
+
+.color-black {
+    background-color: black;
+}
+
+.color-green {
+    background-color: green;
+}
+
+.color-orange {
+    background-color: orange;
+}
+
+.color-pink {
+    background-color: pink;
+}
+
+.color-brown {
+    background-color: brown;
+}
+
+.color-grey {
+    background-color: grey;
+}
+
+.color-teal {
+    background-color: teal;
+}
+
+.color-navy {
+    background-color: navy;
+}
+
+.color-cyan {
+    background-color: cyan;
+}
+
+.color-magenta {
+    background-color: magenta;
+}
+
+.color-lime {
+    background-color: lime;
+}
+
+.color-maroon {
+    background-color: maroon;
+}
+
+.color-olive {
+    background-color: olive;
+}
+
+.color-purple {
+    background-color: purple;
+}
+
+.color-silver {
+    background-color: silver;
+}
+
+.color-gold {
+    background-color: gold;
+}
+
+.color-beige {
+    background-color: beige;
+}
+
+.color-aqua {
+    background-color: aqua;
+}
+
+.color-chocolate {
+    background-color: chocolate;
+}
+
+.color-coral {
+    background-color: coral;
+}
+
+.color-crimson {
+    background-color: crimson;
+}
+
+.color-indigo {
+    background-color: indigo;
+}
+
+.color-khaki {
+    background-color: khaki;
+}
+
+.color-lavender {
+    background-color: lavender;
+}
+
+.color-linen {
+    background-color: linen;
+}
+
+.color-mint {
+    background-color: mint;
+}
+
+.color-salmon {
+    background-color: salmon;
+}
+
+.color-sienna {
+    background-color: sienna;
+}
+
+.color-tan {
+    background-color: tan;
+}
+
+.color-turquoise {
+    background-color: turquoise;
+}
+
+.color-picker input[type="radio"]:checked + label {
+/* Adjust the opacity value to change the faded effect */
+content: "\2713";
+font-size: 20px;
+transform: translate(10%, 10%); /* Center the checkmark */
+
+
+
+}
+.checkbox-group {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+}
+.color-picker input[type="radio"]:checked + label::after {
+content: "\2713"; /* Unicode character for checkmark */
+
+font-size: 20px; /* Adjust the size of the checkmark */
+color: black; /* Color of the checkmark */
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%); /* Center the checkmark */
+}
+.checkbox-container {
+display: block;
+position: relative;
+padding-left: 20px;
+margin: 5px;
+cursor: pointer;
+font-size: 18px;
+user-select: none;
+}
+
+.checkbox-container input {
+position: absolute;
+opacity: 0;
+cursor: pointer;
+}
+
+.checkbox-label {
+
+width: 40px;
+height: 40px;
+line-height: 40px;
+text-align: center;
+border: 2px solid #ccc;
+border-radius: 5px;
+background-color: #eee;
+transition: background-color 0.3s, border-color 0.3s;
+}
+
+.checkbox-container input:checked + .checkbox-label {
+background-color: #e87316;
+color: white;
+border-color: #e87316;
+}
+
+.checkbox-container .checkbox-label:hover {
+background-color: #ccc;
+}

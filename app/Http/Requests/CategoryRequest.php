@@ -22,15 +22,16 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|unique:categories,name,'.$this->id,
+            'name' => 'required',
+            'avatar' => 'required',
             
         ];
     }
 
     public function messages(){
         return [
-            'name.required' => 'Tên danh mục trống',
-            'name.unique' => 'Tên danh mục đã tồn tại',
+            'name.required' => 'Tên danh mục không được để trống',
+            'name.required' => 'hình ảnh không được để trống',
         ];
     }
 }

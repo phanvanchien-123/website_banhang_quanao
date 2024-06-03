@@ -3,21 +3,22 @@
 namespace App\Http\Controllers\Admin;
 
 
+use Exception;
 use App\Models\User;
 use Illuminate\Support\Str;
+use App\Traits\ImageHandler;
 use Illuminate\Http\Request;
-// use App\Http\Requests\UserRequest;
-use Illuminate\Support\Carbon;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
-use App\Http\Controllers\Controller;
-use Exception;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    use ImageHandler;
+
     /**
      * Display a listing of the resource.
      */
@@ -48,18 +49,12 @@ class UserController extends Controller
     {
         //
         try {
-            $data = $request->all();
+            $data = $request->except('avatar');
             $data['password'] = Hash::make('123456');
 
-            // Nếu tồn tại file avatar trong request
-            // if ($request->hasFile('avatar')) {
-            //     // Sử dụng Helper function để tải ảnh lên Cloudinary
-            //     $imageUrl = CloudinaryHelper::uploadImage($request->file('avatar'));
-            //     // $imageUrl = ProcessImage::dispatch()->upload($request->file('avatar'));
-            //     dd($imageUrl);
-            //     // Thêm đường dẫn của ảnh vào dữ liệu trước khi lưu
-            //     $data['avatar'] = $imageUrl;
-            // }
+            $imagePath = $this->uploadImage($request->file('avatar'), 'theme_admin/upload/user');
+            $data['avatar'] = $imagePath ;    
+
 
             $user = User::create($data);
             $user->roles()->sync($data['role_ids'] ?? []);
@@ -128,12 +123,16 @@ class UserController extends Controller
     {
         //
         $user = User::findOrFail($id);
+        $data = $request->except('avatar');
+        $imagePath = $user->avatar;
 
-        $data = $request->all();
-        // dd($data);
-        $update = User::findOrFail($id);
+        if ($request->hasFile('avatar')) {
+            $imagePath = $this->updateImage($request->file('avatar'), $user->avatar, 'theme_admin/upload/user');
+        }
+        $data['avatar'] = $imagePath ;
+    
 
-        $update->update($data);
+        $user->update($data);
         $user->roles()->sync($data['role_ids'] ?? []);
 
         return redirect()->route('admin.user.index');
@@ -147,6 +146,7 @@ class UserController extends Controller
     {
         //
         $user = User::findOrFail($id);
+        $this->deleteImage($user->avatar);
 
         $user->delete();
 
