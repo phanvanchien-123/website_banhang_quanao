@@ -35,7 +35,7 @@ Route::middleware('auth')->group(function(){
 });
 Auth::routes();
 
-Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' =>'auth'], function () {
     Route::get('home',[Admin\HomeController::class,'index']) ->name('admin.home.index');
 
     Route::group(['prefix' => 'blog' ] , function () {
@@ -106,11 +106,15 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('delete/{id}',[Admin\UserController::class,'delete']) ->name('admin.user.delete');      
     });
 
-    // Route::group(['prefix' => 'profile' ] , function () {
-    //     Route::get('/{id}',[Admin\ProfileController::class,'show']) ->name('admin.profile.index');
-    //     Route::get('/updatePass/{id}',[Admin\ProfileController::class,'updatePass']) ->name('admin.profile.updatePass');
-    //     Route::post('/updatePass/{id}',[Admin\ProfileController::class,'update']);
-    // });
+    Route::group(['prefix' => 'profile'], function() {
+
+        Route::get('', [Admin\ProfileController::class, 'index'])->name('admin.profile.index');
+        
+        // Route::get('update', [Admin\ProfileController::class, 'edit']) ;
+        Route::post('update', [Admin\ProfileController::class, 'update'])->name('admin.profile.update');
+        Route::get('changePassword', [Admin\ProfileController::class, 'changePassword']) ->name('admin.profile.changePassword');
+
+    });
 
     Route::group(['prefix' => 'role'] , function () {
         Route::get('',[Admin\RoleController::class,'index']) ->name('admin.role.index');
@@ -122,7 +126,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('edit/{id}',[Admin\RoleController::class,'edit']) ->name('admin.role.edit');
         Route::post('update/{id}',[Admin\RoleController::class,'update']) ->name('admin.role.update');
 
-        Route::get('delete/{id}',[Admin\RoleController::class,'delete']) ->name('admin.role.delete');      
+        Route::get('delete/{id}',[Admin\RoleController::class,'delete']) ->name('admin.role.delete');
     });
 });
 

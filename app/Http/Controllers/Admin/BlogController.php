@@ -43,20 +43,23 @@ class BlogController extends Controller
         try {
             $data = $request->except('image');
             $data['category'] = '0' ;
-            $data['user_id'] = 1 ;
-            // $data['user_id'] = Auth::user()->id ;
+            // $data['user_id'] = 1 ;
+            $data['user_id'] = Auth::user()->id ;
 
             $imagePath = $this->uploadImage($request->file('image'), 'theme_admin/upload/blog');
             $data['image'] = $imagePath ;
+            // $data['image'] = 1 ;
 
             $blog = Blog::create($data);
+
+            return redirect()->route('admin.blog.index')->with(['success' => 'Thêm mới blog thành công']);
+
         } catch (Exception $ex) {
             Log::error("ERROR => BrandController@store =>" . $ex->getMessage());
-            return redirect()->route('admin.blog.create');
+            return redirect()->back()->with(['error' => 'Thêm mới blog thất bại']);
         }
     
-        return redirect()->route('admin.blog.index');
-
+        return redirect()->back();
     }
 
     /**
@@ -77,21 +80,33 @@ class BlogController extends Controller
      */
     public function update(BlogRequest $request, $id)
     {
-        $blog = Blog::findOrFail($id);
-        $data = $request->except('image');
-        $data['category'] = '0' ;
-        $data['user_id'] = 1 ;
-        // $data['user_id'] = Auth::user()->id ;
+        try{
 
-        $imagePath = $blog->image;
-        if ($request->hasFile('image')) {
-            $imagePath = $this->updateImage($request->file('image'), $blog->image, 'theme_admin/upload/blog');
+            $blog = Blog::findOrFail($id);
+            $data = $request->except('image');
+            $data['category'] = '0' ;
+            // $data['user_id'] = 1 ;
+            $data['user_id'] = Auth::user()->id ;
+
+            $imagePath = $blog->image;
+            if ($request->hasFile('image')) {
+                $imagePath = $this->updateImage($request->file('image'), $blog->image, 'theme_admin/upload/blog');
+            }
+            $data['image'] = $imagePath ;
+
+
+            $blog->update($data);
+            return redirect()->back()->with(['success' => 'Cập nhật blog thành công']);
+
+        } catch (ModelNotFoundException $ex) {
+            Log::error("LỖI => BlogController@store => Không tìm thấy blog: " . $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Không tìm thấy blog']);
+        } catch (Exception $ex) {
+            Log::error("ERROR => BlogController@store =>". $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Cập nhật blog thất bại']);
         }
-        $data['image'] = $imagePath ;
 
-
-        $blog->update($data);
-        return redirect()->route('admin.blog.index');
+        return redirect()->back();
 
     }
 
@@ -101,12 +116,25 @@ class BlogController extends Controller
     public function delete(Blog $blog, $id)
     {
         //
-        $blog = Blog::findOrFail($id);
+        try{
+            $blog = Blog::findOrFail($id);
 
-        $this->deleteImage($blog->image);
-        $blog->delete();
+            Blog_comment::where('blog_id', $blog->id)->delete();
 
-        return redirect()->route('admin.blog.index');
+            $this->deleteImage($blog->image);
+            $blog->delete();
+
+            return redirect()->back()->with(['success' => 'Xóa blog thành công']);
+
+        } catch (ModelNotFoundException $ex) {
+            Log::error("LỖI => BlogController@store => Không tìm thấy blog: " . $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Không tìm thấy blog']);
+        } catch (Exception $ex) {
+            Log::error("ERROR => BlogController@store =>". $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Xóa blog thất bại']);
+        }
+
+        return redirect()->back();
     }
 
     public function cmt()

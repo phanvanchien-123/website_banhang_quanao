@@ -48,12 +48,15 @@ class CategoryController extends Controller
             $data['avatar'] = $imagePath ;    
     
             $category = Category::create($data);
+
+            return redirect()->route('admin.category.index')->with(['success' => 'Thêm mới danh mục thành công']);
+
         } catch (Exception $ex) {
             Log::error("ERROR => CategoryController@store =>" . $ex->getMessage());
-            return redirect()->route('admin.category.create');
+            return redirect()->back()->with(['error' => 'Thêm mới danh mục thất bại']);
         }
-    
-        return redirect()->route('admin.category.index');
+        
+        return redirect()->back();
 
     }
 
@@ -80,18 +83,30 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, $id)
     {
-        $category = Category::findOrFail($id);
-        $data = $request->except('avatar');
-        $imagePath = $category->avatar;
+        try{
 
-        if ($request->hasFile('avatar')) {
-            $imagePath = $this->updateImage($request->file('avatar'), $category->avatar, 'theme_admin/upload/category');
+            $category = Category::findOrFail($id);
+            $data = $request->except('avatar');
+            $imagePath = $category->avatar;
+
+            if ($request->hasFile('avatar')) {
+                $imagePath = $this->updateImage($request->file('avatar'), $category->avatar, 'theme_admin/upload/category');
+            }
+            $data['avatar'] = $imagePath ;
+
+            $category->update($data);
+            return redirect()->back()->with(['success' => 'Sửa danh mục thành công']);
+
+        
+        } catch (ModelNotFoundException $ex) {
+            Log::error("LỖI => CategoryController@store => Không tìm thấy danh mục: " . $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Không tìm thấy danh mục']);
+        } catch (Exception $ex) {
+            Log::error("ERROR => CategoryController@store =>". $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Cập nhật danh mục thất bại']);
         }
-        $data['avatar'] = $imagePath ;
 
-
-        $category->update($data);
-        return redirect()->route('admin.category.index');
+        return redirect()->back();
 
     }
 
@@ -101,11 +116,26 @@ class CategoryController extends Controller
     public function delete(Category $category, $id)
     {
         //
-        $category = Category::findOrFail($id);
-        $this->deleteImage($category->avatar);
+        try{
+            $category = Category::findOrFail($id);
 
-        $category->delete();
+            Product::where('product_category_id', $category->id)->delete();
 
-        return redirect()->route('admin.category.index');
+
+            $this->deleteImage($category->avatar);
+
+            $category->delete();
+
+            return redirect()->back()->with(['success' => 'Xóa danh mục thành công']);
+
+        } catch (ModelNotFoundException $ex) {
+            Log::error("LỖI => CategoryController@store => Không tìm thấy danh mục: " . $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Không tìm thấy danh mục']);
+        } catch (Exception $ex) {
+            Log::error("ERROR => CategoryController@store =>". $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Xóa danh mục thất bại']);
+        }
+
+        return redirect()->back();
     }
 }
