@@ -1,603 +1,153 @@
 @extends('layouts.master')
 @section('content')
-<section class="breadcrumb-section section-b-space" style="padding-top:20px;padding-bottom:20px;">
-    <ul class="circles">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h3>Shop</h3>
-                <nav>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="index.htm">
-                                <i class="fas fa-home"></i>
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">Shop</li>
-                    </ol>
-                </nav>
+<link rel="stylesheet" href="{{asset('assets/css/main.css')}}">
+<main class="main">
+    <div class="page-header breadcrumb-wrap">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html" rel="nofollow">Home</a>
+                <span></span> Shop
             </div>
         </div>
     </div>
-</section>
-<!-- Shop Section start -->
-<section class="section-b-space">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-3 category-side col-md-4">
-                <div class="category-option">
-                    <div class="button-close mb-3">
-                        <button class="btn p-0"><i data-feather="arrow-left"></i> Close</button>
-                    </div>
-                    <div class="accordion category-name" id="accordionExample">
-                        <div class="accordion-item category-rating">
-                            <h2 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseTwo">
-                                    Brand
-                                </button>
-                            </h2>
-                            <div id="collapseTwo" class="accordion-collapse collapse show"
-                                data-bs-parent="#accordionExample">
-                                <div class="accordion-body category-scroll">
-                                    <ul class="category-list">
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br1" name="brands"
-                                                    value="1" type="checkbox">
-                                                <label class="form-check-label">Quis Et</label>
-                                                <p class="font-light">(1)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br2" name="brands"
-                                                    value="2" type="checkbox">
-                                                <label class="form-check-label">Aliquam Doloremque</label>
-                                                <p class="font-light">(0)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br3" name="brands"
-                                                    value="3" type="checkbox">
-                                                <label class="form-check-label">Sequi Repellendus</label>
-                                                <p class="font-light">(1)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br4" name="brands"
-                                                    value="4" type="checkbox">
-                                                <label class="form-check-label">Repellendus Quia</label>
-                                                <p class="font-light">(2)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br5" name="brands"
-                                                    value="5" type="checkbox">
-                                                <label class="form-check-label">Sint Iste</label>
-                                                <p class="font-light">(0)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br6" name="brands"
-                                                    value="6" type="checkbox">
-                                                <label class="form-check-label">Et Eos</label>
-                                                <p class="font-light">(6)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br7" name="brands"
-                                                    value="7" type="checkbox">
-                                                <label class="form-check-label">Vel Explicabo</label>
-                                                <p class="font-light">(2)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br8" name="brands"
-                                                    value="8" type="checkbox">
-                                                <label class="form-check-label">Ipsam Earum</label>
-                                                <p class="font-light">(4)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br9" name="brands"
-                                                    value="9" type="checkbox">
-                                                <label class="form-check-label">Sequi Reprehenderit</label>
-                                                <p class="font-light">(5)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br10" name="brands"
-                                                    value="10" type="checkbox">
-                                                <label class="form-check-label">Sunt Corrupti</label>
-                                                <p class="font-light">(3)</p>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+    <section class="mt-50 mb-50">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="shop-product-fillter">
+                        <div class="totall-product">
+                          <p> Có tất cả <strong class="text-brand">{{count($products)}}</strong> sản phẩm</p>
                         </div>
-
-                        <div class="accordion-item category-color">
-                            <h2 class="accordion-header" id="headingThree">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseThree">
-                                    Color
-                                </button>
-                            </h2>
-                            <div id="collapseThree" class="accordion-collapse collapse show"
-                                aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <ul class="category-list">
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item category-price">
-                            <h2 class="accordion-header" id="headingFour">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseFour">Price</button>
-                            </h2>
-                            <div id="collapseFour" class="accordion-collapse collapse show"
-                                aria-labelledby="headingFour" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <div class="range-slider category-list">
-                                        <input type="text" class="js-range-slider" id="js-range-price" value="">
+                        <div class="sort-by-product-area">
+                            <div class="col-12">
+                                <div class="filter-options">
+                                   <form action="">
+                                    <div class="select-options">
+                                        <div class="page-view-filter">
+                                            <div class="dropdown select-featured">
+                                                <select class="form-select" name="sort_by" id="orderby" onchange="this.form.submit();">
+                                                    <option {{ request('sort_by')=='latest'?'selected':''}} value="latest">Sắp Xếp Mới Nhất</option>
+                                                    <option  {{ request('sort_by')=='oldest'?'selected':''}} value="oldest">Sắp Xếp cũ hơn </option>
+                                                    <option  {{ request('sort_by')=='name-ascending'?'selected':''}} value="name-ascending">Name A-Z</option>
+                                                    <option  {{ request('sort_by')=='name-descending'?'selected':''}} value="name-descending">Name Z-A</option>
+                                                    <option  {{ request('sort_by')=='price-ascending'?'selected':''}} value="price-ascending">Giá Tăng Dần </option>
+                                                    <option  {{ request('sort_by')=='price-descending'?'selected':''}} value="price-descending">Giá Giảm Dần </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="dropdown select-featured">
+                                            <select class="form-select" name="show" id="pagesize"  onchange="this.form.submit();">
+                                                <option {{ request('show')=='6'?'selected':''}}  value="6" >6 sản phẩm trên mỗi trang </option>
+                                                <option {{ request('show')=='9'?'selected':''}}  value="9">9 sản phẩm trên mỗi trang</option>
+                                                <option {{ request('show')=='12'?'selected':''}}  value="12">12 sản phẩm trên mỗi trang </option>
+                                              
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item category-price">
-                            <h2 class="accordion-header" id="headingFive">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseFive">
-                                    Size
-                                </button>
-                            </h2>
-
-                            <div id="collapseFive" class="accordion-collapse collapse show"
-                                aria-labelledby="headingFive" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <ul class="category-list">
-                                        <li>
-                                            <a href="javascript:void(0)">xs</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">sm</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">md</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">lg</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">xl</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">xxl</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item category-rating">
-                            <h2 class="accordion-header" id="headingOne">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseSix">
-                                    Category
-                                </button>
-                            </h2>
-                            <div id="collapseSix" class="accordion-collapse collapse show"
-                                aria-labelledby="headingOne">
-                                <div class="accordion-body category-scroll">
-                                    <ul class="category-list">
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct1" name="categories"
-                                                    type="checkbox" value="1">
-                                                <label class="form-check-label">Qui Ut</label>
-                                                <p class="font-light">(7)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct2" name="categories"
-                                                    type="checkbox" value="2">
-                                                <label class="form-check-label">Blanditiis Error</label>
-                                                <p class="font-light">(8)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct3" name="categories"
-                                                    type="checkbox" value="3">
-                                                <label class="form-check-label">Quam Quos</label>
-                                                <p class="font-light">(0)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct4" name="categories"
-                                                    type="checkbox" value="4">
-                                                <label class="form-check-label">Cupiditate Minus</label>
-                                                <p class="font-light">(5)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct5" name="categories"
-                                                    type="checkbox" value="5">
-                                                <label class="form-check-label">Dolores Et</label>
-                                                <p class="font-light">(4)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct6" name="categories"
-                                                    type="checkbox" value="6">
-                                                <label class="form-check-label">Quis Repudiandae</label>
-                                                <p class="font-light">(0)</p>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingSeven">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseSeven">
-                                    Discount Range
-                                </button>
-                            </h2>
-                            <div id="collapseSeven" class="accordion-collapse collapse show"
-                                aria-labelledby="headingSeven" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <ul class="category-list">
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" type="checkbox"
-                                                    id="flexCheckDefault19">
-                                                <label class="form-check-label" for="flexCheckDefault19">5% and
-                                                    above</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" type="checkbox"
-                                                    id="flexCheckDefault20">
-                                                <label class="form-check-label" for="flexCheckDefault20">10% and
-                                                    above</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" type="checkbox"
-                                                    id="flexCheckDefault21">
-                                                <label class="form-check-label" for="flexCheckDefault21">20% and
-                                                    above</label>
-                                            </div>
-                                        </li>
-                                    </ul>
+                                   </form>
+                                  
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="category-product col-lg-9 col-12 ratio_30">
-
-                <div class="row g-4">
-                    <!-- label and featured section -->
-                    <div class="col-md-12">
-                        <ul class="short-name">
-
-
-                        </ul>
-                    </div>
-
-                    <div class="col-12">
-                        <div class="filter-options">
-                            <div class="select-options">
-                                <div class="page-view-filter">
-                                    <div class="dropdown select-featured">
-                                        <select class="form-select" name="orderby" id="orderby">
-                                            <option value="-1" selected="">Default</option>
-                                            <option value="1">Date, New To Old</option>
-                                            <option value="2">Date, Old To New</option>
-                                            <option value="3">Price, Low To High</option>
-                                            <option value="4">Price, High To Low</option>
-                                        </select>
+                    <div class="row product-grid-3">
+                        @foreach ($products as $item)
+                        <div class="col-lg-4 col-md-4 col-6 col-sm-6">
+                            <div class="product-cart-wrap mb-30">
+                                <div class="product-img-action-wrap">
+                                    <div class="product-img product-img-zoom">
+                                        <a href="/shop/details/{{$item->id}}">
+                                            <img class="default-img" src="{{asset('storage/'.$item->avatar)}}" alt="">
+                                            <img class="hover-img" src="{{asset('storage/'.$item->avatar)}}" alt="">
+                                        </a>
                                     </div>
-                                </div>
-                                <div class="dropdown select-featured">
-                                    <select class="form-select" name="size" id="pagesize">
-                                        <option value="12" selected="">12 Products Per Page</option>
-                                        <option value="24">24 Products Per Page</option>
-                                        <option value="52">52 Products Per Page</option>
-                                        <option value="100">100 Products Per Page</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="grid-options d-sm-inline-block d-none">
-                                <ul class="d-flex">
-                                    <li class="two-grid">
-                                        <a href="javascript:void(0)">
-                                            <img src="assets/svg/grid-2.svg" class="img-fluid blur-up lazyload"
-                                                alt="">
-                                        </a>
-                                    </li>
-                                    <li class="three-grid d-md-inline-block d-none">
-                                        <a href="javascript:void(0)">
-                                            <img src="assets/svg/grid-3.svg" class="img-fluid blur-up lazyload"
-                                                alt="">
-                                        </a>
-                                    </li>
-                                    <li class="grid-btn active d-lg-inline-block d-none">
-                                        <a href="javascript:void(0)">
-                                            <img src="assets/svg/grid.svg" class="img-fluid blur-up lazyload"
-                                                alt="">
-                                        </a>
-                                    </li>
-                                    <li class="list-btn">
-                                        <a href="javascript:void(0)">
-                                            <img src="assets/svg/list.svg" class="img-fluid blur-up lazyload"
-                                                alt="">
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- label and featured section -->
-
-                <!-- Prodcut setion -->
-                <div
-                    class="row g-sm-4 g-3 row-cols-lg-4 row-cols-md-3 row-cols-2 mt-1 custom-gy-5 product-style-2 ratio_asos product-list-section">
-                @foreach ($products as $item)
-                <div>
-                    <div class="product-box">
-                        <div class="img-wrapper">
-                            <div class="front">
-                                <a href="product/nihil-beatae-sit-sed.html">
-                                    <img src="assets/images/fashion/product/front/{{$item->avatar}}"
-                                        class="bg-img blur-up lazyload" alt="">
-                                </a>
-                                @if ($item->discount !=null)
-                                <div class="label-block">
-                                    <span class="label label-theme">SALE</span>
-                                </div>
-                                @endif
-                            </div>
-                            <div class="cart-wrap">
-                                <ul>
-                                    <li>
-                                        <a href="javascript:void(0)" class="addtocart-btn">
-                                            <i data-feather="shopping-cart"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)">
-                                            <i data-feather="eye"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)" class="wishlist">
-                                            <i data-feather="heart"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="product-details">
-                            <div class="rating-details">
-                                <span class="font-light grid-content">{{$item->productCategory->name}}</span>
-                                <ul class="rating mt-0">
-                                    <li>
-                                        <i class="fas fa-star theme-color"></i>
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-star theme-color"></i>
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-star"></i>
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-star"></i>
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-star"></i>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="main-price">
-                                <a href="product/nihil-beatae-sit-sed.html" class="font-default">
-                                    <h5 class="ms-0">{{$item->name}}</h5>
-                                </a>
-                                <div class="listing-content">
-                                    <span class="font-light">Cupiditate Minus</span>
-                                    <p class="font-light">Aut et dolores ipsam dolores aspernatur. Id nostrum
-                                        itaque maxime ea at inventore nam. Repudiandae dolor recusandae sint
-                                        magnam praesentium.</p>
-                                </div>
-                                <h3 class="theme-color">
-                                    @if ($item->discount)
-                                    ${{$item->discount}}
-                                    <del>${{$item->price}}</del>
-                                   <div class=""> Giảm {{ round((($item->price - $item->discount) / $item->price)*100)}}</span>
-                                    % off</div></h3>                               
-                                    @else
-                                        ${{$item->price}}
+                                    <div class="product-action-1">
+                                        <a aria-label="Quick view" class="action-btn hover-up" href="/shop/details/{{$item->id}}">
+                                            <i class="fi-rs-search"></i></a>
+                                        <a aria-label="Add To Wishlist" class="action-btn hover-up" href="wishlist.php"><i class="fi-rs-heart"></i></a>
+                                        <a aria-label="Compare" class="action-btn hover-up" href="compare.php"><i class="fi-rs-shuffle"></i></a>
+                                    </div>
+                                    @if ($item->discount !=null)
+                                    <div class="product-badges product-badges-position product-badges-mrg">
+                                        <span class="hot">SALE</span>
+                                    </div>
                                     @endif
-                                </h3>
-                                <button class="btn listing-content">Add To Cart</button>
+                                </div>
+                                <div class="product-content-wrap">
+                                    <div class="product-category">
+                                        <a href="/shop/details/{{$item->id}}">{{$item->productCategory->name}}</a>
+                                    </div>
+                                    <h2><a href="/shop/details/{{$item->id}}">{{$item->name}}</a></h2>
+                                    <div class="label-section">
+                                        {{-- <span class="badge badge-grey-color">#1 Best seller</span>
+                                        <span class="label-text">in fashion</span> --}}
+                                        <ul class="rating my-2 d-inline-block">
+                                            @for($i =1 ;$i<=5;$i++)
+                                             @if($i <=$item->avgRating)
+                                                <li>
+                                                    <i class="fas fa-star theme-color"></i>
+                                                </li>
+                                                @else
+                                                <li>
+                                                    <i class="fas fa-star "></i>
+                                                </li>
+                                                @endif
+                                                @endfor
+                                                <li>
+                                                    (<span>{{count($item->productComments)}}</span>)
+                                                </li>
+                                        </ul>
+                                    </div>
+                                    <div class="product-price">
+                                        @if ($item->discount)
+                                       <span>  {{number_format($item->discount,3)}} VND </span>
+                                       <span class="old-price">{{number_format($item->price,3)}} VND</span>  
+                                       <span> giảm {{ round((($item->price - $item->discount) /
+                                        $item->price)*100)}}%</span>              
+                                          
+                                          @else
+                                        <span>{{number_format($item->price,3)}} VND</span>
+
+                                          @endif
+                                        
+                                    </div>
+                                    
+                                </div>
                             </div>
                         </div>
+                        @endforeach
+                       
+                      
                     </div>
+                    <!--pagination-->
+                    {{$products->withQueryString()->links('Client.pagination.default')}}
                 </div>
-                @endforeach
-                   
-
-
-               
-
-
-                </div>
-                <nav class="page-section">
-                    <ul class="pagination">
-                        <li class="page-item">
-                            <a class="page-link" href="javascript:void(0)" aria-label="Previous"
-                                style="color:#6c757d;">
-                                <span aria-hidden="true">
-                                    <i class="fas fa-chevron-left"></i>
-                                </span>
-                            </a>
-                        </li>
-
-
-                        <li class="page-item active">
-                            <a class="page-link" href="javascript:void(0)">1</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="shop-1.html?page=2">2</a>
-                        </li>
-
-                        <li class="page-item">
-                            <a href="shop-1.html?page=2" class="page-link" aria-label="Next">
-                                <span aria-hidden="true">
-                                    <i class="fas fa-chevron-right"></i>
-                                </span>
-                            </a>
-                        </li>
-
-                    </ul>
-                </nav>
-
+               @include('Client.shop.filter')
             </div>
         </div>
-    </div>
-</section>
-<!-- Shop Section end -->
-<!-- Subscribe Section Start -->
-<section class="subscribe-section section-b-space">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-md-6">
-                <div class="subscribe-details">
-                    <h2 class="mb-3">Subscribe Our News</h2>
-                    <h6 class="font-light">Subscribe and receive our newsletters to follow the news about our fresh
-                        and fantastic Products.</h6>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 mt-md-0 mt-3">
-                <div class="subsribe-input">
-                    <div class="input-group">
-                        <input type="text" class="form-control subscribe-input" placeholder="Your Email Address">
-                        <button class="btn btn-solid-default" type="button">Button</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Subscribe Section End -->
-<div id="qvmodal"></div>
-
-<form id="frmFilter" method="GET">
-    <input type="hidden" id="page" name="page" value="1">
-    <input type="hidden" id="size" name="size" value="12">
-    <input type="hidden" id="prange" name="prange" value="">
-    <input type="hidden" id="order" name="order" value="-1">
-    <input type="hidden" id="brands" name="brands" value="">
-    
-    <input type="hidden" id="categories" name="categories" value="">
-</form>
+    </section>
+</main>
+<script src="{{asset('assets/js/js2/vendor/modernizr-3.6.0.min.js')}}"></script>
+<script src="{{asset('assets/js/js2/vendor/jquery-3.6.0.min.js')}}"></script>
+<script src="{{asset('assets/js/js2/vendor/jquery-migrate-3.3.0.min.js')}}"></script>
+<script src="{{asset('assets/js/js2/vendor/bootstrap.bundle.min.js')}}"></script>
+<script src="{{asset('assets/js/js2/plugins/slick.js')}}"></script>
+<script src="{{asset('assets/js/js2/plugins/jquery.syotimer.min.js')}}"></script>
+<script src="{{asset('assets/js/js2/plugins/wow.js')}}"></script>
+<script src="{{asset('assets/js/js2/plugins/jquery-ui.js')}}"></script>
+<script src="{{asset('assets/js/js2/plugins/perfect-scrollbar.js')}}"></script>
+<script src="{{asset('assets/js/js2/plugins/magnific-popup.js')}}"></script>
+<script src="{{asset('assets/js/js2/plugins/select2.min.js')}}"></script>
+<script src="{{asset('assets/js/js2/plugins/waypoints.js')}}"></script>
+<script src="{{asset('assets/js/js2/plugins/counterup.js')}}"></script>
+<script src="{{asset('assets/js/js2/plugins/jquery.countdown.min.js')}}"></script>
+<script src="{{asset('assets/js/js2/plugins/images-loaded.js')}}"></script>
+<script src="{{asset('assets/js/js2/plugins/isotope.js')}}"></script>
+<script src="{{asset('assets/js/js2/plugins/scrollup.js')}}"></script>
+<script src="{{asset('assets/js/js2/plugins/jquery.vticker-min.js')}}"></script>
+<script src="{{asset('assets/js/js2/plugins/jquery.theia.sticky.js')}}"></script>
+<script src="{{asset('assets/js/js2/plugins/jquery.elevatezoom.js')}}"></script>
+<!-- Template  JS -->
+<script src="{{asset('assets/js/js2/main.js?v=3.3')}}"></script>
+<script src="{{asset('assets/js/js2/shop.js?v=3.3')}}"></script>
 @endsection

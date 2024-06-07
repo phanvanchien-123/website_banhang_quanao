@@ -10,6 +10,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Người đăng</th>
                     <th scope="col">Nội dung</th>
+                    <th scope="col">Đánh giá sao</th>
                     <th scope="col">Sản phẩm</th>
                     <th scope="col">Ngày tạo</th>
                     <th scope="col">thao tác</th>
@@ -19,10 +20,29 @@
                 @foreach ($comments ?? [] as $item)
                     <tr>
                         <th scope="row">{{ $item->id }}</th>
-                        <td>{{ $item->user->name }}</td>
+                        <td>{{$item->user->name}}</td>
                         <td  class="text-wrap w-50">{{ $item->messages }}</td>
+                        <td>
+                            <div class="">
+                                {{-- <span class="badge badge-grey-color">#1 Best seller</span>
+                                <span class="label-text">in fashion</span> --}}
+                                <ul class="rating my-2 d-inline-block">
+                                    @for($i =1 ;$i<=5;$i++) @if($i <=$item->rating)
+                                        <li>
+                                            <i class="fas fa-star theme-color"></i>
+                                        </li>
+                                        @else
+                                        <li>
+                                            <i class="fas fa-star "></i>
+                                        </li>
+                                        @endif
+                                        @endfor
+                                        
+                                </ul>
+                            </div>
+                        </td>
                         <td>{{ $item->product->name }}</td>
-                        <td>{{ $item->created_at }}</td>
+                        <td>{{ $item->created_at}}</td>
                         <td>
                             <select class="form-select w-50" aria-label="Default select example"
                                 data-comment-id="{{ $item->id }}">

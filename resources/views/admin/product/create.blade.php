@@ -5,7 +5,7 @@
 @endphp
     <div class="d-flex justify-content-between align-items-center">
         <h2>Thêm mới sản phẩm</h2>
-        <a href="{{ route('admin.product.index') }}">Trở về</a>
+        <a href="{{ route('admin.product.index') }}" class="text-decoration-none"><i class="bi bi-box-arrow-left"></i> Trở về</a>
     </div>
     @include('admin.product.form')
     {{-- <form method="POST" action="{{ route('admin.product.store') }}" autocomplete="off">

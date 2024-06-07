@@ -8,7 +8,9 @@ use App\Traits\ImageHandler;
 use Illuminate\Http\Request;
 use App\Http\Requests\BlogRequest;
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class BlogController extends Controller
 {

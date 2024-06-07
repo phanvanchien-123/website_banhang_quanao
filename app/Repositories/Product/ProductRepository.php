@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Product;
 
+use App\Models\Category;
 use App\Models\product;
 use App\Models\product_categorie;
 use App\Repositories\BaseRepositories;
@@ -9,46 +10,122 @@ use Illuminate\Http\Request;
 
 class ProductRepository extends BaseRepositories implements ProductRepositoryInterface
 {
-    public function getModel(){
+    public function getModel()
+    {
         return product::class;
     }
-    public function getRelatedProducts($product ,$limit = 4){
-        return $this->model->where('product_category_id',$product->product_category_id)
-        ->where('tag',$product->tag)
-        ->limit($limit)
-        ->get();
-    }
-    public function getFeaturedProductsByCategory(int $categoryID){
-        return $this->model->where('featured',true)
-        ->where('product_category_id',$categoryID)
-        ->get();
-        
-    }
-    public function getPagination($request){
 
-       
-        $search =$request->search ?? '';
+    public function getRelatedProducts($product, $limit = 4)
+    {
 
-        $products = $this->model->where('name','like','%'.$search.'%');
-        $products = $this->filter($products,$request);
-        $products =$this->Paginate($products,$request);
+        // Lấy các sản phẩm tương tự
+        $relatedProducts = $this->model->where('product_category_id', $product->product_category_id)
+            ->where('tag', $product->tag)
+            ->where('id', '!=', $product->id)  // Exclude the current product
+            ->limit($limit)
+            ->get();
+
+        // Tính toán đánh giá trung bình cho từng sản phẩm
+        foreach ($relatedProducts as $Product) {
+            $this->Evaluate($Product);
+        }
+
+        return $relatedProducts;
+    }
+    private function Evaluate($Product)
+    {
+        $sumRating = array_sum(array_column($Product->productComments->toArray(), 'rating'));
+        $countRating = count($Product->productComments);
+
+        $avgRating = $countRating ? $sumRating / $countRating : 0;
+        $Product->avgRating = $avgRating;
+    }
+    public function getLatestProducts($limit = 10)
+    {
+        // Lấy các sản phẩm mới nhất
+        $latestProducts = $this->model->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+        // Tính toán đánh giá trung bình cho từng sản phẩm
+        foreach ($latestProducts as $Product) {
+            $this->Evaluate($Product);
+        }
+        return $latestProducts;
+    }
+    public function getLatestFeaturedProduct($limit = 10)
+    {
+        // Lấy các sản phẩm nổi bật mới nhất
+        $featuredProducts = $this->model->where('featured', true)
+                                        ->orderBy('created_at', 'desc')
+                                        ->limit($limit)
+                                        ->get();
+
+        // Tính toán đánh giá trung bình cho từng sản phẩm
+        foreach ($featuredProducts as $Product) {
+            $this->Evaluate($Product);
+        }
+
+        return $featuredProducts;
+    }
+    public function getProductsDiscountedOver30($limit = 10)
+    {
+        // Lấy các sản phẩm có giá sau giảm thấp hơn 70% của giá gốc
+        $discountedProducts = $this->model->where('discount', '>', '0')
+                                        ->whereRaw('discount / price < 0.7')
+                                          ->orderByRaw('discount / price')
+                                          ->limit($limit)
+                                          ->get();
+        foreach ($discountedProducts as $Product) {
+            $this->Evaluate($Product);
+        }
+
+        return $discountedProducts;
+    }
+    public function getFeaturedProductsByCategory(int $categoryID)
+    {
+        $featuredProducts=  $this->model->where('featured', true)
+            ->where('product_category_id', $categoryID)
+            ->get();
+            foreach ($featuredProducts as $Product) {
+                $this->Evaluate($Product);
+            }
+    
+            return $featuredProducts;
+    }
+    public function getPagination($request)
+    {
+
+
+        $search = $request->search ?? '';
+        $products = $this->model->where('name', 'like', '%' . $search . '%');
+        $products = $this->filter($products, $request);
+        $products = $this->Paginate($products, $request);
+        foreach ($products as $Product) {
+            $this->Evaluate($Product);
+        }
         return $products;
     }
-    public function getProductsByCategory($categoryName, $request){
-        $products = product_categorie::where('name',$categoryName)->first()->products->toQuery();
-        $products = $this->filter($products,$request);
-        $products =$this->Paginate($products,$request);
+    public function getProductsByCategory($categoryName, $request)
+    {
+        $products = Category::where('name', $categoryName)->first()->products->toQuery();
+        $products = $this->filter($products, $request);
+        $products = $this->Paginate($products, $request);
+        foreach ($products as $Product) {
+            $this->Evaluate($Product);
+        }
+        return $products;
         return $products;
     }
-    private function Paginate($products,Request $request){
-        $perPage=$request->show ?? 6;
-        $sortBy =$request->sort_by ??'latest';
+    private function Paginate($products, Request $request)
+    {
+        $perPage = $request->show ?? 6;
+        $sortBy = $request->sort_by ?? 'latest';
         $queryParams = $request->except('page');
-        switch($sortBy){
+        switch ($sortBy) {
             case 'latest':
                 $products = $products->orderBy('id');
                 break;
-            case 'oldesc':
+            case 'oldest':
                 $products = $products->orderByDesc('id');
                 break;
             case 'name-ascending':
@@ -63,17 +140,17 @@ class ProductRepository extends BaseRepositories implements ProductRepositoryInt
             case 'price-descending':
                 $products = $products->orderByDesc('price');
                 break;
-                default:
+            default:
                 $products = $products->orderBy('id');
-
         }
 
-        $products =$products->paginate($perPage)->withQueryString();
+        $products = $products->paginate($perPage);
         //$products ->appends(['sort_by'=>$sortBy,'show'=>$perPage]);
         $products->appends($queryParams);
         return $products;
     }
-    private function filter($products, Request $request){
+    private function filter($products, Request $request)
+    {
         //Brand 
         $brands = $request->brand ?? [];
         $brand_ids = array_keys($brands);
@@ -82,17 +159,17 @@ class ProductRepository extends BaseRepositories implements ProductRepositoryInt
         //price
         $priceMin = $request->price_min;
         $priceMax = $request->price_max;
-        $priceMin =str_replace('$', '', $priceMin);
-        $priceMax=str_replace('$', '', $priceMax);
-        $products =($priceMin !=null && $priceMax !=null)? $products->whereBetween('price',[$priceMin,$priceMax]) : $products;
+        $priceMin = str_replace('$', '', $priceMin);
+        $priceMax = str_replace('$', '', $priceMax);
+        $products = ($priceMin != null && $priceMax != null) ? $products->whereBetween('price', [$priceMin, $priceMax]) : $products;
 
         // color
         $color = $request->color;
-        $products = $color !=null
-         ? $products->whereHas('productDetails',function($query) use($color){
-                return $query->where('color',$color)
-                ->where('qty','>',0);
-         }):$products;
+        $products = $color != null
+            ? $products->whereHas('productDetails', function ($query) use ($color) {
+                return $query->where('color', $color)
+                    ->where('qty', '>', 0);
+            }) : $products;
         return $products;
     }
 }

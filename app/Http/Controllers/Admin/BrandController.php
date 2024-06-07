@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Helpers\CloudinaryHelper;
 use App\Http\Requests\BrandRequest;
 use App\Http\Controllers\Controller;
+use Exception;
+use Illuminate\Support\Facades\Log;
 
 class BrandController extends Controller
 {

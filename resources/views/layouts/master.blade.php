@@ -32,7 +32,9 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('/assets/css/vendors/animate.css')}}">
     <link rel="stylesheet" type="text/css" href="{{ asset('/assets/css/vendors/slick/slick.css')}}">
     <link rel="stylesheet" type="text/css" href="{{ asset('/assets/css/vendors/slick/slick-theme.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('/assets/css/vendors/slick/main.css')}}">
     <link id="color-link" rel="stylesheet" type="text/css" href="{{ asset('/assets/css/demo4.css')}}">
+    
     <style>
         .h-logo {
             max-width: 185px !important;
@@ -48,7 +50,7 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="{{asset('/assets/css/custom.css ')}}">
+    <link rel="stylesheet" href="{{asset('/assets/css/custom.css')}}">
 
 
     @stack('styles')
@@ -141,7 +143,7 @@
                                             </li>
                                             <li><a href="/" class="nav-link menu-title">Home</a></li>
                                             <li><a href="{{route('client.shop.index')}}" class="nav-link menu-title">Shop</a></li>
-                                            <li><a href="cart/list.html" class="nav-link menu-title">Cart</a></li>
+                                            <li><a href="/Cart" class="nav-link menu-title">Cart</a></li>
                                             <li><a href="about-us.html" class="nav-link menu-title">About Us</a></li>
                                             <li><a href="contact-us.html" class="nav-link menu-title">Contact Us</a>
                                             </li>
@@ -168,15 +170,102 @@
                                         </div>
                                     </li>
                                     <li class="onhover-dropdown wislist-dropdown">
-                                        <div class="cart-media">
-                                            <a href="cart/list.html">
-                                                <i data-feather="shopping-cart"></i>
-                                                <span id="cart-count" class="label label-theme rounded-pill">
-                                                    0
-                                                </span>
-                                            </a>
+                                        <div class="header-action-2">
+                                            
+                                            <div class="header-action-icon-2">
+                                                <div class="cart-media">
+                                                    <a href="/Cart">
+                                                        <i data-feather="shopping-cart"></i>
+                                                        @php
+                                                        use Illuminate\Support\Facades\Auth;
+                                                        use App\Models\Carts;
+                                                        
+                                                        $totalItems = 0; // Default total items is 0
+                                                        
+                                                        // Check if the user is logged in
+                                                        if (Auth::check()) {
+                                                            // Get user ID
+                                                            $userId = Auth::id();
+                                                            // Query the cart for the logged-in user
+                                                            $cart = Carts::where('user_id', $userId)->first();                  
+                                                            // Check if the cart exists
+                                                            if ($cart) {
+                                                                // If the cart exists, calculate the total number of items
+                                                                $totalItems = $cart->cartItems->sum('quantity');
+                                                            }
+                                                        } else {
+                                                            // Handle case when user is not logged in
+                                                            // For example, you can store the cart items in session when not logged in
+                                                            // and retrieve the total items count from session
+                                                            $totalItems = session('cart.totalItems', 0);
+                                                        }
+                                                        @endphp
+                                                        <span id="cart-count" class="label label-theme rounded-pill">
+                                                            @if($totalItems > 0)
+                                                            {{$totalItems}}
+                                                        @else
+                                                          0
+                                                        @endif
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                                @if ($totalItems > 0)
+                                                <div class="cart-dropdown-wrap cart-dropdown-hm2">
+                                                    @php
+                                                    $userId = Auth::id();
+                                                    $cart = \App\Models\Carts::where('user_id', $userId)->first();
+                                                
+                                                    // Check if the cart exists
+                                                    if ($cart) {
+                                                        // If the cart exists, calculate the total price and retrieve cart items
+                                                        $cartItems = $cart->cartItems;
+                                                        $totalPrice = $cartItems->sum(function ($item){
+                                                            return $item->price * $item->quantity;
+                                                        });
+                                                    } else {
+                                                        // If the cart doesn't exist, set cartItems to an empty array and totalPrice to 0
+                                                        $cartItems = [];
+                                                        $totalPrice = 0;
+                                                    }
+                                                    @endphp
+                                                    <ul>
+                                                        @if (!empty($cartItems))
+                                                            @foreach ($cartItems as $item)
+                                                                <li>
+                                                                    <div class="shopping-cart-img">
+                                                                        <a href="/shop/details/{{$item->product->id}}"><img alt="Surfside Media" src="{{asset('storage/'.$item->product->avatar)}}"></a>
+                                                                    </div>
+                                                                    <div class="shopping-cart-title">
+                                                                        <h4><a href="/shop/details/{{$item->product->id}}">{{$item->name}} <br> {{$item->color}}-{{$item->size}}</a></h4>
+                                                                        <h4><span>{{$item->quantity}} × </span>{{ number_format($item->price,3)}} VND</h4>
+                                                                    </div>
+                                                                    <div class="shopping-cart-delete">
+                                                                        <a href="#"><i class="fi-rs-cross-small"></i></a>
+                                                                    </div>
+                                                                </li>
+                                                            @endforeach
+                                                        @else
+                                                            <li>Không có hàng nào trong giỏ hàng </li>
+                                                        @endif
+                                                    </ul>
+                                                    <div class="shopping-cart-footer">
+                                                        <div class="shopping-cart-total">
+                                                            <h4>Tổng <span class="cart-price">{{ number_format($totalPrice,3)}} VND</span></h4>
+                                                        </div>
+                                                        <div class="shopping-cart-button">
+                                                            <a href="/Cart" class="outline">View cart</a>
+                                                            <a href="">Checkout</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @else
+                                                    
+                                                @endif
+                                            </div>
                                         </div>
                                     </li>
+                                   
+                                   
                                     <li class="onhover-dropdown">
                                         <div class="cart-media name-usr">
                                           @auth
@@ -221,12 +310,12 @@
                                 </ul>
                             </div>
                             <div class="search-full">
-                                <form method="GET" class="search-full" action="http://localhost:8000/search">
+                                <form method="GET" class="search-full" action="shop">
                                     <div class="input-group">
                                         <span class="input-group-text">
                                             <i data-feather="search" class="font-light"></i>
                                         </span>
-                                        <input type="text" name="q" class="form-control search-type"
+                                        <input type="text" name="search" class="form-control search-type" value="{{request('search')}}"
                                             placeholder="Search here..">
                                         <span class="input-group-text close-search">
                                             <i data-feather="x" class="font-light"></i>

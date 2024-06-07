@@ -15,8 +15,10 @@ use App\Models\Product_comment;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ProductRequest;
-
-
+use App\Service\Product\ProductServiceInterface;
+use App\Service\ProductComment\ProductCommentServiceInterface;
+use Exception;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -202,10 +204,11 @@ class ProductController extends Controller
 
             $this->deleteImage($product->avatar);
 
-            foreach ($product->images as $image) {
-                $this->deleteImage($image->path);
-                $image->delete();
-            }
+        // Xóa các ảnh trong album
+        foreach ($product->productImages as $image) {
+            $this->deleteImage($image->path);
+            $image->delete();
+        }
 
             ProductDetail::where('product_id', $product->id)->delete();
 

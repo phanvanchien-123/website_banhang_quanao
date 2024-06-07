@@ -2,7 +2,7 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center">
         <h2>Danh mục</h2>
-        <a href="{{ route('admin.category.create') }}">Thêm mới</a>
+        <a href="{{ route('admin.category.create') }}" class="text-decoration-none"><i class="bi bi-plus-square"></i> Thêm mới</a>
     </div>
     <div>
         <table class="table table-hover">
@@ -23,8 +23,8 @@
                   <td>{{ $item->name }}</td>
                   <td>{{ $item->created_at }}</td>
                   <td>
-                    <a href="{{ route('admin.category.edit',$item->id) }}">edit</a> |
-                    <a href="{{ route('admin.category.delete',$item->id) }}">delete</a>
+                    <a href="{{ route('admin.category.edit',$item->id) }}"><i class="bi bi-pencil-square"></i></a> |
+                    <a href="{{ route('admin.category.delete',$item->id) }}"><i class="bi bi-trash2-fill"></i></a>
                   </td>
                 </tr>
                 @endforeach

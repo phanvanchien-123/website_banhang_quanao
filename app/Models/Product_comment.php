@@ -11,7 +11,7 @@ class Product_comment extends Model
     protected $table ='product_comments';
     protected $primaryKey ='id';
     protected $quarded =[];
-    protected $fillable = [ 'product_id', 'user_id', 'email', 'name', 'messages', 'rating'];
+    protected $fillable = [ 'product_id', 'user_id','messages', 'rating','status'];
 
     public function product(){
         return $this ->belongsTo(product::class,'product_id','id');
