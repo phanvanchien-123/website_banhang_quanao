@@ -6,20 +6,21 @@ use Illuminate\Http\Request;
 use App\Http\Requests\RoleRequest;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
     //
-    // Hiển thị danh sách vai trò
     public function index()
     {
         $roles = Role::all();
         return view('admin.role.index', compact('roles'));
     }
 
-    // Hiển thị form tạo vai trò
     public function create()
     {
         $permissions = Permission::all()->groupBy('group');
@@ -27,26 +28,30 @@ class RoleController extends Controller
         return view('admin.role.create', compact('permissions'));
     }
 
-    // Lưu vai trò mới vào cơ sở dữ liệu
     public function store(RoleRequest $request)
     {
-        
-        $request->validate([
-            'name' => 'required',
-            'permission_ids' => 'required|array'
-        ]);
+        try{
+            $request->validate([
+                'name' => 'required',
+                'permission_ids' => 'required|array'
+            ]);
 
-        $dataCreate = $request->all();
-        // dd($dataCreate); 
-        $dataCreate['guard_name'] = 'web';
-        $role = Role::create($dataCreate);
-        $role->permissions()->sync($dataCreate['permission_ids'] ?? []);
+            $dataCreate = $request->all();
+            $dataCreate['guard_name'] = 'web';
+            $role = Role::create($dataCreate);
+            $role->permissions()->sync($dataCreate['permission_ids'] ?? []);
 
-        return redirect()->route('admin.role.index')
-            ->with('success', 'Role created successfully.');
+            return redirect()->route('admin.role.index')->with('success', 'Thêm mới role thành công');
+
+        }catch (Exception $ex) {
+            Log::error("ERROR => RoleController@store =>". $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Thêm mới role thất bại']);
+        }
+
+        return redirect()->back();
+
     }
 
-    // Hiển thị form chỉnh sửa vai trò
     public function edit($id)
     {
         $role = Role::findOrFail($id);
@@ -55,33 +60,55 @@ class RoleController extends Controller
         return view('admin.role.edit', compact('role', 'permissions'));
     }
 
-    // Cập nhật vai trò trong cơ sở dữ liệu
     public function update(RoleRequest $request, $id)
     {
-        $request->validate([
-            'name' => 'required',
-            'permission_ids' => 'required|array'
-        ]);
+        try{
+            $request->validate([
+                'name' => 'required',
+                // 'permission_ids' => 'required|array'
+            ]);
 
 
-        $role = Role::findOrFail($id);
-        $dataUpdate = $request->all();
-        $dataUpdate['guard_name'] = 'web';
-        $role->update($dataUpdate);
-        $role->permissions()->sync($dataUpdate['permission_ids'] ?? []);
-        return redirect()->route('admin.role.index')
-            ->with('success', 'Role updated successfully.');    
+            $role = Role::findOrFail($id);
+            $dataUpdate = $request->all();
+            $dataUpdate['guard_name'] = 'web';
+            $role->update($dataUpdate);
+            $role->permissions()->sync($dataUpdate['permission_ids'] ?? []);
+
+            return redirect()->back()->with('success', 'Cập nhật role thành công');
+            
+        } catch (ModelNotFoundException $ex) {
+            Log::error("LỖI => RoleController@store => Không tìm thấy role: " . $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Không tìm thấy role']);
+        } catch (Exception $ex) {
+            Log::error("ERROR => RoleController@store =>". $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Cập nhật role thất bại']);
+        }
+
+        return redirect()->back();
+
     }
         
 
-    // Xóa vai trò
     public function delete($id)
     {
-        $role = Role::findOrFail($id);
-        $role->delete();
+        try{
 
-        return redirect()->route('admin.role.index')
-            ->with('success', 'Role deleted successfully.');
+            $role = Role::findOrFail($id);
+            $role->delete();
+
+            return redirect()->back()->with('success', 'Xóa role thành công');
+
+        } catch (ModelNotFoundException $ex) {
+            Log::error("LỖI => RoleController@store => Không tìm thấy role: " . $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Không tìm thấy role']);
+        } catch (Exception $ex) {
+            Log::error("ERROR => RoleController@store =>". $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Xóa role thất bại']);
+        }
+
+        return redirect()->back();
+
     }
 }
 

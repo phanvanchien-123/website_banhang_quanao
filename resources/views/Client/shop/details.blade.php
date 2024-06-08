@@ -170,13 +170,28 @@
                                             <div class="">
                                                 @if ($selectedSize)
                                                 @if ($products->qty == 0)
-                                                <h6 class="product-title product-title-2 d-block"> Hết Hàng </h6>
+                                                <p class="danger2-button btn btn-sm">Hết hàng</p> 
                                                 @else
-                                                <h6 class="product-title product-title-2 d-block">Còn :
-                                                    {{$quantity}} Sản phẩm </h6>
+                                                
+                                                    <h6 class="product-title product-title-2 d-block"><a href="javascript:void(0)" data-bs-toggle="modal"
+                                                        data-bs-target="#sizemodal">Còn :  {{$quantity}} sản phẩm có sẵn</a> </h6>
+                                                    
                                                 @endif
+                                                @else
+                                                @if ($products->qty > 0)
+                                                    @if ($products->qty < 5)
+                                                    <p class="danger-button btn btn-sm">Còn ít hàng {{$products->qty}}</p>
+                                                    @else
+                                                    <h6 class="product-title product-title-2 d-block"><a href="javascript:void(0)" data-bs-toggle="modal"
+                                                        data-bs-target="#sizemodal">Còn : {{$products->qty}} sản phẩm có sẵn</a> </h6>
+                                                    @endif
+                                                @else
+                                                <p class="danger2-button btn btn-sm">Hết hàng</p>       
+                                                @endif
+
                                                 @endif
                                             </div>
+                                            <br>
                                             <div class="product-buttons">
                                                 <a href="javascript:void(0)" class="btn btn-solid">
                                                     <i class="fa fa-bookmark fz-16 me-2"></i>
@@ -189,13 +204,13 @@
                                                 </button>
                                             </div>
                                               <div class="pro-details-brand">
-                                            <span> Brands: <a href="shop.html">{{$products->brand->name}}</a></span>
+                                            <span> Brands: <a href="">{{$products->brand->name}}</a></span>
                                         </div>
                                         <div class="pro-details-brand">
                                             <span> Category: <a href="">{{$products->productCategory->name}}</a></span>
                                         </div>
                                         <div class="pro-details-brand">
-                                            <span> TAG: <a href="shop.html">{{$products->tag}}</a></span>
+                                            <span> TAG: <a href="">{{$products->tag}}</a></span>
                                         </div>
                                         </div>
                                        
@@ -252,7 +267,7 @@
                             <div class="tab-content shop_info_tab entry-main-content">
                                 <div class="tab-pane fade show active" id="Description">
                                     <div class="">
-                                        <p>{{$products->description}}</p>
+                                        <p>{{!! $products->description !!}}</p>
                                         
                                     </div>
                                 </div>

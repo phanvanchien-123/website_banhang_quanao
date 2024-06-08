@@ -18,6 +18,7 @@ use App\Http\Requests\ProductRequest;
 use App\Service\Product\ProductServiceInterface;
 use App\Service\ProductComment\ProductCommentServiceInterface;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
@@ -92,13 +93,15 @@ class ProductController extends Controller
                 ]);
             }
 
+            return redirect()->route('admin.product.index')->with(['success' => 'Thêm mới sản phẩm thành công']);
 
-            
         } catch (Exception $ex) {
             Log::error("ERROR => ProductController@store =>". $ex->getMessage());
-            return redirect()->route('admin.product.create');
+            return redirect()->back()->with(['error' => 'Thêm mới sản phẩm thất bại']);
         }
-        return redirect()->route('admin.product.index');
+
+        return redirect()->back();
+        
 
 
     }
@@ -130,49 +133,63 @@ class ProductController extends Controller
     public function update(ProductRequest $request, $id)
     {
         //
-        $product = Product::findOrFail($id);
+        try {
+    
+            $product = Product::findOrFail($id);
 
-        $data = $request->except('size','color','qty2','avatar','images');
+            $data = $request->except('size','color','qty2','avatar','images');
 
-        $imagePath = $product->avatar;
+            $imagePath = $product->avatar;
 
-        if ($request->hasFile('avatar')) {
-            $imagePath = $this->updateImage($request->file('avatar'), $product->avatar, 'theme_admin/upload/product');
-        }
-        $data['avatar'] = $imagePath ;
+            if ($request->hasFile('avatar')) {
+                $imagePath = $this->updateImage($request->file('avatar'), $product->avatar, 'theme_admin/upload/product');
+            }
+            $data['avatar'] = $imagePath ;
 
-        $product->update($data);
+            $product->update($data);
 
-        // Kiểm tra và cập nhật album ảnh nếu có
-        if ($request->hasFile('images')) {
-            // Xóa các ảnh cũ trước khi thêm ảnh mới
-            if($product->productImages){
-                foreach ($product->productImages as $img) {
-                    $this->deleteImage($img->path);
-                    $img->delete();
+            // Kiểm tra và cập nhật album ảnh nếu có
+            if ($request->hasFile('images')) {
+                // Xóa các ảnh cũ trước khi thêm ảnh mới
+                if($product->productImages){
+                    foreach ($product->productImages as $img) {
+                        $this->deleteImage($img->path);
+                        $img->delete();
+                    }
+                }
+                
+                // Thêm ảnh mới vào album
+                foreach ($request->file('images') as $image) {
+                    $imagePath = $this->uploadImage($image, 'theme_admin/upload/product');
+                    Product_image::create([
+                        'product_id' => $product->id,
+                        'path' => $imagePath,
+                    ]);
                 }
             }
-            
-            // Thêm ảnh mới vào album
-            foreach ($request->file('images') as $image) {
-                $imagePath = $this->uploadImage($image, 'theme_admin/upload/product');
-                Product_image::create([
-                    'product_id' => $product->id,
-                    'path' => $imagePath,
-                ]);
+
+
+            $dataDetails = $request->only('size', 'color', 'qty2');
+
+            foreach ($dataDetails['size'] as $index => $size) {
+                $productDetail = ProductDetail::updateOrCreate(
+                    ['product_id' => $product->id, 'size' => $size],
+                    ['color' => $dataDetails['color'][$index], 'qty' => $dataDetails['qty2'][$index]]
+                );
             }
+
+            return redirect()->back()->with(['success' => 'Sửa sản phẩm thành công']);
+
+        } catch (ModelNotFoundException $ex) {
+            Log::error("LỖI => ProductController@store => Không tìm thấy sản phẩm: " . $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Không tìm thấy sản phẩm']);
+        } catch (Exception $ex) {
+            Log::error("ERROR => ProductController@store =>". $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Sửa sản phẩm thất bại']);
         }
 
+        return redirect()->back();
 
-        $dataDetails = $request->only('size', 'color', 'qty2');
-
-        foreach ($dataDetails['size'] as $index => $size) {
-            $productDetail = ProductDetail::updateOrCreate(
-                ['product_id' => $product->id, 'size' => $size],
-                ['color' => $dataDetails['color'][$index], 'qty' => $dataDetails['qty2'][$index]]
-            );
-        }
-        return redirect()->route('admin.product.index');
     }
 
     /**
@@ -180,10 +197,13 @@ class ProductController extends Controller
      */
     public function delete(Product $product, $id)
     {
-        $product = Product::findOrFail($id);
+        try{
 
-        // Xóa ảnh đại diện
-        $this->deleteImage($product->avatar);
+            $product = Product::findOrFail($id);
+
+            Product_comment::where('product_id', $product->id)->delete();
+
+            $this->deleteImage($product->avatar);
 
         // Xóa các ảnh trong album
         foreach ($product->productImages as $image) {
@@ -191,13 +211,22 @@ class ProductController extends Controller
             $image->delete();
         }
 
-        // Xóa chi tiết sản phẩm liên quan
-        ProductDetail::where('product_id', $product->id)->delete();
+            ProductDetail::where('product_id', $product->id)->delete();
 
-        // Xóa sản phẩm
-        $product->delete();
+            $product->delete();
 
-        return redirect()->route('admin.product.index');
+            return redirect()->back()->with(['success' => 'Xóa sản phẩm thành công']);
+
+        } catch (ModelNotFoundException $ex) {
+            Log::error("LỖI => ProductController@store => Không tìm thấy sản phẩm: " . $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Không tìm thấy sản phẩm']);
+        } catch (Exception $ex) {
+            Log::error("ERROR => ProductController@store =>". $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Xóa sản phẩm thất bại']);
+        }
+
+        return redirect()->back();
+
     }
 
     public function cmt()

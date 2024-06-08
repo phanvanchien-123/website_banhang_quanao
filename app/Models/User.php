@@ -35,6 +35,10 @@ class User extends Authenticatable
         
     ];
 
+    public function defaultAvatar() {
+        return asset('/theme_admin/theme/images/AvatarDefault.png');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

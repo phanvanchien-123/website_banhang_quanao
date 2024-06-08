@@ -10,6 +10,7 @@ use App\Helpers\CloudinaryHelper;
 use App\Http\Requests\BrandRequest;
 use App\Http\Controllers\Controller;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
 class BrandController extends Controller
@@ -18,7 +19,7 @@ class BrandController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
         //
         $brands = Brand::paginate(10);
@@ -48,12 +49,15 @@ class BrandController extends Controller
             $data['avatar'] = $imagePath ;
     
             $brand = Brand::create($data);
+
+            return redirect()->route('admin.brand.index')->with(['success' => 'Thêm mới brand thành công']);
+
         } catch (Exception $ex) {
             Log::error("ERROR => brandController@store =>" . $ex->getMessage());
-            return redirect()->route('admin.brand.create');
+            return redirect()->back()->with(['error' => 'Thêm mới brand thất bại']);
         }
-    
-        return redirect()->route('admin.brand.index');
+
+        return redirect()->back();
 
     }
 
@@ -80,18 +84,30 @@ class BrandController extends Controller
      */
     public function update(BrandRequest $request, $id)
     {
-        $brand = Brand::findOrFail($id);
-        $data = $request->except('avatar');
-        $imagePath = $brand->avatar;
-        if ($request->hasFile('avatar')) {
-            $imagePath = $this->updateImage($request->file('avatar'), $brand->avatar, 'theme_admin/upload/blog');
+        try{
+
+            $brand = Brand::findOrFail($id);
+            $data = $request->except('avatar');
+            $imagePath = $brand->avatar;
+            if ($request->hasFile('avatar')) {
+                $imagePath = $this->updateImage($request->file('avatar'), $brand->avatar, 'theme_admin/upload/blog');
+            }
+            $data['avatar'] = $imagePath ;
+
+
+            $brand->update($data);
+
+            return redirect()->back()->with(['success' => 'Cập nhật brand thành công']);
+
+        } catch (ModelNotFoundException $ex) {
+            Log::error("LỖI => BrandController@store => Không tìm thấy brand: " . $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Không tìm thấy brand']);
+        } catch (Exception $ex) {
+            Log::error("ERROR => BrandController@store =>". $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Cập nhật brand thất bại']);
         }
-        $data['avatar'] = $imagePath ;
 
-
-        $brand->update($data);
-
-        return redirect()->route('admin.brand.index');
+        return redirect()->back();
 
     }
 
@@ -101,10 +117,22 @@ class BrandController extends Controller
     public function delete(Brand $brand, $id)
     {
         //
-        $brand = Brand::findOrFail($id);
-        $this->deleteImage($brand->avatar);
-        $brand->delete();
+        try{
 
-        return redirect()->route('admin.brand.index');
+            $brand = Brand::findOrFail($id);
+            $this->deleteImage($brand->avatar);
+            $brand->delete();
+
+            return redirect()->back()->with(['success' => 'Xóa brand thành công']);
+        
+        } catch (ModelNotFoundException $ex) {
+            Log::error("LỖI => BrandController@store => Không tìm thấy brand: " . $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Không tìm thấy brand']);
+        } catch (Exception $ex) {
+            Log::error("ERROR => BrandController@store =>". $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Xóa brand thất bại']);
+        }
+
+        return redirect()->back();
     }
 }

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -59,41 +60,17 @@ class UserController extends Controller
             $user = User::create($data);
             $user->roles()->sync($data['role_ids'] ?? []);
 
+            return redirect()->route('admin.user.index')->with('success', 'Thêm mới user thành công');
 
         } catch (Exception $ex) {
             Log::error("ERROR => UserController@store =>". $ex->getMessage());
-            return redirect()->route('admin.user.create');
+            return redirect()->back()->with('error', 'Thêm mới user thất bại');
         }
-        return redirect()->route('admin.user.index');
+
+        return redirect()->back();
 
 
     }
-
-    // protected function insertOrUpdateUserHasType($user, $type){
-    //     $check = DB::table('user_has_type')
-    //         ->where('user_id', $user->id)
-    //         ->first();
-
-    //     if ($check) {
-    //         DB::table('user_has_type')
-    //             ->where('user_id', $user->id)
-    //             ->update([
-    //                 'user_type_id' => $type,
-    //                 'updated_at' => now(),
-    //             ]);
-    //     } else {
-    //         DB::table('user_has_type')->insert([
-    //             'user_type_id' => $type,
-    //             'created_at' => now(),
-    //             'user_id' => $user->id
-    //         ]);
-    //     }
-
-    //     // $user->userHasType()->updateOrCreate(
-    //     //     ['user_id' => $user->id],
-    //     //     ['user_type_id' => $type, 'updated_at' => Carbon::now()]
-    //     // );
-    // }
 
     /**
      * Display the specified resource.
@@ -122,20 +99,31 @@ class UserController extends Controller
     public function update(UserRequest $request, User $user, $id)
     {
         //
-        $user = User::findOrFail($id);
-        $data = $request->except('avatar');
-        $imagePath = $user->avatar;
+        try{
+            $user = User::findOrFail($id);
+            $data = $request->except('avatar');
+            $imagePath = $user->avatar;
 
-        if ($request->hasFile('avatar')) {
-            $imagePath = $this->updateImage($request->file('avatar'), $user->avatar, 'theme_admin/upload/user');
+            if ($request->hasFile('avatar')) {
+                $imagePath = $this->updateImage($request->file('avatar'), $user->avatar, 'theme_admin/upload/user');
+            }
+            $data['avatar'] = $imagePath ;
+        
+
+            $user->update($data);
+            $user->roles()->sync($data['role_ids'] ?? []);
+
+            return redirect()->back()->with(['success' => 'Cập nhật user thành công']);
+
+        } catch (ModelNotFoundException $ex) {
+            Log::error("LỖI => UserController@store => Không tìm thấy user: " . $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Không tìm thấy user']);
+        } catch (Exception $ex) {
+            Log::error("ERROR => UserController@store =>". $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Cập nhật user thất bại']);
         }
-        $data['avatar'] = $imagePath ;
-    
 
-        $user->update($data);
-        $user->roles()->sync($data['role_ids'] ?? []);
-
-        return redirect()->route('admin.user.index');
+        return redirect()->back();
 
     }
 
@@ -145,11 +133,22 @@ class UserController extends Controller
     public function delete(User $user, $id)
     {
         //
-        $user = User::findOrFail($id);
-        $this->deleteImage($user->avatar);
+        try{
+            $user = User::findOrFail($id);
+            $this->deleteImage($user->avatar);
 
-        $user->delete();
+            $user->delete();
 
-        return redirect()->route('admin.user.index');
+            return redirect()->back()->with(['success' => 'Xóa user thành công']);
+
+        } catch (ModelNotFoundException $ex) {
+            Log::error("LỖI => UserController@store => Không tìm thấy user: " . $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Không tìm thấy user']);
+        } catch (Exception $ex) {
+            Log::error("ERROR => UserController@store =>". $ex->getMessage());
+            return redirect()->back()->with(['error' => 'Xóa user thất bại']);
+        }
+
+        return redirect()->back();
     }
 }

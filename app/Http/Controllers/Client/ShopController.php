@@ -38,6 +38,7 @@ class ShopController extends Controller
     }
     public function show($id, Request $request)
     {
+    
         $products = $this->productServices->find($id);
         $categories = $this->productCategoryServices->all();
         $brands = $this->productBrands->all();
@@ -65,7 +66,7 @@ class ShopController extends Controller
         }
       
 
-        return view('Client.shop.details', compact('products', 'selectedColor', 'selectedSize', 'sizes', 'quantity','comments','relatedproducts','categories','brands'));
+        return view('Client.shop.details', compact('products','selectedColor', 'selectedSize', 'sizes', 'quantity','comments','relatedproducts','categories','brands'));
     }
     public function postComment(Request $request){
         $this->productCommentServices->create($request->all());
