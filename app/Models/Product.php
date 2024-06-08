@@ -17,6 +17,7 @@ class Product extends Model
         'description',
         'content',
         'price',
+        'cost',
         'qty',
         'discount',
         'weight',
@@ -24,6 +25,7 @@ class Product extends Model
         'featured',
         'tag',
         'avatar',
+        'view',
         'brand_id',
         'product_category_id',
     ];
