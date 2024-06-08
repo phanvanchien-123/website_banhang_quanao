@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 use App\Helpers\CloudinaryHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
+use App\Models\Product;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {

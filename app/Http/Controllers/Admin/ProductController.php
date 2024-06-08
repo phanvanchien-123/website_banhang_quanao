@@ -18,6 +18,7 @@ use App\Http\Requests\ProductRequest;
 use App\Service\Product\ProductServiceInterface;
 use App\Service\ProductComment\ProductCommentServiceInterface;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller

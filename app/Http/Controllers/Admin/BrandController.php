@@ -10,6 +10,7 @@ use App\Helpers\CloudinaryHelper;
 use App\Http\Requests\BrandRequest;
 use App\Http\Controllers\Controller;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
 class BrandController extends Controller
