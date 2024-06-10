@@ -9,7 +9,6 @@ class Product extends Model
 {
     use HasFactory;
     protected $table = 'products';
-    public $timestamps = true;
     protected $primaryKey ='id';
     protected $fillable=[
         'id',
@@ -17,6 +16,7 @@ class Product extends Model
         'description',
         'content',
         'price',
+        'cost',
         'qty',
         'discount',
         'weight',
@@ -24,6 +24,7 @@ class Product extends Model
         'featured',
         'tag',
         'avatar',
+        'view',
         'brand_id',
         'product_category_id',
     ];
@@ -39,10 +40,13 @@ class Product extends Model
     }
     public function productDetails(){
         return $this ->hasMany(ProductDetail::class,'product_id','id');
-    
+
     }
     public function productComments(){
         return $this ->hasMany(product_comment::class,'product_id','id');
-    
     }
+    public function orderDetails(){
+        return $this ->hasMany(Order_Details::class,'product_id','id');
+    }  
+
 }

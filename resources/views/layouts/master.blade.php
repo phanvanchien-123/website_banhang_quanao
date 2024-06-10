@@ -141,10 +141,10 @@
                                                     </span>
                                                 </div>
                                             </li>
-                                            <li><a href="/" class="nav-link menu-title">Home</a></li>
-                                            <li><a href="{{route('client.shop.index')}}" class="nav-link menu-title">Shop</a></li>
-                                            <li><a href="/Cart" class="nav-link menu-title">Cart</a></li>
-                                            <li><a href="about-us.html" class="nav-link menu-title">About Us</a></li>
+                                            <li><a href="/" class="nav-link menu-title">Trang Chủ</a></li>
+                                            <li><a href="{{route('client.shop.index')}}" class="nav-link menu-title">Cửa hàng</a></li>
+                                            <li><a href="/Cart" class="nav-link menu-title">Giỏ Hàng</a></li>
+                                            <li><a href="{{route('index.coupon')}}" class="nav-link menu-title">Mã giảm Giá</a></li>
                                             <li><a href="contact-us.html" class="nav-link menu-title">Contact Us</a>
                                             </li>
                                             <li><a href="blog.html" class="nav-link menu-title">Blog</a></li>

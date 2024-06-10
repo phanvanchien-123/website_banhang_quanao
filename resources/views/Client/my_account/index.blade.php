@@ -95,13 +95,13 @@
                                             <div class="col-lg-4 col-sm-6">
                                                 <div class="order-box">
                                                     <div class="order-box-image">
-                                                        <img src="assets/images/svg/box.png" class="img-fluid blur-up lazyload" alt="">
+                                                        <img src="/assets/images/svg/box.png" class="img-fluid blur-up lazyload" alt="">
                                                     </div>
                                                     <div class="order-box-contain">
-                                                        <img src="assets/images/svg/box1.png" class="img-fluid blur-up lazyload" alt="">
+                                                        <img src="/assets/images/svg/box1.png" class="img-fluid blur-up lazyload" alt="">
                                                         <div>
                                                             <h5 class="font-light">total order</h5>
-                                                            <h3>3648</h3>
+                                                            <h3>{{$ordersCount}}</h3>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -110,13 +110,13 @@
                                             <div class="col-lg-4 col-sm-6">
                                                 <div class="order-box">
                                                     <div class="order-box-image">
-                                                        <img src="assets/images/svg/sent.png" class="img-fluid blur-up lazyload" alt="">
+                                                        <img src="/assets/images/svg/sent.png" class="img-fluid blur-up lazyload" alt="">
                                                     </div>
                                                     <div class="order-box-contain">
-                                                        <img src="assets/images/svg/sent1.png" class="img-fluid blur-up lazyload" alt="">
+                                                        <img src="/assets/images/svg/sent1.png" class="img-fluid blur-up lazyload" alt="">
                                                         <div>
                                                             <h5 class="font-light">pending orders</h5>
-                                                            <h3>215</h3>
+                                                            <h3>{{$pendingOrdersCount}}</h3>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -125,10 +125,10 @@
                                             <div class="col-lg-4 col-sm-6">
                                                 <div class="order-box">
                                                     <div class="order-box-image">
-                                                        <img src="assets/images/svg/wishlist.png" class="img-fluid blur-up lazyload" alt="">
+                                                        <img src="/assets/images/svg/wishlist.png" class="img-fluid blur-up lazyload" alt="">
                                                     </div>
                                                     <div class="order-box-contain">
-                                                        <img src="assets/images/svg/wishlist1.png" class="img-fluid blur-up lazyload" alt="">
+                                                        <img src="/assets/images/svg/wishlist1.png" class="img-fluid blur-up lazyload" alt="">
                                                         <div>
                                                             <h5 class="font-light">wishlist</h5>
                                                             <h3>63874</h3>
@@ -205,164 +205,55 @@
                                 <table class="table cart-table">
                                     <thead>
                                         <tr class="table-head">
-                                            <th scope="col">image</th>
                                             <th scope="col">Order Id</th>
-                                            <th scope="col">Product Details</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Price</th>
+                                            <th scope="col">Ngày Đặt Đơn </th>
+                                            <th  scope="col"> Hình thức thanh toán</th>
+                                            <th scope="col">Trạng thái</th>
+                                            <th scope="col">Tổng Tiền</th>
                                             <th scope="col">View</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach ($orders as $order)
                                         <tr>
+                                    
                                             <td>
-                                                <a href="details.php">
-                                                    <img src="assets/images/fashion/product/front/1.jpg" class="blur-up lazyload" alt="">
-                                                </a>
+                                                <p class="mt-0">{{$order->id}}</p>
+                                            </td>
+                                           
+                                            <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d-m-Y') }}</td>
+                                            <td>{{ $order->payment_type == '0' ? 'Trực tiếp' : 'Online' }}</td>
+                                            <td>
+                                                @if ($order->status == 1)
+                                                <p class="danger-button btn btn-sm">{{\App\Untilities\Constant::$order_status[$order->status]}}</p>
+                                                @else
+                                                <p class="success-button btn btn-sm">{{\App\Untilities\Constant::$order_status[$order->status]}}</p>
+                                                @endif
+                                               
+                                            </td>
+                                           
+                                                @if ($order->status == 1) {{-- Giả sử trạng thái 1 là trạng thái cho phép hủy đơn hàng --}}
+                                                <td>
+                                                <form action="/my_account/dashboard/cancel_order/{{ $order->id }}" method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm">Hủy đơn hàng</button>
+                                                </form>
+                                                </td>
+                                            @endif
+                                            
+                                            <td>
+                                                <p class="theme-color fs-6">
+                                                    {{ number_format($order->total,3)}}VND
+                                                </p>
                                             </td>
                                             <td>
-                                                <p class="mt-0">#125021</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Outwear & Coats</p>
-                                            </td>
-                                            <td>
-                                                <p class="success-button btn btn-sm">Shipped</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:void(0)">
+                                                <a href="/my_account/dashboard/{{$order->id}}">
                                                     <i class="far fa-eye"></i>
                                                 </a>
                                             </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>
-                                                <a href="details.php">
-                                                    <img src="assets/images/fashion/product/front/2.jpg" class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="mt-0">#125367</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Outwear & Coats</p>
-                                            </td>
-                                            <td>
-                                                <p class="danger-button btn btn-sm">Pending</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:void(0)">
-                                                    <i class="far fa-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>
-                                                <a href="details.php">
-                                                    <img src="assets/images/fashion/product/front/3.jpg" class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125948</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Sweatshirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="success-button btn btn-sm">Shipped</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:void(0)">
-                                                    <i class="far fa-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>
-                                                <a href="details.php">
-                                                    <img src="assets/images/fashion/product/front/4.jpg" class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#127569</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Hoodie t-shirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="success-button btn btn-sm">Shipped</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:void(0)">
-                                                    <i class="far fa-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>
-                                                <a href="details.php">
-                                                    <img src="assets/images/fashion/product/front/5.jpg" class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125753</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Hoodie t-shirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="danger-button btn btn-sm">Canceled</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:void(0)">
-                                                    <i class="far fa-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>
-                                                <a href="details.php">
-                                                    <img src="assets/images/fashion/product/front/6.jpg" class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125021</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Sweatshirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="danger-button btn btn-sm">Canceled</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:void(0)">
-                                                    <i class="far fa-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
+                                        </tr>  
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -891,29 +782,4 @@
         </div>
     </section>
     <!-- user dashboard section end -->
-
-    <!-- Subscribe Section Start -->
-    <section class="subscribe-section section-b-space">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-md-6">
-                    <div class="subscribe-details">
-                        <h2 class="mb-3">Subscribe Our News</h2>
-                        <h6 class="font-light">Subscribe and receive our newsletters to follow the news about our fresh
-                            and fantastic Products.</h6>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 mt-md-0 mt-3">
-                    <div class="subsribe-input">
-                        <div class="input-group">
-                            <input type="text" class="form-control subscribe-input" placeholder="Your Email Address">
-                            <button class="btn btn-solid-default" type="button">Button</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- Subscribe Section End -->
 @endsection

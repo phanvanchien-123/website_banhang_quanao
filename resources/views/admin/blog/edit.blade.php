@@ -5,7 +5,7 @@
 @endphp
     <div class="d-flex justify-content-between align-items-center">
         <h2>Cập nhật bài viết</h2>
-        <a href="{{ route('admin.blog.index') }}">Trở về</a>
+        <a href="{{ route('admin.blog.index') }}" class="text-decoration-none"><i class="bi bi-box-arrow-left"></i> Trở về</a>
     </div>
     @include('admin.blog.form')
 

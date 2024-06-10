@@ -13,7 +13,5 @@ class OrderRepository extends BaseRepositories implements OrderRepositoryInterfa
     public function getOrderUserId($userId){
         return $this->model->where('user_id',$userId)->get();
     }
-    public function delete($orderId) {
-        return Order::where('id', $orderId)->delete();
-    }
+   
 }

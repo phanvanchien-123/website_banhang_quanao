@@ -9,7 +9,7 @@ return [
         'prefix' => ['home'],
     ],
     [
-        'icon' => 'fa-brands fa-blogger-b',
+        'icon' => 'bi bi-stickies',
         'name' => 'Bài viết',
         'route' => 'admin.blog.index',
         'routeGroup' => 'admin.blog.*',
@@ -36,7 +36,47 @@ return [
         ],
     ],
     [
-        'icon' => 'fa-solid fa-shirt',
+        'icon' => 'bi bi-tags',
+        'name' => 'Thương hiệu',
+        'route' => 'admin.brand.index',
+        'routeGroup' => 'admin.brand.*',
+        'prefix' => ['brand'],
+        'children' => [
+            [
+                'icon' => '',
+                'name' => 'Danh sách',
+                'route' => 'admin.brand.index',
+
+            ],
+            [
+                'icon' => '',
+                'name' => 'Thêm mới',
+                'route' => 'admin.brand.create',
+
+            ],
+        ],
+    ],
+    [
+        'icon' => 'bi bi-list-nested',
+        'name' => 'Danh mục',
+        'route' => 'admin.category.index',
+        'routeGroup' => 'admin.category.*',
+        'prefix' => ['category'],
+        'children' => [
+            [
+                'icon' => '',
+                'name' => 'Danh sách',
+                'route' => 'admin.category.index',
+            ],
+            [
+                'icon' => '',
+                'name' => 'Thêm mới',
+                'route' => 'admin.category.create',
+            ],
+        ],
+    ],
+    [
+        'icon' => 'bi bi-box-seam',
         'name' => 'Sản phẩm',
         'route' => 'admin.product.index',
         'routeGroup' => 'admin.product.*',
@@ -63,47 +103,23 @@ return [
         ],
     ],
     [
-        'icon' => 'bi bi-list-nested',
-        'name' => 'Danh mục',
-        'route' => 'admin.category.index',
-        'routeGroup' => 'admin.category.*',
-        'prefix' => ['category'],
-        'children' => [
-            [
-                'icon' => '',
-                'name' => 'Danh sách',
-                'route' => 'admin.category.index',
-            ],
-            [
-                'icon' => '',
-                'name' => 'Thêm mới',
-                'route' => 'admin.category.create',
-            ],
-        ],
+        'icon' => 'bi bi-bar-chart-line',
+        'name' => 'Analytics',
+        'route' => 'admin.analytics.index',
+        'routeGroup' => 'admin.analytics.*',
+        'prefix' => ['analytics'],
+
     ],
     [
-        'icon' => 'fa-brands fa-shirtsinbulk',
-        'name' => 'Thương hiệu',
-        'route' => 'admin.brand.index',
-        'routeGroup' => 'admin.brand.*',
-        'prefix' => ['brand'],
-        'children' => [
-            [
-                'icon' => '',
-                'name' => 'Danh sách',
-                'route' => 'admin.brand.index',
+        'icon' => 'bi bi-basket3',
+        'name' => 'Order',
+        'route' => 'admin.order.index',
+        'routeGroup' => 'admin.order.*',
+        'prefix' => ['order'],
 
-            ],
-            [
-                'icon' => '',
-                'name' => 'Thêm mới',
-                'route' => 'admin.brand.create',
-
-            ],
-        ],
     ],
     [
-        'icon' => 'bi bi-people-fill',
+        'icon' => 'bi bi-people',
         'name' => 'Thành viên',
         'route' => 'admin.user.index',
         'routeGroup' => 'admin.user.*',

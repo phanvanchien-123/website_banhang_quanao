@@ -18,6 +18,7 @@ class Blog extends Model
         'image',
         'category',
         'content',
+        'view',
         'user_id',
     ];
 

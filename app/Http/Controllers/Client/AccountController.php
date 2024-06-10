@@ -5,134 +5,51 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\Carts;
 use App\Models\Coupon;
+use App\Service\Order\OrderServiceInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AccountController extends Controller
 {
-    public function index(){
-        return view ('Client.discount.index');
-    }
-    // public function applyCoupon(Request $request)
-    // {
-    //     $code = $request->input('code');
-    // $coupon = Coupon::where('code', $code)->first();
-    // $userId = Auth::id();
-    // $cart = \App\Models\Carts::where('user_id', $userId)->first();
-    // $cartItems = $cart->cartItems;
-    // $totalPrice = $cartItems->sum(function ($item) {
-    //     return $item->price * $item->quantity;
-    // });
-
-    // if ($coupon) {
-    //     // Kiểm tra xem mã giảm giá có hợp lệ không
-    //     if ($coupon->expires_at && Carbon::parse($coupon->expires_at)->isPast()) {
-    //         return response()->json(['success' => false, 'message' => 'Coupon has expired.']);
-    //     }
-
-    //     // Kiểm tra điều kiện tối thiểu của đơn hàng (nếu có)
-    //     if ($coupon->minimum_order_value && $totalPrice < $coupon->minimum_order_value) {
-    //         return response()->json(['success' => false, 'message' => 'Minimum order value not met for this coupon.']);
-    //     }
-
-    //     // Áp dụng mã giảm giá
-    //     if ($coupon->discount_type == 'fixed') {
-    //         $discountAmount = $coupon->discount_value;
-    //     } elseif ($coupon->discount_type == 'percent') {
-    //         $discountAmount = ($totalPrice * $coupon->discount_value) / 100;
-    //     }
-    //     session(['applied_coupon_code' => $code]);
-    //     // Cập nhật giá tổng sau khi áp dụng mã giảm giá
-    //     $totalPrice -= $discountAmount;
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'message' => 'Coupon applied successfully.',
-    //         'discount' => number_format($discountAmount, 3),
-    //         'total' => number_format($totalPrice, 3)
-    //     ]);
-    // } else {
-    //     return response()->json(['success' => false, 'message' => 'Invalid coupon code.']);
-    // }
-    // }
-    public function applyCoupon(Request $request)
+    private $orderService;
+    public function __construct(OrderServiceInterface $orderService)
     {
-        // Lấy mã giảm giá từ yêu cầu
-        $code = $request->input('code');
-        
-        // Tìm mã giảm giá trong cơ sở dữ liệu
-        $coupon = Coupon::where('code', $code)->first();
-        
-        // Lấy ID người dùng hiện tại
-        $userId = Auth::id();
-        
-        // Tìm giỏ hàng của người dùng
-        $cart = \App\Models\Carts::where('user_id', $userId)->first();
-        
-        // Lấy các sản phẩm trong giỏ hàng
-        $cartItems = $cart->cartItems;
-        
-        // Tính tổng giá trị của giỏ hàng
-        $totalPrice = $cartItems->sum(function ($item){
-            return $item->price * $item->quantity;
-        });
-    
-        // Kiểm tra nếu mã giảm giá tồn tại
-        if ($coupon) {
-            // Kiểm tra xem mã giảm giá có hết hạn không
-            if ($coupon->expires_at && Carbon::parse($coupon->expires_at)->isPast()) {
-                return response()->json(['success' => false, 'message' => 'Coupon has expired.']);
-            }
-    
-            // Kiểm tra điều kiện tối thiểu của đơn hàng (nếu có)
-            if ($coupon->minimum_order_value && $totalPrice < $coupon->minimum_order_value) {
-                return response()->json(['success' => false, 'message' => 'Minimum order value not met for this coupon.']);
-            }
-    
-            // Kiểm tra xem mã giảm giá có vượt quá số lần sử dụng không
-            if ($coupon->usage_limit && $coupon->used_count >= $coupon->usage_limit) {
-                return response()->json(['success' => false, 'message' => 'Coupon usage limit has been reached.']);
-            }
-    
-            // Tính toán giá trị giảm giá
-            $discountAmount = 0;
-            if ($coupon->discount_type == 'fixed') {
-                $discountAmount = $coupon->discount_value;
-            } elseif ($coupon->discount_type == 'percent') {
-                $discountAmount = ($totalPrice * $coupon->discount_value) / 100;
-            }
-    
-            // Cập nhật tổng giá sau khi áp dụng giảm giá
-            $totalPrice -= $discountAmount;
-    
-            // Lưu mã giảm giá vào session
-            session(['applied_coupon_code' => $code]);
-    
-            // Tăng số lần sử dụng của mã giảm giá
-            $coupon->used_count += 1;
-            $coupon->save();
-    
-            // Trả về phản hồi JSON
-            return response()->json(['success' => true, 'discount' => number_format($discountAmount, 2), 'total' => number_format($totalPrice, 2), 'message' => 'Coupon applied successfully.']);
-        } else {
-            // Mã giảm giá không hợp lệ
-            return response()->json(['success' => false, 'message' => 'Invalid coupon code.']);
-        }
+        $this->orderService= $orderService;
     }
-    
-    public function removeCoupon(Request $request)
-{
-    $userId = Auth::id();
-    $cart = Carts::where('user_id', $userId)->first();
-    $cartItems = $cart->cartItems;
-    $totalPrice = $cartItems->sum(function ($item) {
-        return $item->price * $item->quantity;
-    });
-
-    session()->forget('applied_coupon_code');
-
-    return response()->json(['success' => true, 'total' => number_format($totalPrice, 3), 'message' => 'Coupon removed successfully.']);
+   
+    public function index(){
+        $orders = $this->orderService->getOrderUserId(Auth::id());
+        $ordersCount = count($orders);
+        $pendingOrdersCount = 0;
+foreach ($orders as $order) {
+    if ($order->status === 1) {
+        $pendingOrdersCount++;
+    }
 }
+
+        return view('Client.my_account.index',compact('orders','ordersCount','pendingOrdersCount'));
+    }
+    public function show($id){
+        
+        $order = $this->orderService->find($id);
+        return view('Client.my_account.show',compact('order'));
+    }
+    public function cancelOrder($id)
+    {
+        // Tìm đơn hàng theo ID
+        $order = $this->orderService->find($id);
+
+        // Kiểm tra xem đơn hàng có tồn tại và có thể hủy không
+        if ($order && $order->status == 1) { // Giả sử trạng thái 1 là trạng thái có thể hủy
+            // Thay đổi trạng thái đơn hàng
+            $order->status = 0; // Giả sử trạng thái 0 là trạng thái đã hủy
+            $order->save();
+
+            return redirect()->back()->with('success', 'Đơn hàng đã được hủy.');
+        }
+
+        return redirect()->back()->with('error', 'Không thể hủy đơn hàng này.');
+    }
     
 }
