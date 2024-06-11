@@ -11,7 +11,5 @@ class OrderDetailService extends BaseService implements OrderDetailServiceInterf
     public function __construct(OrderDetailRepositoryInterface $OrderDetailRepository){
         $this->repository = $OrderDetailRepository;
     }
-    public function deleteByOrderId($orderId){
-        $this ->repository->deleteByOrderId($orderId);
-    }
+    
 }

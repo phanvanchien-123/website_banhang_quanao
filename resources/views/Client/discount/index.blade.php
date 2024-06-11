@@ -1,14 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discount Codes</title>
-    <!-- Bootstrap CSS -->
+@extends('layouts.master')
+@section('content')
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link href="css/styles.css" rel="stylesheet">
-</head>
 <style>
     .discount-item {
     border: 1px solid #ddd;
@@ -34,7 +26,7 @@
 }
 
 .copy-button {
-    background-color: #28a745;
+    background-color: #d78650;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -44,42 +36,189 @@
 }
 
 .copy-button:hover {
-    background-color: #218838;
+    background-color: #d78650;
+}
+.copy-button1 {
+    background-color: #e5650f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.copy-button1:hover {
+    background-color: #d9610b;
 }
 
 </style>
-<body>
-    <div class="container mt-5">
-        <h1 class="mb-4">Current Discounts</h1>
-        <div class="row">
-            <!-- Discount Item -->
-            <div class="col-md-4">
-                <div class="discount-item">
-                    <h2>Code: <strong>SUMMER20</strong></h2>
-                    <p>Type: Percent</p>
-                    <p>Value: 20%</p>
-                    <p>Expires At: 2024-12-31</p>
-                    <button class="copy-button" data-code="SUMMER20">Copy Code</button>
-                </div>
+
+{{-- <div class="container mt-5">
+    <h1 class="mb-4">Lấy Mã Giảm Giá Của Cửa Hàng Tại Đây </h1>
+    <div class="row">
+        <!-- Discount Item -->
+        @foreach ($coupons as $item)
+        <div class="col-md-4">
+           
+            <div class="discount-item">
+                <h2>Code: <strong>{{$item->code}}</strong></h2>
+                <p>Kiểu giảm giá : {{$item->discount_type}}</p>
+                <p>Giá Trị Giảm Giá : {{$item->discount_value}} </p>
+                <p>Giảm Cho Đơn Hàng từ : {{$item->minimum_order_value}}</p>
+                @if ($item ->usage_limit-$item->used_count > 0)
+                <p>Số Lượt mã Còn Lại :  {{$item ->usage_limit-$item->used_count}}</p>
+                @else
+                <ins><span class="text-brand"> Đã Hết Lượt Sử Dụng  </span></ins> 
+                @endif
+              
+                <button class="copy-button" data-code="SUMMER20">Copy Code</button>
+            </div>  
+          
+            
+        </div>
+        @endforeach
+        
+        <!-- More discount items can be added here -->
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="copyModal" tabindex="-1" aria-labelledby="copyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="copyModalLabel">Discount Code Copied</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <!-- More discount items can be added here -->
+            <div class="modal-body">
+                The discount code <strong id="modal-code"></strong> has been copied to your clipboard.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
+</div>
 
-    <!-- jQuery and Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Custom JS -->
-    <script>
-        document.querySelectorAll('.copy-button').forEach(button => {
-            button.addEventListener('click', () => {
-                const code = button.getAttribute('data-code');
-                navigator.clipboard.writeText(code).then(() => {
-                    alert('Discount code copied to clipboard: ' + code);
-                });
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Custom JS -->
+<script>
+    document.querySelectorAll('.copy-button').forEach(button => {
+        button.addEventListener('click', () => {
+            const code = button.getAttribute('data-code');
+            navigator.clipboard.writeText(code).then(() => {
+                document.getElementById('modal-code').textContent = code;
+                $('#copyModal').modal('show');
             });
         });
-    </script>
-</body>
-</html>
+    });
+
+
+    document.querySelector('.close').addEventListener('click', () => {
+        $('#copyModal').modal('hide');
+    });
+
+    document.querySelector('.btn-secondary').addEventListener('click', () => {
+        $('#copyModal').modal('hide');
+    });
+</script> --}}
+<div class="container mt-5">
+    <h1 class="mb-4">Lấy Mã Giảm Giá Của Cửa Hàng Tại Đây</h1>
+    <div class="row">
+        <!-- Discount Item -->
+        {{-- <div class="col-md-4">
+            <div class="discount-item">
+                <h2>Code: <strong>SUMMER20</strong></h2>
+                <p>Type: Percent</p>
+                <p>Value: 20%</p>
+                <p>Expires At: 2024-12-31</p>
+                <p>Usage: 50% of codes have been used</p> <!-- Usage information -->
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                </div>
+                <button class="copy-button" data-code="SUMMER20">Copy Code</button>
+            </div>
+        </div> --}}
+        @foreach ($coupons as $item)
+        <div class="col-md-4">
+           
+            <div class="discount-item">
+                <h2>Code: <strong>{{$item->code}}</strong></h2>
+                <p>Kiểu giảm giá : {{$item->discount_type}}</p>
+                <p>Giá Trị Giảm Giá : {{$item->discount_value}} </p>
+                <p>Giảm Cho Đơn Hàng từ : {{$item->minimum_order_value}}</p>
+                @if ($item ->usage_limit-$item->used_count > 0)
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width:{{($item->used_count)}}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{{($item->used_count)}}%</div>
+                </div>
+                @else
+               <div>Đã Hết Lượt Sử Dụng</div>
+                @endif <br>
+                @if ($item ->usage_limit-$item->used_count > 0)
+                <button class="copy-button1" data-code="{{$item->code}}">Copy Code</button>
+                @else
+                <button class="copy-button" >Copy Code</button>
+                @endif
+            </div>  
+          
+            
+        </div>
+        @endforeach
+        <!-- More discount items can be added here -->
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="copyModal" tabindex="-1" aria-labelledby="copyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="copyModalLabel">Discount Code Copied</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Mã giảm giá <strong id="modal-code"></strong> đã được lấy thành công
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Custom JS -->
+<script>
+    document.querySelectorAll('.copy-button1').forEach(button => {
+        button.addEventListener('click', () => {
+            const code = button.getAttribute('data-code');
+            navigator.clipboard.writeText(code).then(() => {
+                document.getElementById('modal-code').textContent = code;
+                $('#copyModal').modal('show');
+            });
+        });
+    });
+
+
+    document.querySelector('.close').addEventListener('click', () => {
+        $('#copyModal').modal('hide');
+    });
+
+    document.querySelector('.btn-secondary').addEventListener('click', () => {
+        $('#copyModal').modal('hide');
+    });
+</script>
+    
+@endsection
+

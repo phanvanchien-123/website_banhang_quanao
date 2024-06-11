@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin;
 use App\Http\Controllers\Admin\AdminCouponController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\CheckOutController;
+use App\Http\Controllers\Client\CouponController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\ShopController;
 use Illuminate\Support\Facades\Route;
@@ -22,8 +23,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/',[HomeController::class,'index']);
-Route::post('/apply-coupon', [AccountController::class, 'applyCoupon'])->name('apply.coupon');
-Route::post('/remove-coupon', [AccountController::class, 'removeCoupon'])->name('remove.coupon');
+
 Route::prefix('/shop')->group(function(){
         Route::get('',[ShopController::class,'index'])->name('client.shop.index');
         Route::get('/details/{id}',[ShopController::class,'show'])->name('Client.shop.show');
@@ -49,11 +49,18 @@ Route::middleware(['auth'])->group(function () {
     });
 
 });
+Route::prefix('voucher_discount')->group(function(){
+    Route::get('/',[CouponController::class,'index'])->name('index.coupon');
+    Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');
+    Route::post('/remove-coupon', [CouponController::class, 'removeCoupon'])->name('remove.coupon');
+});
 
 Route::middleware('auth')->group(function(){
     Route::prefix('my_account')->group(function(){
         Route::prefix('dashboard')->group(function(){
             Route::get('/',[AccountController::class,'index'])->name('dashboard.index');
+            Route::get('{id}',[AccountController::class,'show']);
+            Route::delete('/cancel_order/{id}', [AccountController::class, 'cancelOrder'])->name('order.cancel');
         });
     });
 });

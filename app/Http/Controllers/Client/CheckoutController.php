@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart_items;
 use App\Models\Carts;
 use App\Models\Coupon;
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\ProductDetail;
 use App\Service\Order\OrderServiceInterface;
 use App\Service\OrderDetail\OrderDetailService;
 use App\Service\OrderDetail\OrderDetailServiceInterface;
@@ -56,70 +59,91 @@ class CheckoutController extends Controller
     }
     public function addOrder(Request $request)
     {
-        // Thêm đơn hàng mới
-        $data = $request->all();
-        $data['status'] = Constant::order_status_ReceiveOrders;
-        $order = $this->orderService->create($data);
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'phone' => 'required|string|max:15',
+            'email' => 'required|email|max:255',
+            'street_address' => 'required|string|max:255',
+            'town_city' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'postcode_zip' => 'required|string|max:10',
+            'payment_type' => 'required|in:0,1',
+            'applied_coupon_code' => 'nullable|string|max:255', // Add validation for the coupon code
+        ]);
+        $couponCode = $validated['applied_coupon_code'];
+    $coupon = Coupon::where('code', $couponCode)->first();
+    $order = new Order();
+    $order->user_id = auth()->id();
+    $order->first_name = $validated['first_name'];
+    $order->last_name = $validated['last_name'];
+    $order->phone = $validated['phone'];
+    $order->email = $validated['email'];
+    $order->street_address = $validated['street_address'];
+    $order->town_city = $validated['town_city'];
+    $order->country = $validated['country'];
+    $order->status = Constant::order_status_ReceiveOrders;
+    $order->payment_type = $validated['payment_type'];
+    $order->coupon_id= $coupon->id ?? null;
     
-        // Lấy thông tin giỏ hàng của người dùng
-        $userId = Auth::id();
-        $cart = Carts::where('user_id', $userId)->firstOrFail();
-        $cartItems = $cart->cartItems;
+    $userId = Auth::id();
+    $cart = Carts::where('user_id', $userId)->firstOrFail();
+    $cartItems = $cart->cartItems;
     
-        // Tính tổng giá trị của giỏ hàng
-        $totalPrice = $cartItems->sum(function ($item) {
-            return $item->price * $item->quantity;
-        });
+    // Tính tổng giá trị của giỏ hàng
+    $totalPrice = $cartItems->sum(function ($item) {
+        return $item->price * $item->quantity;
+    });
     
-        // Kiểm tra mã giảm giá
-        $discountAmount = 0;
-        if ($request->has('applied_coupon_code')) {
-            $couponCode = $request->input('applied_coupon_code');
-            $coupon = Coupon::where('code', $couponCode)->first();
-    
-            if ($coupon) {
-                // Kiểm tra xem mã giảm giá có hợp lệ không
-                if ($coupon->expires_at && Carbon::parse($coupon->expires_at)->isPast()) {
-                    return redirect()->back()->with('error', 'Coupon has expired.');
-                }
-    
-                // Kiểm tra điều kiện tối thiểu của đơn hàng (nếu có)
-                if ($coupon->minimum_order_value && $totalPrice < $coupon->minimum_order_value) {
-                    return redirect()->back()->with('error', 'Minimum order value not met for this coupon.');
-                }
-    
-                // Áp dụng mã giảm giá
-                if ($coupon->discount_type == 'fixed') {
-                    $discountAmount = $coupon->discount_value;
-                } elseif ($coupon->discount_type == 'percent') {
-                    $discountAmount = ($totalPrice * $coupon->discount_value) / 100;
-                }
-    
-                // Cập nhật tổng giá sau khi áp dụng mã giảm giá
-                $totalPrice -= $discountAmount;
+    // Kiểm tra mã giảm giá
+    $discountAmount = 0;
+    if ($request->has('applied_coupon_code')) {
+        $couponCode = $request->input('applied_coupon_code');
+        $coupon = Coupon::where('code', $couponCode)->first();
+        if ($coupon) {
+            if ($coupon->discount_type == 'fixed') {
+                $discountAmount = $coupon->discount_value;
+            } elseif ($coupon->discount_type == 'percent') {
+                $discountAmount = ($totalPrice * $coupon->discount_value) / 100;
             }
+            // Cập nhật tổng giá sau khi áp dụng mã giảm giá
+            $totalPrice -= $discountAmount;
+            $coupon->used_count += 1;
+            $coupon->save();
         }
+    }
+    // Lưu tổng giá trị đơn hàng vào cơ sở dữ liệu
+    $order->total = $totalPrice;
+    $order->save();
+    foreach ($cartItems as $cartItem) {
+        $product = Product::find($cartItem->product_id);
+        $productDetail = ProductDetail::where('product_id', $cartItem->product_id)
+                                       ->where('size', $cartItem->size)
+                                       ->where('color', $cartItem->color)
+                                       ->first();
     
-        // Tính toán lại giá cho từng mục trong giỏ hàng và lưu vào chi tiết đơn hàng
-        foreach ($cartItems as $cartItem) {
-            $itemTotal = $cartItem->price * $cartItem->quantity;
-        //    $itemDiscount = ($discountAmount / $totalPrice) * $itemTotal; // Chia giảm giá theo tỷ lệ từng sản phẩm
-            $discountedPrice = $itemTotal - $discountAmount;
+      // Trừ số lượng từ bảng sản phẩm và chi tiết sản phẩm
+       $product->qty -= $cartItem->quantity;
+       $productDetail->qty -= $cartItem->quantity;
+
+       $product->save();
+       $productDetail->save();
+    }
+    // Tính toán lại giá cho từng mục trong giỏ hàng và lưu vào chi tiết đơn hàng
+    foreach ($cartItems as $cartItem) {
+        $data = [
+            'order_id' => $order->id,
+            'product_id' => $cartItem->product_id,
+            'qty' => $cartItem->quantity,
+            'amount' => $cartItem->price,
+            'total' => $cartItem->quantity * $cartItem->price,
+            'size' => $cartItem->size,
+            'color' => $cartItem->color,
+        ];
+        $this->orderDetailService->create($data);
+    }
     
-            $data = [
-                'order_id' => $order->id,
-                'product_id' => $cartItem->product_id,
-                'qty' => $cartItem->quantity,
-                'amount' => $cartItem->price,
-                'total' => $discountedPrice, // Giá đã giảm cho từng mục
-                'size' => $cartItem->size,
-                'color' => $cartItem->color,
-                'coupon_id' => $coupon ? $coupon->id : null, // Thêm mã giảm giá vào chi tiết đơn hàng
-            ];
-            $this->orderDetailService->create($data);
-        }
-    
-        if ($request->payment_type == 'pay_later') {
+        if ($request->payment_type == 0) {
             // Gửi Email (nếu cần)
             // $this->sendMail($order, $totalPrice);
     
@@ -132,93 +156,82 @@ class CheckoutController extends Controller
             return "Thành Công";
         }
     }
-    
-    
-    // public function addOrder(Request $request){
-    //      // thêm đơn hàng 
-    //      $data = $request->all();
-    //      $data['status'] = Constant::order_status_ReceiveOrders;
-    //      $order = $this->orderService->create($data);
-    //       //Thêm chi tiết đơn hàng 
-    //     $userId = Auth::id();
-    //     $cart = Carts::where('user_id', $userId)->firstOrFail(); // Lấy giỏ hàng của người dùng
-    //     // Lấy tất cả các mục trong giỏ hàng và tính tổng giá
-    //     $cartItems = $cart->cartItems;
-    //     $totalPrice = $cartItems->sum(function ($item) {
-    //         return $item->price * $item->quantity;
-    //     });
-    //     // Kiểm tra mã giảm giá
-    // $discountAmount = 0;
-    // if ($request->has('coupon_code')) {
-    //     $couponCode = $request->input('coupon_code');
-    //     $coupon = Coupon::where('code', $couponCode)->first();
-
-    //     if ($coupon) {
-    //         // Kiểm tra xem mã giảm giá có hợp lệ không
-    //         if ($coupon->expires_at && Carbon::parse($coupon->expires_at)->isPast()) {
-    //             return redirect()->back()->with('error', 'Coupon has expired.');
-    //         }
-
-    //         // Kiểm tra điều kiện tối thiểu của đơn hàng (nếu có)
-    //         if ($coupon->minimum_order_value && $totalPrice < $coupon->minimum_order_value) {
-    //             // Đơn hàng không đạt điều kiện tối thiểu để sử dụng mã giảm giá
-    //             return redirect()->back()->with('error', 'Minimum order value not met for this coupon.');
-    //         }
-
-    //         // Áp dụng mã giảm giá
-    //         if ($coupon->discount_type == 'fixed') {
-    //             $discountAmount = $coupon->discount_value;
-    //         } elseif ($coupon->discount_type == 'percent') {
-    //             $discountAmount = ($totalPrice * $coupon->discount_value) / 100;
-    //         }
-
-    //         // Cập nhật giá tổng sau khi áp dụng mã giảm giá
-    //         $totalPrice -= $discountAmount;
-    //     }
-    // }
-    //     // Tính lại và lưu giá đã giảm cho từng mục trong giỏ hàng
-    // $itemDiscount = $discountAmount / $cartItems->count(); // Giả định rằng mã giảm giá được chia đều cho từng sản phẩm
-    // foreach($cartItems as $cartItem){
-    //     $discountedPrice = ($cartItem->price * $cartItem->quantity) - $itemDiscount;
-    //     $data = [
-    //         'order_id' => $order->id,
-    //         'product_id' => $cartItem->product_id,
-    //         'qty' => $cartItem->quantity,
-    //         'amount' => $cartItem->price,
-    //         'total' => $discountedPrice,
-    //         'size' => $cartItem->size,
-    //         'color' => $cartItem->color,
-    //     ];
-    //         $this->orderDetailService->create($data);
-    //     }
-    //     if($request->payment_type == 'pay_later'){
-    //         // gửi Email 
-    //         // $this->sendMail($order,$subtotal);
-    //          // Xóa giỏ hàng 
-    //          Cart_items::whereHas('cart', function ($query) use ($userId) {
-    //             $query->where('user_id', $userId);
-    //         })
-    //             ->delete();
-    //     // trả về kết quả thông báo 
-    //     return"Thành Công ";
-    //     } 
-    // }
     public function vnPayCheck(Request $request){
-        // thêm đơn hàng 
-        $data = $request->all();
-        $data['status'] = Constant::order_status_ReceiveOrders;
-        $orders = $this->orderService->create($data);
-        //Thêm chi tiết đơn hàng 
+         $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'phone' => 'required|string|max:15',
+            'email' => 'required|email|max:255',
+            'street_address' => 'required|string|max:255',
+            'town_city' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'postcode_zip' => 'required|string|max:10',
+            'payment_type' => 'required|in:0,1',
+            'applied_coupon_code' => 'nullable|string|max:255', // Add validation for the coupon code
+        ]);
+        $couponCode = $validated['applied_coupon_code'];
+        $coupon = Coupon::where('code', $couponCode)->first();
+        $order = new Order();
+        $order->user_id = auth()->id();
+        $order->first_name = $validated['first_name'];
+        $order->last_name = $validated['last_name'];
+        $order->phone = $validated['phone'];
+        $order->email = $validated['email'];
+        $order->street_address = $validated['street_address'];
+        $order->town_city = $validated['town_city'];
+        $order->country = $validated['country'];
+        $order->status = Constant::order_status_ReceiveOrders;
+        $order->payment_type = $validated['payment_type'];
+        $order->coupon_id= $coupon->id ?? null;
+        
         $userId = Auth::id();
-        $cart = Carts::where('user_id', $userId)->firstOrFail(); // Lấy giỏ hàng của người dùng
-        // Lấy tất cả các mục trong giỏ hàng và tính tổng giá
+        $cart = Carts::where('user_id', $userId)->firstOrFail();
         $cartItems = $cart->cartItems;
+        
+        // Tính tổng giá trị của giỏ hàng
         $totalPrice = $cartItems->sum(function ($item) {
             return $item->price * $item->quantity;
         });
+        
+        // Kiểm tra mã giảm giá
+        $discountAmount = 0;
+        if ($request->has('applied_coupon_code')) {
+            $couponCode = $request->input('applied_coupon_code');
+            $coupon = Coupon::where('code', $couponCode)->first();
+            if ($coupon) {
+                if ($coupon->discount_type == 'fixed') {
+                    $discountAmount = $coupon->discount_value;
+                } elseif ($coupon->discount_type == 'percent') {
+                    $discountAmount = ($totalPrice * $coupon->discount_value) / 100;
+                }
+                // Cập nhật tổng giá sau khi áp dụng mã giảm giá
+                $totalPrice -= $discountAmount;
+                $coupon->used_count += 1;
+                $coupon->save();
+            }
+        }
+        // Lưu tổng giá trị đơn hàng vào cơ sở dữ liệu
+        $order->total = $totalPrice;
+        $order->save();
+
+        foreach ($cartItems as $cartItem) {
+            $product = Product::find($cartItem->product_id);
+            $productDetail = ProductDetail::where('product_id', $cartItem->product_id)
+                                           ->where('size', $cartItem->size)
+                                           ->where('color', $cartItem->color)
+                                           ->first();
+        
+          // Trừ số lượng từ bảng sản phẩm và chi tiết sản phẩm
+           $product->qty -= $cartItem->quantity;
+           $productDetail->qty -= $cartItem->quantity;
+    
+           $product->save();
+           $productDetail->save();
+        }
+
         foreach($cartItems as $cart){
             $data = [
-                'order_id'=>$orders->id,
+                'order_id'=>$order->id,
                 'product_id'=>$cart->product_id,
                 'qty'=>$cart->quantity,
                 'amount'=>$cart->price,
@@ -229,7 +242,7 @@ class CheckoutController extends Controller
             ];
             $this->orderDetailService->create($data);
         }
-        if($request->payment_type == 'online_payment'){
+        if($request->payment_type == 1){
             $orders = $this->orderService->all();
             $userId = Auth::id();
         $cart = Carts::where('user_id', $userId)->firstOrFail(); // Lấy giỏ hàng của người dùng
@@ -238,6 +251,7 @@ class CheckoutController extends Controller
         $subtotal = $cartItems->sum(function ($item) {
             return $item->price * $item->quantity;
         });
+
             error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
             date_default_timezone_set('Asia/Ho_Chi_Minh');
         
