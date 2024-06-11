@@ -27,6 +27,7 @@
                             <option value="1" {{ $item->status == 1 ? 'selected' : '' }}>Chờ Xác nhận đơn hàng</option>
                             <option value="2" {{ $item->status == 2 ? 'selected' : '' }}>Chưa được xác nhận</option>
                             <option value="3" {{ $item->status == 3 ? 'selected' : '' }}>Xác nhận</option>
+                            {{-- <option value="3" {{ $item->status == 4 ? 'selected' : '' }}>Đã trả tiền</option> --}}
                             <option value="5" {{ $item->status == 5 ? 'selected' : '' }}>Xử lý</option>
                             <option value="6" {{ $item->status == 6 ? 'selected' : '' }}>Đang chuyển hàng</option>
                             <option value="7" {{ $item->status == 7 ? 'selected' : '' }}>Hoàn thành</option>
@@ -40,6 +41,8 @@
             @endforeach
         </tbody>
     </table>
+    {{$orders->withQueryString()->links('Client.pagination.default')}}
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

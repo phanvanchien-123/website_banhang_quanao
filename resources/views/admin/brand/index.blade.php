@@ -30,6 +30,8 @@
                 @endforeach
               </tbody>
         </table>
+        {{$brands->withQueryString()->links('Client.pagination.default')}}
+        
     </div>
 
 @endsection

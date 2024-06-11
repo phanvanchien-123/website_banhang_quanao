@@ -82,16 +82,18 @@ class ProductController extends Controller
             
 
             $dataDetails = $request->only('size', 'color', 'qty2');
-
-            // Lặp qua các mảng size, color và qty2 để lưu vào bảng product_detail
-            foreach ($dataDetails['size'] as $index => $size) {
-                ProductDetail::create([
-                    'product_id' => $product->id, 
-                    'size' => $size,
-                    'color' => $dataDetails['color'][$index],
-                    'qty' => $dataDetails['qty2'][$index],
-                ]);
+            if($dataDetails){
+                foreach ($dataDetails['size'] as $index => $size) {
+                    ProductDetail::create([
+                        'product_id' => $product->id, 
+                        'size' => $size,
+                        'color' => $dataDetails['color'][$index],
+                        'qty' => $dataDetails['qty2'][$index],
+                    ]);
+                }
             }
+
+            
 
             return redirect()->route('admin.product.index')->with(['success' => 'Thêm mới sản phẩm thành công']);
 
@@ -227,6 +229,29 @@ class ProductController extends Controller
 
         return redirect()->back();
 
+    }
+
+    public function stock(Request $request) 
+    {
+        $filter = $request->input('filter');
+
+        switch ($filter) {
+            case 'lt6m':
+                $products = Product::whereDate('created_at', '>', now()->subMonths(6))->where('qty', '>', 0)->get();
+                break;
+            case '6m1y':
+                $products = Product::whereDate('created_at', '<=', now()->subMonths(6))
+                    ->whereDate('created_at', '>', now()->subYear())->where('qty', '>', 0)->get();
+                break;
+            case 'gt1y':
+                $products = Product::whereDate('created_at', '<=', now()->subYear())->where('qty', '>', 0)->get();
+                break;
+            default:
+                $products = Product::where('qty', '>', 0)->get();
+                break;
+        }
+
+        return view('admin.product.stock', compact('products'));
     }
 
     public function cmt()

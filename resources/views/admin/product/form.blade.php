@@ -183,19 +183,28 @@
                     @forelse ($product->productDetails ?? [] as $index => $item)
                         <div class="d-flex">
                             <div class="mb-3">
-                                <label for="size{{ $index }}" class="form-label">Size: </label>
+                                <label for="size{{ $index }}" class="form-label">Size:</label>
                                 <input type="text" class="form-control" id="size{{ $index }}"
                                     placeholder="" name="size[]" value="{{ $item->size }}">
+                                @error('size.*')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="color{{ $index }}" class="form-label">Color</label>
                                 <input type="text" class="form-control" id="color{{ $index }}"
                                     placeholder="" name="color[]" value="{{ $item->color }}">
+                                @error('color.*')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="qty{{ $index }}" class="form-label">Số lượng</label>
                                 <input type="number" class="form-control" id="qty{{ $index }}"
                                     placeholder="" name="qty2[]" value="{{ $item->qty }}">
+                                @error('qty2.*')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <button type="button" class="btn-close removeAttributeBtn"
@@ -208,16 +217,25 @@
                                 <label for="size0" class="form-label">Size: </label>
                                 <input type="text" class="form-control" id="size0" placeholder=""
                                     name="size[]" value="">
+                                @error('size.*')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="color0" class="form-label">Color</label>
                                 <input type="text" class="form-control" id="color0" placeholder=""
                                     name="color[]" value="">
+                                @error('color.*')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="qty0" class="form-label">Số lượng</label>
                                 <input type="number" class="form-control" id="qty0" placeholder=""
                                     name="qty2[]" value="">
+                                @error('qty2.*')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <button type="button" class="btn-close removeAttributeBtn"

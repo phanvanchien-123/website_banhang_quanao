@@ -2,10 +2,19 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
-            <h2>Sản phẩm</h2> &nbsp&nbsp&nbsp&nbsp|<a href="{{ route('admin.product.stock') }}">Kho hàng</a>
+            <h2>Kho hàng</h2>
         </div>
-        <a href="{{ route('admin.product.create') }}" class="text-decoration-none"><i class="bi bi-plus-square"></i> Thêm
-            mới</a>
+        <a href="{{ route('admin.product.index') }}" class="text-decoration-none"><i class="bi bi-box-arrow-left"></i> Trở về</a>
+    </div>
+    <div class="">
+        <form action="" method="GET" id="filterForm">
+            <select name="filter" id="filterSelect">
+                <option value="all" {{ request()->input('filter') == 'all' ? 'selected' : '' }}>Tất cả</option>
+                <option value="lt6m" {{ request()->input('filter') == 'lt6m' ? 'selected' : '' }}>Dưới 6 tháng</option>
+                <option value="6m1y" {{ request()->input('filter') == '6m1y' ? 'selected' : '' }}>Từ 6 tháng đến 1 năm</option>
+                <option value="gt1y" {{ request()->input('filter') == 'gt1y' ? 'selected' : '' }}>Trên 1 năm</option>
+            </select>
+        </form>
     </div>
     <div class="input-group flex-nowrap my-3">
         <span class="input-group-text" id="addon-wrapping">@</span>
@@ -41,8 +50,7 @@
                         <td>{{ number_format($item->price, 0, ',', '.') }} đ</td>
                         <td>{{ $item->created_at }}</td>
                         <td>
-                            <a href="{{ route('admin.product.edit', $item->id) }}"><i class="bi bi-pencil-square"></i></a>
-                            |
+                            <a href="{{ route('admin.product.edit', $item->id) }}"><i class="bi bi-pencil-square"></i></a> |
                             <a href="{{ route('admin.product.delete', $item->id) }}"><i class="bi bi-trash2-fill"></i></a>
                         </td>
                     </tr>
@@ -50,6 +58,12 @@
 
             </tbody>
         </table>
-        {{ $products->withQueryString()->links('Client.pagination.default') }}
+        {{-- {{ $products->withQueryString()->links('Client.pagination.default') }} --}}
     </div>
+
+    <script>
+        document.getElementById('filterSelect').addEventListener('change', function() {
+            document.getElementById('filterForm').submit();
+        });
+    </script>
 @endsection

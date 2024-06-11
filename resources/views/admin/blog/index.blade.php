@@ -32,5 +32,6 @@
                 @endforeach
             </tbody>
         </table>
+        {{$blogs->withQueryString()->links('Client.pagination.default')}}
     </div>
 @endsection

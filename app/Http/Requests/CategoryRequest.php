@@ -23,7 +23,7 @@ class CategoryRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'avatar' => 'required',
+            // 'avatar' => 'required',
             
         ];
     }
@@ -31,7 +31,7 @@ class CategoryRequest extends FormRequest
     public function messages(){
         return [
             'name.required' => 'Tên danh mục không được để trống',
-            'name.required' => 'hình ảnh không được để trống',
+            // 'name.required' => 'hình ảnh không được để trống',
         ];
     }
 }

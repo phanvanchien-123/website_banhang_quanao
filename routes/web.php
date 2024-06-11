@@ -61,17 +61,6 @@ Auth::routes();
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' =>'auth'], function () {
     Route::get('home',[Admin\HomeController::class,'index']) ->name('admin.home.index');
-    Route::group(['prefix' => 'coupon' ] , function () {
-        Route::get('',[Admin\AdminCouponController::class,'index']) ->name('admin.coupon.index');
-        Route::get('create',[Admin\AdminCouponController::class,'create']) ->name('admin.coupon.create');
-        Route::post('store',[Admin\AdminCouponController::class,'store']) ->name('admin.coupon.store');
-
-        Route::get('edit/{id}',[Admin\AdminCouponController::class,'edit']) ->name('admin.coupon.edit');
-        Route::post('update/{id}',[Admin\AdminCouponController::class,'update']) ->name('admin.coupon.update');
-
-        Route::get('delete/{id}',[Admin\AdminCouponController::class,'delete']) ->name('admin.coupon.delete');
-
-    });
     Route::group(['prefix' => 'blog' ] , function () {
         Route::get('',[Admin\BlogController::class,'index']) ->name('admin.blog.index');
 
@@ -98,6 +87,18 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' =>'auth'
 
         Route::get('delete/{id}',[Admin\BrandController::class,'delete']) ->name('admin.brand.delete');      
     });
+
+    Route::group(['prefix' => 'coupon' ] , function () {
+        Route::get('',[Admin\AdminCouponController::class,'index']) ->name('admin.coupon.index');
+        Route::get('create',[Admin\AdminCouponController::class,'create']) ->name('admin.coupon.create');
+        Route::post('store',[Admin\AdminCouponController::class,'store']) ->name('admin.coupon.store');
+
+        Route::get('edit/{id}',[Admin\AdminCouponController::class,'edit']) ->name('admin.coupon.edit');
+        Route::post('update/{id}',[Admin\AdminCouponController::class,'update']) ->name('admin.coupon.update');
+
+        Route::get('delete/{id}',[Admin\AdminCouponController::class,'delete']) ->name('admin.coupon.delete');
+
+    });
     
     Route::group(['prefix' => 'category' ] , function () {
         Route::get('',[Admin\CategoryController::class,'index']) ->name('admin.category.index');
@@ -119,6 +120,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' =>'auth'
         Route::post('update/{id}',[Admin\ProductController::class,'update']) ->name('admin.product.update');
 
         Route::get('delete/{id}',[Admin\ProductController::class,'delete']) ->name('admin.product.delete');   
+
+        Route::get('stock',[Admin\ProductController::class,'stock']) ->name('admin.product.stock');
+
 
         Route::get('cmt',[Admin\ProductController::class,'cmt']) ->name('admin.product.cmt');
         Route::patch('cmt/{id}', [Admin\ProductController::class, 'updateCmt'])->name('admin.product.updateCmt');  
@@ -182,55 +186,3 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' =>'auth'
     });
   
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
