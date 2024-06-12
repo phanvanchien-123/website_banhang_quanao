@@ -68,6 +68,9 @@ Auth::routes();
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' =>'auth'], function () {
     Route::get('home',[Admin\HomeController::class,'index']) ->name('admin.home.index');
+
+    Route::get('/notifications', [Admin\NotificationController::class, 'fetch'])->name('notifications.fetch');
+
     Route::group(['prefix' => 'blog' ] , function () {
         Route::get('',[Admin\BlogController::class,'index']) ->name('admin.blog.index');
 

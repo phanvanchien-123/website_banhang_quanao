@@ -33,7 +33,7 @@ class AnalyticsController extends Controller
         // Sales & Profit
             $salesAndProfitQuery = Order_Details::select(
                 DB::raw('DATE(order_details.created_at) as date'),
-                DB::raw('SUM(total) as sales'),
+                DB::raw('SUM(orders.total) as sales'),
                 DB::raw('SUM(order_details.qty * (order_details.amount - products.cost)) as profit')
             )
             ->leftJoin('products', 'order_details.product_id', '=', 'products.id')

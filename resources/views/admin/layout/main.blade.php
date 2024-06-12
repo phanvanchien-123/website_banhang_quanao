@@ -48,13 +48,12 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
 
-<<<<<<< HEAD
-=======
 
     <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/toastr.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css" rel="stylesheet">
 
->>>>>>>>> Temporary merge branch 2
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 
 <body class="">
@@ -122,6 +121,13 @@
         </script>
     @endif
 
+    <script>
+        var fetchNotificationsUrl = "{{ route('notifications.fetch') }}";
+        @if(session('PaymentSuccess'))
+            var paymentSuccessMessage = "{{ session('PaymentSuccess') }}";
+        @endif
+    </script>
+    <script src="{{ asset('theme_admin/theme/js/notifications.js') }}"></script>
 </body>
 
 </html>

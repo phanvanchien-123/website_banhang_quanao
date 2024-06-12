@@ -3,26 +3,6 @@
     <div class="d-flex align-items-center">
         <h2>Order ID: {{ $order->id }}</h2>
         <div class="ms-4 h-75">
-            {{-- @switch($order->status)
-                @case(0)
-                    <div class="p-2 bg-danger-subtle text-danger-emphasis rounded">{{ $order->status }}</div>
-                @break
-
-                @case(1)
-                @case(2)
-                @case(5)
-                @case(6)
-                    <div class="p-2 bg-warning-subtle text-warning-emphasis rounded">{{ $order->status }}</div>
-                @break
-
-                @case(3)
-                @case(4)
-                @case(7)
-                    <div class="p-2 bg-success-subtle text-success-emphasis rounded">{{ $order->status }}</div>
-                @break
-
-                @default
-            @endswitch --}}
             <select class="form-select form-select-lg pt-2" aria-label="Large select example" data-comment-id="{{ $order->id }}">
                 <option value="0" {{ $order->status == 0 ? 'selected' : '' }}>Hủy bỏ</option>
                 <option value="1" {{ $order->status == 1 ? 'selected' : '' }}>Chờ Xác nhận đơn hàng</option>
@@ -97,11 +77,18 @@
                                         </tr>
                                     @endforeach
                                     <tr>
+                                        <td scope="row">coupon:</td>
+                                        @if(isset($order->coupon))
+                                            <td>{{ $order->coupon->code }}</td>
+                                            
+                                            <td>{{ optional($order->coupon)->discount_type == 'fixed' ? number_format($order->coupon->discount_value, 0, ',', '.').'đ' : $order->coupon->discount_value .'%' }}</td>
+                                        @endif
+                                    </tr>
+                                    <tr>
                                         <th scope="row">Total</th>
                                         <th>{{ $order->orderDetails->count() }} item</th>
 
-                                        <th>{{ number_format($order->orderDetails->sum('total'), 0, ',', '.') }} đ</th>
-
+                                        <th>{{ number_format($order->total, 0, ',', '.') }} đ</th>
                                     </tr>
                                 </tbody>
 

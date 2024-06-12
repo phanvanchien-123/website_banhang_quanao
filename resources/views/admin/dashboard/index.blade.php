@@ -856,4 +856,5 @@
             getWeather(city);
         });
     </script>
+
 @endsection()

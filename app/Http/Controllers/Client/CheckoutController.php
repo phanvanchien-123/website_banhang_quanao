@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Http\Controllers\Controller;
-use App\Models\Cart_items;
-use App\Models\Carts;
-use App\Models\Coupon;
-use App\Models\Order;
-use App\Models\Product;
-use App\Models\ProductDetail;
-use App\Service\Order\OrderServiceInterface;
-use App\Service\OrderDetail\OrderDetailService;
-use App\Service\OrderDetail\OrderDetailServiceInterface;
-use App\Untilities\Constant;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Carts;
+use App\Models\Order;
+use App\Models\Coupon;
+use App\Models\Product;
+use App\Models\Cart_items;
+use App\Untilities\Constant;
 use Illuminate\Http\Request;
+use App\Models\ProductDetail;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Service\Order\OrderServiceInterface;
+use App\Service\OrderDetail\OrderDetailService;
+use App\Notifications\PaymentSuccessNotification;
+use App\Service\OrderDetail\OrderDetailServiceInterface;
 
 class CheckoutController extends Controller
 {
@@ -156,6 +158,7 @@ class CheckoutController extends Controller
             return "Thành Công";
         }
     }
+
     public function vnPayCheck(Request $request){
          $validated = $request->validate([
             'first_name' => 'required|string|max:255',
@@ -193,7 +196,7 @@ class CheckoutController extends Controller
             return $item->price * $item->quantity;
         });
         
-        // Kiểm tra mã giảm giá
+        // // Kiểm tra mã giảm giá
         $discountAmount = 0;
         if ($request->has('applied_coupon_code')) {
             $couponCode = $request->input('applied_coupon_code');
@@ -252,99 +255,129 @@ class CheckoutController extends Controller
             return $item->price * $item->quantity;
         });
 
-            error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-            date_default_timezone_set('Asia/Ho_Chi_Minh');
+        //     error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+        //     date_default_timezone_set('Asia/Ho_Chi_Minh');
         
-            $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-            $vnp_Returnurl = "http://127.0.0.1:8000/checkout/Vnpay";
-            $vnp_TmnCode = "V52DRY11";//Mã website tại VNPAY 
-            $vnp_HashSecret = "QVHYIETOHTABFJHAWQQRQQNYTGDACSWT"; //Chuỗi bí mật
-            foreach ($orders as $order) {
-            $vnp_TxnRef = $order->id; //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
-            }
-            $vnp_OrderInfo ='Thanh toan don hang ';
-            $vnp_OrderType = 50;
-            $vnp_Amount =  $totalPrice * 100000 ;
-            $vnp_Locale = 'vn';
-            $vnp_BankCode ='VNBANK';
-            $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
-            //Add Params of 2.0.1 Version
-           // $vnp_ExpireDate = $_POST['txtexpire'];
-            //Billing
-           
-            $inputData = array(
-                "vnp_Version" => "2.1.0",
-                "vnp_TmnCode" => $vnp_TmnCode,
-                "vnp_Amount" => $vnp_Amount,
-                "vnp_Command" => "pay",
-                "vnp_CreateDate" => date('YmdHis'),
-                "vnp_CurrCode" => "VND",
-                "vnp_IpAddr" => $vnp_IpAddr,
-                "vnp_Locale" => $vnp_Locale,
-                "vnp_OrderInfo" => $vnp_OrderInfo,
-                "vnp_OrderType" => $vnp_OrderType,
-                "vnp_ReturnUrl" => $vnp_Returnurl,
-                "vnp_TxnRef" => $vnp_TxnRef,
-               
-            );
-            
-            if (isset($vnp_BankCode) && $vnp_BankCode != "") {
-                $inputData['vnp_BankCode'] = $vnp_BankCode;
-            }
-            if (isset($vnp_Bill_State) && $vnp_Bill_State != "") {
-                $inputData['vnp_Bill_State'] = $vnp_Bill_State;
-            }
-            
-            //var_dump($inputData);
-            ksort($inputData);
-            $query = "";
-            $i = 0;
-            $hashdata = "";
-            foreach ($inputData as $key => $value) {
-                if ($i == 1) {
-                    $hashdata .= '&' . urlencode($key) . "=" . urlencode($value);
-                } else {
-                    $hashdata .= urlencode($key) . "=" . urlencode($value);
-                    $i = 1;
-                }
-                $query .= urlencode($key) . "=" . urlencode($value) . '&';
-            }
-            
-            $vnp_Url = $vnp_Url . "?" . $query;
-            if (isset($vnp_HashSecret)) {
-                $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret);//  
-                $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
-            }
-            $returnData = array('code' => '00'
-                , 'message' => 'success'
-                , 'data' => $vnp_Url);
-                if (isset($_POST['redirect'])) {
-                    header('Location: ' . $vnp_Url);
-                    $this->orderService->update(['status'=>Constant::order_status_Paid],$vnp_TxnRef);
-                    $order=$this->orderService->find($vnp_TxnRef);
-                    $this->sendMail($order,$subtotal);
-                     // Xóa giỏ hàng 
-             Cart_items::whereHas('cart', function ($query) use ($userId) {
-                $query->where('user_id', $userId);
-            })
-                ->delete();      
-                    die();
-                } else {
-                    echo json_encode($returnData);
-                }
-                // vui lòng tham khảo thêm tại code demo
-                }            
+        $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+        $vnp_Returnurl = "http://127.0.0.1:8000/checkout/Vnpay";
+        $vnp_TmnCode = "V52DRY11";//Mã website tại VNPAY 
+        $vnp_HashSecret = "QVHYIETOHTABFJHAWQQRQQNYTGDACSWT"; //Chuỗi bí mật
+        foreach ($orders as $order) {
+        $vnp_TxnRef = $order->id; //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
         }
-        public function returnVNPay(){
-            return view('Client.VNPay.VNPay');
+        $vnp_OrderInfo ='Thanh toan don hang ';
+        $vnp_OrderType = 50;
+        $vnp_Amount =  $totalPrice * 100000 ;
+        $vnp_Locale = 'vn';
+        $vnp_BankCode ='VNBANK';
+        $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
+        //Add Params of 2.0.1 Version
+        // $vnp_ExpireDate = $_POST['txtexpire'];
+        //Billing
+        
+        $inputData = array(
+            "vnp_Version" => "2.1.0",
+            "vnp_TmnCode" => $vnp_TmnCode,
+            "vnp_Amount" => $vnp_Amount,
+            "vnp_Command" => "pay",
+            "vnp_CreateDate" => date('YmdHis'),
+            "vnp_CurrCode" => "VND",
+            "vnp_IpAddr" => $vnp_IpAddr,
+            "vnp_Locale" => $vnp_Locale,
+            "vnp_OrderInfo" => $vnp_OrderInfo,
+            "vnp_OrderType" => $vnp_OrderType,
+            "vnp_ReturnUrl" => $vnp_Returnurl,
+            "vnp_TxnRef" => $vnp_TxnRef,
+            
+        );
+        
+        if (isset($vnp_BankCode) && $vnp_BankCode != "") {
+            $inputData['vnp_BankCode'] = $vnp_BankCode;
+        }
+        if (isset($vnp_Bill_State) && $vnp_Bill_State != "") {
+            $inputData['vnp_Bill_State'] = $vnp_Bill_State;
+        }
+        
+        //var_dump($inputData);
+        ksort($inputData);
+        $query = "";
+        $i = 0;
+        $hashdata = "";
+        foreach ($inputData as $key => $value) {
+            if ($i == 1) {
+                $hashdata .= '&' . urlencode($key) . "=" . urlencode($value);
+            } else {
+                $hashdata .= urlencode($key) . "=" . urlencode($value);
+                $i = 1;
+            }
+            $query .= urlencode($key) . "=" . urlencode($value) . '&';
+        }
+        
+        $vnp_Url = $vnp_Url . "?" . $query;
+        if (isset($vnp_HashSecret)) {
+            $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret);//  
+            $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
+        }
+        $returnData = array('code' => '00'
+        , 'message' => 'success'
+        , 'data' => $vnp_Url);
+        if (isset($_POST['redirect'])) {
+
+            session([
+                'total' => $vnp_Amount,
+                'infor' => $vnp_OrderInfo,
+
+            ]);
+
+
+            return redirect()->away($vnp_Url);
+
+            $this->orderService->update(['status'=>Constant::order_status_Paid],$vnp_TxnRef);
+            $order=$this->orderService->find($vnp_TxnRef);
+            $this->sendMail($order,$subtotal);
+             // Xóa giỏ hàng 
+            Cart_items::whereHas('cart', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })->delete();
+            
+            
+
+
+
+        die();
+        } else {
+            echo json_encode($returnData);
+        }
+        // vui lòng tham khảo thêm tại code demo
+    }            
+    }
+
+    public function returnVNPay(){
+        $paymentDetails = [
+            'user' => auth()->user()->name,
+            'total' => session('total'),
+            'infor' => session('infor'),
+        ];
+        
+        // Gửi thông báo cho tất cả admin có role 'super-admin'
+        $admins = User::role('super-admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new PaymentSuccessNotification($paymentDetails));
+        }
+    
+        // Thiết lập flash message cho Toastr
+        session()->flash('PaymentSuccess', 'Thanh toán thành công! +'. session('total'));
+        
+        return view('Client.VNPay.VNPay');
     } 
+
     private function sendMail($order,$subtotal){
         $email_to = $order->email;
         Mail::send('Client.checkout.email',compact('order','subtotal'),
-    function($message) use ($email_to){
-        $message->from('phanvanchien26032003@gmail.com','Phan Van Chien');
-        $message->to($email_to,$email_to);
-        $message->subject('Order Notification');
-    });
+        function($message) use ($email_to){
+            $message->from('phanvanchien26032003@gmail.com','Phan Van Chien');
+            $message->to($email_to,$email_to);
+            $message->subject('Order Notification');
+        });
     }
 }
