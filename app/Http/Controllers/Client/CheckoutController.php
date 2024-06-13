@@ -227,8 +227,7 @@ class CheckoutController extends Controller
     
            $product->save();
            $productDetail->save();
-        }
-
+        }     
         foreach($cartItems as $cart){
             $data = [
                 'order_id'=>$order->id,

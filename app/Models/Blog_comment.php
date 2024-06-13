@@ -12,11 +12,19 @@ class Blog_comment extends Model
     protected $table ='blog_comments';
     protected $primaryKey ='id';
     protected $quarded =[];
+    protected $fillable=[
+        'id',
+        'blog_id',
+        'user_id',
+        'messages',
+        'status'
+    ];
 
     public function blog(){
         return $this ->belongsTo(blog::class,'blog_id','id');
     }
     public function user(){
         return $this ->belongsTo(User::class,'user_id','id');
+    
     }
 }

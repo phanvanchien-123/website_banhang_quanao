@@ -4,6 +4,7 @@ use App\Http\Controllers\Client\AccountController;
 use App\Http\Controllers\materController;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Admin\AdminCouponController;
+use App\Http\Controllers\Client\BlogController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\CheckOutController;
 use App\Http\Controllers\Client\CouponController;
@@ -30,6 +31,11 @@ Route::prefix('/shop')->group(function(){
         Route::post('/details/{id}/Comment',[ShopController::class,'postComment'])->name('Client.Comment');
        Route::post('/details/{id}',[ShopController::class,'show'])->name('Client.shop.show');
        Route::get('category/{categoryName}',[ShopController::class,'category']);
+});
+Route::prefix('/blog')->group(function(){
+    Route::get('',[BlogController::class,'index'])->name('blog.index');
+    Route::get('/{id}',[BlogController::class,'show']);
+    Route::post('/{id}/Comment',[BlogController::class,'postComment']);
 });
 
 Route::middleware(['auth'])->group(function () {

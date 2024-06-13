@@ -38,8 +38,8 @@ class ShopController extends Controller
     }
     public function show($id, Request $request)
     {
-    
         $products = $this->productServices->find($id);
+        $products->increment('view');     
         $categories = $this->productCategoryServices->all();
         $brands = $this->productBrands->all();
         $selectedColor = $request->input('color');
