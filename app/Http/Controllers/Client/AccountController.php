@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use App\Models\Ward;
 use App\Models\Carts;
 use App\Models\Coupon;
-use App\Service\Order\OrderServiceInterface;
-use Carbon\Carbon;
+use App\Models\District;
+use App\Models\Province;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Service\Order\OrderServiceInterface;
 
 class AccountController extends Controller
 {
@@ -22,13 +25,17 @@ class AccountController extends Controller
         $orders = $this->orderService->getOrderUserId(Auth::id());
         $ordersCount = count($orders);
         $pendingOrdersCount = 0;
-foreach ($orders as $order) {
-    if ($order->status === 1) {
-        $pendingOrdersCount++;
-    }
-}
+        foreach ($orders as $order) {
+            if ($order->status === 1) {
+                $pendingOrdersCount++;
+            }
+        }
 
-        return view('Client.my_account.index',compact('orders','ordersCount','pendingOrdersCount'));
+        $provinces = Province::all();
+        $districts = District::all();
+        $wards = Ward::all();
+
+        return view('Client.my_account.index',compact('orders','ordersCount','pendingOrdersCount','provinces','districts','wards'));
     }
     public function show($id){
         

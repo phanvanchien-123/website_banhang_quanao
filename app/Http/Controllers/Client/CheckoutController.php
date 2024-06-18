@@ -363,10 +363,10 @@ class CheckoutController extends Controller
         $admins = User::role('super-admin')->get();
         foreach ($admins as $admin) {
             $admin->notify(new PaymentSuccessNotification($paymentDetails));
+            session()->flash('PaymentSuccess', 'Thanh toán thành công! +'. session('total'));
         }
     
         // Thiết lập flash message cho Toastr
-        session()->flash('PaymentSuccess', 'Thanh toán thành công! +'. session('total'));
         
         return view('Client.VNPay.VNPay');
     } 

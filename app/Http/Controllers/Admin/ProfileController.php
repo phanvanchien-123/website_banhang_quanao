@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
+use App\Models\Ward;
+use App\Models\District;
+use App\Models\Province;
 use App\Traits\ImageHandler;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,13 +21,26 @@ class ProfileController extends Controller
 
     public function index(){
 
-        $user = User::where('id', Auth::user()->id);
-        return view('admin.profile.index', compact('user'));
+        $user = User::findOrFail(auth()->user()->id);
+        $provinces = Province::all();
+        $districts = District::all();
+        $wards = Ward::all();
+
+        // dd($user);
+
+        $viewData = [
+            'user' => $user,
+            'provinces' => $provinces,
+            'districts' => $districts,
+            'wards' => $wards,
+        ];
+
+        return view('admin.profile.index', $viewData);
     }
 
     public function update(Request $request){
         try{
-            $user = User::findOrFail(Auth::user()->id);
+            $user = Auth::user();
             $data = $request->except('avatar');
 
             $imagePath = $user->avatar;
@@ -32,13 +49,17 @@ class ProfileController extends Controller
             }
             $data['avatar'] = $imagePath ;
 
-            $user->update($data);
-
+            $fieldsToUpdate = [];
+            foreach ($data as $key => $value) {
+                if ($value !== null) {
+                    $fieldsToUpdate[$key] = $value;
+                }
+            }
+        
+            $user->update($fieldsToUpdate);
+            
             return redirect()->back()->with(['success' => 'Thay đổi thông tin cá nhân thành công']);
 
-        } catch (ModelNotFoundException $ex) {
-            Log::error("LỖI => ProfileController@store => Không tìm thấy user: " . $ex->getMessage());
-            return redirect()->back()->with(['error' => 'Không tìm thấy user']);
         } catch (Exception $ex) {
             Log::error("ERROR => ProfileController@store =>". $ex->getMessage());
             return redirect()->back()->with(['error' => 'Thay đổi thông tin cá nhân thất bại']);

@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Models\Photo;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Service\Brand\BrandServiceInterface;
 use App\Service\Product\ProductServiceInterface;
 use App\Service\ProductCategory\ProductCategoryService;
-use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -28,6 +29,20 @@ class HomeController extends Controller
         $ProductsDiscountedOver30 = $this->productServices->getProductsDiscountedOver30();
         $category = $this->productcategory->all();
         $brands = $this->brands->all();
-        return view ('index',compact('latestProducts','featuredProducts','category','featuredProductsCategory','ProductsDiscountedOver30','brands'));
+
+        
+        $slide = Photo::where('type', 'slide')->get();
+
+        $viewData = [
+            'slide' => $slide,
+            'latestProducts' => $latestProducts,
+            'featuredProducts' => $featuredProducts,
+            'featuredProductsCategory' => $featuredProductsCategory,
+            'ProductsDiscountedOver30' => $ProductsDiscountedOver30,
+            'category' => $category,
+            'brands' => $slide,
+        ];
+
+        return view ('index',$viewData);
     }
 }

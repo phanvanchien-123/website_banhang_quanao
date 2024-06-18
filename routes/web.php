@@ -140,13 +140,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' =>'auth'
     });
 
     Route::group(['prefix' => 'analytics' ] , function () {
-        Route::get('',[Admin\AnalyticsController::class,'index']) ->name('admin.analytics.index');
-
-        // Route::get('show/{id}',[Admin\AnalyticsController::class,'show']) ->name('admin.analytics.show');
-
-        // Route::patch('update/{id}',[Admin\AnalyticsController::class,'update']) ->name('admin.analytics.update');
-
-        // Route::get('delete/{id}',[Admin\AnalyticsController::class,'delete']) ->name('admin.analytics.delete');      
+        Route::get('',[Admin\AnalyticsController::class,'index']) ->name('admin.analytics.index');    
     });
 
     Route::group(['prefix' => 'order' ] , function () {
@@ -172,12 +166,24 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' =>'auth'
         Route::get('delete/{id}',[Admin\UserController::class,'delete']) ->name('admin.user.delete');      
     });
 
+    Route::group(['prefix' => 'supplier' ] , function () {
+        Route::get('',[Admin\SupplierController::class,'index']) ->name('admin.supplier.index');
+
+        Route::get('create',[Admin\SupplierController::class,'create']) ->name('admin.supplier.create');
+        Route::post('store',[Admin\SupplierController::class,'store']) ->name('admin.supplier.store');
+
+        Route::get('edit/{id}',[Admin\SupplierController::class,'edit']) ->name('admin.supplier.edit');
+        Route::post('update/{id}',[Admin\SupplierController::class,'update']) ->name('admin.supplier.update');
+
+        Route::get('delete/{id}',[Admin\SupplierController::class,'delete']) ->name('admin.supplier.delete');      
+    });
+
     Route::group(['prefix' => 'profile'], function() {
 
         Route::get('', [Admin\ProfileController::class, 'index'])->name('admin.profile.index');
         
         // Route::get('update', [Admin\ProfileController::class, 'edit']) ;
-        Route::post('update', [Admin\ProfileController::class, 'update'])->name('admin.profile.update');
+        Route::patch('update', [Admin\ProfileController::class, 'update'])->name('admin.profile.update');
         Route::get('changePassword', [Admin\ProfileController::class, 'changePassword']) ->name('admin.profile.changePassword');
 
     });
@@ -193,6 +199,26 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' =>'auth'
         Route::post('update/{id}',[Admin\RoleController::class,'update']) ->name('admin.role.update');
 
         Route::get('delete/{id}',[Admin\RoleController::class,'delete']) ->name('admin.role.delete');
+    });
+
+    Route::group(['prefix' => 'display'] , function () {
+        Route::get('',[Admin\DisplayController::class,'index']) ->name('admin.display.index');
+        Route::post('/creatrOrUpdateLogo',[Admin\DisplayController::class,'creatrOrUpdateLogo']) ->name('admin.display.creatrOrUpdateLogo');
+        Route::post('/creatrOrUpdateFlink',[Admin\DisplayController::class,'creatrOrUpdateFlink']) ->name('admin.display.creatrOrUpdateFlink');
+        Route::delete('/footerLink/delete/{id}', [App\Http\Controllers\Admin\DisplayController::class, 'deleteFooter'])->name('admin.footer.delete');
+
+        Route::group(['prefix' => 'slide'] , function () {
+            Route::get('',[Admin\DisplayController::class,'index']) ->name('admin.slide.index');
+    
+            
+            Route::get('create',[Admin\DisplayController::class,'createSlide']) ->name('admin.slide.create');
+            Route::post('store',[Admin\DisplayController::class,'storeSlide']) ->name('admin.slide.store');
+    
+            Route::get('edit/{id}',[Admin\DisplayController::class,'editSlide']) ->name('admin.slide.edit');
+            Route::post('update/{id}',[Admin\DisplayController::class,'updateSlide']) ->name('admin.slide.update');
+    
+            Route::get('delete/{id}',[Admin\DisplayController::class,'deleteSlide']) ->name('admin.slide.delete');
+        });
     });
   
 });

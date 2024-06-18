@@ -35,6 +35,7 @@
                     <th scope="col">Tên sản phẩm</th>
                     <th scope="col">Danh mục</th>
                     <th scope="col">Giá</th>
+                    <th scope="col">Tồn</th>
                     <th scope="col">Ngày tạo</th>
                     <th scope="col">Thao tác</th>
                 </tr>
@@ -48,6 +49,7 @@
                         <td>{{ $item->name }}</td>
                         <td>{{ $item->productCategory->name ?? '' }}</td>
                         <td>{{ number_format($item->price, 0, ',', '.') }} đ</td>
+                        <td>{{ $item->qty }}</td>
                         <td>{{ $item->created_at }}</td>
                         <td>
                             <a href="{{ route('admin.product.edit', $item->id) }}"><i class="bi bi-pencil-square"></i></a> |

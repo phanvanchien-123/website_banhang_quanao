@@ -99,6 +99,9 @@
                         </div>
                     </div>
                 </form>
+                <div>
+                    <img src="{{ url('https://qr.ecaptcha.vn/api/generate/mb/0001313295997/DOMANHHUNG?amount='.$totalPrice.'000&memo=qrbankking&is_mask=1&bg=7') }}" alt="" height="200px" width="200px">
+                </div>
                 @else
                 <h1>Không có hàng</h1>
                 @endif
