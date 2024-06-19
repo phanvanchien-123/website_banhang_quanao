@@ -11,7 +11,7 @@ class AdminCouponController extends Controller
 {
     public function index()
     {
-        $coupons = Coupon::all();
+        $coupons = Coupon::paginate(10);
         return view('admin.coupons.index', compact('coupons'));
     }
 
@@ -36,9 +36,9 @@ class AdminCouponController extends Controller
         return redirect()->route('admin.coupon.index')->with('success', 'Coupon created successfully.');
     }
 
-    public function edit()
+    public function edit($id)
     {
-        $coupon = Coupon::all();
+        $coupon = Coupon::findOrFail($id);
         return view('admin.coupons.edit', compact('coupon'));
     }
 

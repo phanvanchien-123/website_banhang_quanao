@@ -81,7 +81,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-6 border-top-0 ">
                 <div class="rounded shadow p-3">
                     <h3>Sản phẩm mới</h3>
@@ -104,8 +104,8 @@
             </div>
             <div class="col-6">
             </div>
-        </div>
-        <div class="row" style="margin-top:-300px ">
+        </div> --}}
+        <div class="row">
             <div class="col-6">
             </div>
             <div class="col-6 border-top-0 ">
@@ -129,7 +129,7 @@
                 </div>
             </div>
         </div>
-        <div class="row" style="margin-top: -150px ">
+        <div class="row">
             <div class="col-6 border-top-0 ">
                 <div class="rounded shadow p-3">
                     <h3>Thành viên mới</h3>
@@ -856,4 +856,5 @@
             getWeather(city);
         });
     </script>
+
 @endsection()

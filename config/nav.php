@@ -57,6 +57,25 @@ return [
         ],
     ],
     [
+        'icon' => 'bi bi-receipt',
+        'name' => 'Coupons',
+        'route' => 'admin.coupon.index',
+        'routeGroup' => 'admin.coupon.*',
+        'prefix' => ['coupon'],
+        'children' => [
+            [
+                'icon' => '',
+                'name' => 'Danh sách',
+                'route' => 'admin.coupon.index',
+            ],
+            [
+                'icon' => '',
+                'name' => 'Thêm mới',
+                'route' => 'admin.coupon.create',
+            ],
+        ],
+    ],
+    [
         'icon' => 'bi bi-list-nested',
         'name' => 'Danh mục',
         'route' => 'admin.category.index',

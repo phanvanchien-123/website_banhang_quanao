@@ -35,7 +35,7 @@
                 <div class="input">
                     <label for="name">Name</label>
                     <input type="text" id="name" class="block mt-1 w-full" type="text" name="name"
-                        :value="old('name')" required="" autofocus="" autocomplete="name">
+                        :value="old('name')" >
                         @error('name') <span class="text-danger mt-3">{{$message}}</span>@enderror
                 </div>
 

@@ -23,7 +23,7 @@ class BrandRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'avatar' => 'required',
+            // 'avatar' => 'required',
 
             
         ];
@@ -32,7 +32,7 @@ class BrandRequest extends FormRequest
     public function messages(){
         return [
             'name.required' => 'Tên thương hiệu không được để trống',
-            'avatar.required' => ' Hình ảnh không được để trống',
+            // 'avatar.required' => ' Hình ảnh không được để trống',
         ];
     }
 }

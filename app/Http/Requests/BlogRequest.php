@@ -24,7 +24,7 @@ class BlogRequest extends FormRequest
         return [
             'title' => 'required',
             'subtitle' => 'required',
-            'image' => 'required',
+            // 'image' => 'required',
             'content' => 'required',
             // 'title' => 'required'
             
@@ -35,7 +35,7 @@ class BlogRequest extends FormRequest
         return [
             'title.required' => 'Tiêu đề không được để trống',
             'subtitle.required' => ' Phụ đề không được để trống',
-            'image.required' => ' Hình ảnh không được để trống',
+            // 'image.required' => ' Hình ảnh không được để trống',
             'content.required' => ' Nội dung không được để trống',
 
         ];

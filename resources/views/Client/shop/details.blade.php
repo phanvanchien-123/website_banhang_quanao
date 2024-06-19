@@ -2,6 +2,108 @@
 @push('styles')
 @section('content')
 <link rel="stylesheet" href="{{asset('assets/css/main.css')}}">
+<style>
+    .size-button-container {
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+.color-image {
+  margin-bottom: 20px;
+}
+
+.image-select h5 {
+  margin-bottom: 10px;
+}
+
+.image-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.color-checkbox {
+display: none;
+}
+
+.color-checkbox + label {
+padding: 7px 7px;
+border: 1px solid #ddd;
+background-color: #f8f8f8;
+cursor: pointer;
+transition: background-color 0.3s ease;
+position: relative;
+}
+
+.color-checkbox + label .color-box {
+width: 20px;
+height: 20px;
+display: inline-block;
+margin-right: 10px;
+vertical-align: middle;
+}
+
+.color-checkbox:checked + label {
+background-color: #eb6517;
+color: #fff;
+border-color: #eb6517;
+}
+
+.color-checkbox:checked + label::after {
+content: '✔';
+position: absolute;
+top: 5px;
+right: 5px;
+font-size: 1em;
+color: white;
+}
+
+.size-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.size-button {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  background-color: #f8f8f8;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.size-button:hover {
+  background-color: #e0e0e0;
+}
+
+.size-button.selected {
+  background-color: #eb6517;
+  color: #fff;
+  border-color: #eb6517;
+}
+.size-button.disabled {
+background-color: #f8f8f8;
+color: #999;
+border-color: #ddd;
+cursor: not-allowed;
+}
+
+.size-text {
+  font-weight: bold;
+ 
+}
+
+.qty-text {
+  font-size: 0.9em;
+  color: #eb6517;
+}
+.quantity-input {
+margin-top: 10px;
+}
+</style>
 <main class="main">
     <div class="page-header breadcrumb-wrap">
         <div class="container">
@@ -48,7 +150,24 @@
                                 <!-- End Gallery -->
 
                             </div>
+                            
                             <div class="col-md-6 col-sm-12 col-xs-12">
+                                <div class="product-count">
+                                    <ul>
+                                        <li>
+                                            <img src="/assets/images/gif/fire.gif"
+                                                class="img-fluid blur-up lazyload" alt="image">
+                                            <span class="p-counter">{{$orderCount}}</span>
+                                            <span class="lang">Sản phẩm đã được bán  </span>
+                                        </li>
+                                        <li>
+                                            <img src="/assets/images/gif/person.gif"
+                                                class="img-fluid user_img blur-up lazyload" alt="image">
+                                            <span class="p-counter">{{$products->view}}</span>
+                                            <span class="lang">lượt xem sản phẩm</span>
+                                        </li>
+                                    </ul>
+                                </div>
                                 <div class="detail-info">
                                     <h2 class="title-detail">{{$products->name}}</h2>
                                     <div class="product-detail-rating">
@@ -98,158 +217,179 @@
                                                 Tiền mặt khi giao hàng có sẵn</li>
                                         </ul>
                                     </div>
-                                    <div class="color-image">
-                                        <div class="image-select">
-
-                                            <form method="POST" action="/shop/details/{{ $products->id }}">
-                                                @csrf
-                                                <div class="attr-detail attr-color mb-15">
-                                                    <h5>Color :</h5>
-                                                    <div class="color-picker">
-
-                                                        @foreach(array_unique(array_column($products->productDetails->toArray(),
-                                                        'color')) as $item)
-                                                        <input type="radio" id="color-{{$item}}" name="color"
-                                                            value="{{$item}}" onchange="this.form.submit()" {{
-                                                            $selectedColor==$item ? 'checked' : '' }}>
-                                                        <label for="color-{{$item}}" class="color-{{$item}}"></label>
-                                                        @endforeach
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-
-                                    <div id="selectSize" class="addeffect-section product-description border-product">
-                                        <h6 class="product-title size-text">Select Size
-                                            <a href="javascript:void(0)" data-bs-toggle="modal"
-                                                data-bs-target="#sizemodal">Size Chart</a>
-                                        </h6>
-                                        <div class="color-image">
-                                            <div class="image-select">
-                                                <h5>Size : </h5>
-
-
-
-                                                <form method="POST" action="/shop/details/{{ $products->id }}">
-                                                    @csrf
-
-                                                    <input type="hidden" name="color" value="{{ $selectedColor }}">
-
-
-
-                                                    <div class="checkbox-group">
-                                                        @foreach($sizes as $variant)
-                                                        <label class="checkbox-container">
-                                                            <input type="radio" name="size" value="{{ $variant->size }}"
-                                                                onchange="this.form.submit()" {{
-                                                                $selectedSize==$variant->size ?
-                                                            'checked' : '' }} >
-                                                            <span class="checkbox-label"> {{ $variant->size }}</span>
-                                                        </label>
-                                                        @endforeach
-
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-
-
-
-                                       
-                                        <div class="qty-box">
-                                            
-                                            <div class="input-group">
-                                                <h6 class="product-title product-title-2 d-block"> Số Lượng : </h6>
-                                                <input type="number" name="quantity" id="quantity"
-                                                    class="form-control input-number" value="1" min="1"
-                                                    max="{{$quantity}}"> <br>
-                                                
-
-                                            </div>
-                                            <div class="">
-                                                @if ($selectedSize)
-                                                @if ($products->qty == 0)
-                                                <p class="danger2-button btn btn-sm">Hết hàng</p> 
-                                                @else
-                                                
-                                                    <h6 class="product-title product-title-2 d-block"><a href="javascript:void(0)" data-bs-toggle="modal"
-                                                        data-bs-target="#sizemodal">Còn :  {{$quantity}} sản phẩm có sẵn</a> </h6>
-                                                    
-                                                @endif
-                                                @else
-                                                @if ($products->qty > 0)
-                                                    @if ($products->qty < 5)
-                                                    <p class="danger-button btn btn-sm">Còn ít hàng {{$products->qty}}</p>
-                                                    @else
-                                                    <h6 class="product-title product-title-2 d-block"><a href="javascript:void(0)" data-bs-toggle="modal"
-                                                        data-bs-target="#sizemodal">Còn : {{$products->qty}} sản phẩm có sẵn</a> </h6>
-                                                    @endif
-                                                @else
-                                                <p class="danger2-button btn btn-sm">Hết hàng</p>       
-                                                @endif
-
-                                                @endif
-                                            </div>
-                                            <br>
+                                  
+                        <div class="color-image">
+                            <div class="image-select">
+                                <h5>Color :</h5>
+                                <ul class="image-section" id="color-options">
+                                    @foreach($colors as $color)
+                                    <li>
+                                        <input type="checkbox" id="color-{{ $loop->index }}" name="color" value="{{ $color }}" class="color-checkbox">
+                                        <label for="color-{{ $loop->index }}">
+                                            <span class="color-box" style="background-color: {{ $color }};"></span>
+                                           
+                                        </label>
+                                    </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    
+                        <div id="selectSize" class="addeffect-section product-description border-product">
+                            <h6 class="product-title size-text">Select Size
+                                <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#sizemodal">Size Chart</a>
+                            </h6>
+                            <div class="size-box">
+                                <div id="size-options" class="size-options">
+                                    <!-- Size buttons will be loaded here -->
+                                </div>
+                            </div>
+                            <div class="">
+                                <div id="sl" class=""></div>
+                            </div>
+                        </div>
+                        <div id="stock-info">
+                            @if ($products->qty > 0)
+                                @if ($products->qty < 5)
+                                    <p class="danger-button btn btn-sm">Còn ít hàng {{$products->qty}}</p>
+                                @else
+                                    <h6 class="product-title product-title-2 d-block">
+                                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#sizemodal">Còn : {{$products->qty}} sản phẩm có sẵn</a>
+                                    </h6>
+                                @endif
+                            @else
+                                <p class="danger2-button btn btn-sm">Hết hàng</p>
+                            @endif
+                        </div>
+                    
+                        <div class="input-group quantity-input">
+                            <h6 class="product-title product-title-2 d-block">Quantity:</h6>
+                            <input type="number" name="quantity" id="quantity" class="form-control input-number" value="1" min="1" max="">
+                        </div>
+                    
+                        <form id="add-to-cart-form" method="POST" action="{{ route('cart.add', ['id' => $products->id]) }}" style="display: none;">
+                            @csrf
+                            <input type="hidden" id="selected-color" name="color" />
+                            <input type="hidden" id="selected-size" name="size" />
+                            <input type="hidden" id="selected-quantity" name="quantity" />
+                        </form>
+                    
+                      
+                        <br>
                                             <div class="product-buttons">
                                                 <a href="javascript:void(0)" class="btn btn-solid">
                                                     <i class="fa fa-bookmark fz-16 me-2"></i>
                                                     <span>Wishlist</span>
                                                 </a>
-                                                <button type="button" id="cartEffect"
+                                                <button id="add-to-cart-button"
                                                     class="btn btn-solid hover-solid btn-animation"
                                                     onclick="addToCart({{ $products->id }})">
                                                     <i class="fa fa-shopping-cart"></i> Add to Cart
                                                 </button>
                                             </div>
-                                              <div class="pro-details-brand">
-                                            <span> Brands: <a href="">{{$products->brand->name}}</a></span>
-                                        </div>
-                                        <div class="pro-details-brand">
-                                            <span> Category: <a href="">{{$products->productCategory->name}}</a></span>
-                                        </div>
-                                        <div class="pro-details-brand">
-                                            <span> TAG: <a href="">{{$products->tag}}</a></span>
-                                        </div>
-                                        </div>
-                                       
-
-
-
-
-                                    </div>
-                                  
-                                   
+                    
+                    
+                        
+                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                        <script type="text/javascript">
+                            $(document).ready(function(){
+                                $('.color-checkbox').change(function(){
+                                    // Uncheck all other checkboxes
+                                    $('.color-checkbox').not(this).prop('checked', false);
+                    
+                                    var selectedColor = $('.color-checkbox:checked').val();
+                    
+                                    if (!selectedColor) {
+                                        $('#size-options').empty(); // Clear options if no color is selected
+                                        $('#quantity-input-section').hide(); // Hide quantity input section
+                                        $('#stock-info').show(); // Show stock info if no color is selected
+                                        return;
+                                    }
+                    
+                                    // Hide the stock info div
+                                    $('#stock-info').hide();
+                    
+                                    var productId = "{{ $products->id }}";
+                    
+                                    $.ajax({
+                                        url: '/shop/details/' + productId + '/sizes',
+                                        method: 'GET',
+                                        data: { color: selectedColor },
+                                        success: function(response) {
+                                            $('#size-options').empty(); // Clear existing options
+                                            $('#selected-size').val(''); // Reset the hidden size input
+                                            $('#quantity-input-section').hide(); // Hide quantity input section
+                                            $.each(response, function(index, variant) {
+                                                var qtyText = 'Hết hàng';
+                                                var disabledClass = 'disabled';
+                                                if (variant.qty > 1) {
+                                                    qtyText = 'Còn ' + variant.qty + ' sản phẩm có sẵn';
+                                                    disabledClass = '';
+                                                } else if (variant.qty == 1) {
+                                                    qtyText = 'Còn 1 sản phẩm có sẵn';
+                                                    disabledClass = '';
+                                                }
+                                                $('#size-options').append('<div class="size-button-container">' +
+                                                                          '<div class="size-button ' + disabledClass + '" data-size="' + variant.size + '" data-qty="' + variant.qty + '">' +
+                                                                          '<div class="size-text">' + variant.size + '</div>' +
+                                                                          '</div>' +
+                                                                          '<div class="qty-text">' + qtyText + '</div>' +
+                                                                          '</div>');
+                                            });
+                    
+                                            // Attach click event to size buttons
+                                            $('.size-button').not('.disabled').click(function() {
+                                                $('.size-button').removeClass('selected');
+                                                $(this).addClass('selected');
+                                                $('#selected-size').val($(this).data('size')); // Update the hidden size input
+                                                $('#quantity').val(1); // Reset quantity to 1
+                                                $('#quantity').attr('max', $(this).data('qty')); // Set max quantity based on stock
+                                                $('#quantity-input-section').show(); // Show quantity input section
+                                            });
+                                        },
+                                        error: function(xhr, status, error) {
+                                            console.error("Error loading sizes: ", status, error);
+                                            alert("Failed to load sizes. Please try again later.");
+                                        }
+                                    });
+                    
+                                    $('#quantity').val(1); // Reset quantity to 1 when color is changed
+                                    $('#quantity-input-section').hide(); // Hide quantity input section
+                                });
+                    
+                                // Trigger change event on page load to populate sizes
+                                $('.color-checkbox:checked').change();
+                    
+                                // Add to cart button click event
+                                $('#add-to-cart-button').click(function() {
+                                    var selectedColor = $('.color-checkbox:checked').val();
+                                    var selectedSize = $('#selected-size').val();
+                                    var selectedQuantity = $('#quantity').val();
+                    
+                                    if (!selectedColor || !selectedSize || !selectedQuantity) {
+                                        alert('Please select color, size, and enter quantity.');
+                                        return false;
+                                    }
+                    
+                                    $('#selected-color').val(selectedColor);
+                                    $('#selected-quantity').val(selectedQuantity);
+                                    $('#add-to-cart-form').submit();
+                                });
+                            });
+                        </script>
+                       
+                                  <div class="pro-details-brand">
+                                    <span> Brands: <a href="">{{$products->brand->name}}</a></span>
                                 </div>
-                              
-                                <!-- Detail Info -->
-                            </div>
-                            
-                            <form id="add-to-cart-form" method="POST"
-                            action="{{ route('cart.add', ['id' => $products->id]) }}" style="display: none;">
-                            @csrf
-                            <input type="hidden" name="color" value="{{ $selectedColor }}" id="hiddenColor">
-                            <input type="hidden" name="size" value="{{ $selectedSize }}" id="hiddenSize">
-                            <input type="hidden" name="quantity" value="1" id="hiddenQuantity">
-                        </form>
-                            <script>
-                                function addToCart(productId) {
-                                                            // Lấy giá trị của các trường đã chọn
-                                                            var selectedColor = document.querySelector('input[name="color"]:checked').value;
-                                                            var selectedSize = document.querySelector('input[name="size"]:checked').value;
-                                                            var quantity = document.getElementById('quantity').value;
-                                                    
-                                                            // Cập nhật các trường ẩn trong form "add-to-cart"
-                                                            document.getElementById('hiddenColor').value = selectedColor;
-                                                            document.getElementById('hiddenSize').value = selectedSize;
-                                                            document.getElementById('hiddenQuantity').value = quantity;
-                                                    
-                                                            // Submit form "add-to-cart"
-                                                            document.getElementById('add-to-cart-form').submit();
-                                                        }
-                            </script>
-                        </div>
+                                <div class="pro-details-brand">
+                                    <span> Category: <a href="">{{$products->productCategory->name}}</a></span>
+                                </div>
+                                <div class="pro-details-brand">
+                                    <span> TAG: <a href="">{{$products->tag}}</a></span>
+                                </div>
+            </div>
+        </div>
+        
                         <div class="tab-style3">
                             <ul class="nav nav-tabs text-uppercase">
                                 <li class="nav-item">
@@ -334,7 +474,7 @@
                                                                 <p class="font-xxs"></p>
                                                             </div>
                                                             <div class="desc">
-                                                               
+                       
                                                                     <ul class="rating my-2 d-inline-block">
                                                                         @for($i =1 ;$i<=5;$i++) @if($i <=$item->rating)
                                                                             <li>
@@ -453,6 +593,17 @@
                                                         class="btn default-light-theme default-theme default-theme-2">Submit</button>
                                                 </div>
                                             </form>
+                                            @if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
                                             @endauth
     
                                             @guest
@@ -463,7 +614,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                     
+                        
                         <div class="row mt-60">
                             <div class="col-12">
                                 <h3 class="section-title style-1 mb-30">Sản Phẩm Tương Tự</h3>
@@ -535,11 +687,17 @@
                                 </div>
                             </div>
                         </div>
+                        
+                    </div>
+                </div>
                     </div>
                 </div>
                 @include('Client.shop.filter')
             </div>
         </div>
+        
+            </div>
+       
     </section>
 </main>
 <script src="{{asset('assets/js/js2/vendor/modernizr-3.6.0.min.js')}}"></script>

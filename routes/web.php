@@ -31,6 +31,7 @@ Route::prefix('/shop')->group(function(){
         Route::post('/details/{id}/Comment',[ShopController::class,'postComment'])->name('Client.Comment');
        Route::post('/details/{id}',[ShopController::class,'show'])->name('Client.shop.show');
        Route::get('category/{categoryName}',[ShopController::class,'category']);
+       Route::get('/details/{id}/sizes', [ShopController::class, 'getSizesByColor'])->name('shop.details.sizes');
 });
 Route::prefix('/blog')->group(function(){
     Route::get('',[BlogController::class,'index'])->name('blog.index');
@@ -67,24 +68,18 @@ Route::middleware('auth')->group(function(){
             Route::get('/',[AccountController::class,'index'])->name('dashboard.index');
             Route::get('{id}',[AccountController::class,'show']);
             Route::delete('/cancel_order/{id}', [AccountController::class, 'cancelOrder'])->name('order.cancel');
+            Route::post('/reorder/{id}', [AccountController::class, 'reorder'])->name('order.reorder');
+
         });
     });
 });
 Auth::routes();
 
-Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' =>'auth'], function () {
+Route::namespace('Admin')->prefix('admin')->middleware(['auth','auth.admin'])->group(function () {
     Route::get('home',[Admin\HomeController::class,'index']) ->name('admin.home.index');
-    Route::group(['prefix' => 'coupon' ] , function () {
-        Route::get('',[Admin\AdminCouponController::class,'index']) ->name('admin.coupon.index');
-        Route::get('create',[Admin\AdminCouponController::class,'create']) ->name('admin.coupon.create');
-        Route::post('store',[Admin\AdminCouponController::class,'store']) ->name('admin.coupon.store');
 
-        Route::get('edit/{id}',[Admin\AdminCouponController::class,'edit']) ->name('admin.coupon.edit');
-        Route::post('update/{id}',[Admin\AdminCouponController::class,'update']) ->name('admin.coupon.update');
+    Route::get('/notifications', [Admin\NotificationController::class, 'fetch'])->name('notifications.fetch');
 
-        Route::get('delete/{id}',[Admin\AdminCouponController::class,'delete']) ->name('admin.coupon.delete');
-
-    });
     Route::group(['prefix' => 'blog' ] , function () {
         Route::get('',[Admin\BlogController::class,'index']) ->name('admin.blog.index');
 
@@ -111,6 +106,18 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' =>'auth'
 
         Route::get('delete/{id}',[Admin\BrandController::class,'delete']) ->name('admin.brand.delete');      
     });
+
+    Route::group(['prefix' => 'coupon' ] , function () {
+        Route::get('',[Admin\AdminCouponController::class,'index']) ->name('admin.coupon.index');
+        Route::get('create',[Admin\AdminCouponController::class,'create']) ->name('admin.coupon.create');
+        Route::post('store',[Admin\AdminCouponController::class,'store']) ->name('admin.coupon.store');
+
+        Route::get('edit/{id}',[Admin\AdminCouponController::class,'edit']) ->name('admin.coupon.edit');
+        Route::post('update/{id}',[Admin\AdminCouponController::class,'update']) ->name('admin.coupon.update');
+
+        Route::get('delete/{id}',[Admin\AdminCouponController::class,'delete']) ->name('admin.coupon.delete');
+
+    });
     
     Route::group(['prefix' => 'category' ] , function () {
         Route::get('',[Admin\CategoryController::class,'index']) ->name('admin.category.index');
@@ -132,6 +139,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' =>'auth'
         Route::post('update/{id}',[Admin\ProductController::class,'update']) ->name('admin.product.update');
 
         Route::get('delete/{id}',[Admin\ProductController::class,'delete']) ->name('admin.product.delete');   
+
+        Route::get('stock',[Admin\ProductController::class,'stock']) ->name('admin.product.stock');
+
 
         Route::get('cmt',[Admin\ProductController::class,'cmt']) ->name('admin.product.cmt');
         Route::patch('cmt/{id}', [Admin\ProductController::class, 'updateCmt'])->name('admin.product.updateCmt');  
@@ -195,55 +205,3 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' =>'auth'
     });
   
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

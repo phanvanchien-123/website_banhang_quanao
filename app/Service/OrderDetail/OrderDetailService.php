@@ -11,5 +11,8 @@ class OrderDetailService extends BaseService implements OrderDetailServiceInterf
     public function __construct(OrderDetailRepositoryInterface $OrderDetailRepository){
         $this->repository = $OrderDetailRepository;
     }
+    public function countProductSold($productId){
+        return  $this ->repository ->countProductSold($productId);
+    }
     
 }

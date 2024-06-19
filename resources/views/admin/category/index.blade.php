@@ -31,6 +31,8 @@
                 
               </tbody>
         </table>
+        {{$categories->withQueryString()->links('Client.pagination.default')}}
+
     </div>
 
 @endsection

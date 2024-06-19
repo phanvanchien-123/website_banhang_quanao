@@ -48,7 +48,6 @@ class BlogController extends Controller
             $data['category'] = '0' ;
             // $data['user_id'] = 1 ;
             $data['user_id'] = Auth::user()->id ;
-
             $imagePath = $this->uploadImage($request->file('image'), 'theme_admin/upload/blog');
             $data['image'] = $imagePath ;
             // $data['image'] = 1 ;
