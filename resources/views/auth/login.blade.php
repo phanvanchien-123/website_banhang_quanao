@@ -69,7 +69,7 @@
                     <h2>Đăng Nhập</h2>
                 </div>
                 <div class="input">
-                    <label for="name">Username</label>
+                    <label for="name">Email</label>
                     <input type="email" id="name" name="email" :value="old('email')" required="" autofocus=""
                         autocomplete="name">
                         @error('email') <span class="text-danger mt-3">{{$message}}</span>@enderror

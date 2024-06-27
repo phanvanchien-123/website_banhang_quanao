@@ -26,6 +26,7 @@ class Product extends Model
         'avatar',
         'view',
         'brand_id',
+        'supplier_id',
         'product_category_id',
     ];
     public function brand(){

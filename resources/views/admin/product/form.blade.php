@@ -61,6 +61,20 @@
                 @enderror
             </div>
             <div class="mb-3">
+                <label for="brand" class="form-label">Nhà cung cấp</label></br>
+                <select class="form-select w-50" aria-label="Default select example" id="brand" name="supplier_id">
+                    <option selected value="">Chọn supplier</option>
+                    @foreach ($suppliers ?? [] as $item)
+                        <option value="{{ $item->id }}"
+                            {{ isset($product) && $product->supplier_id == $item->id ? 'selected' : '' }}>
+                            {{ $item->name }}</option>
+                    @endforeach
+                </select>
+                @error('supplier_id')
+                    <small class="text-danger">{{ $errors->first('supplier_id') }}</small>
+                @enderror
+            </div>
+            <div class="mb-3">
                 <label for="avatar" class="form-label">Hình ảnh</label>
                 <div id="avatarWrapper" class="border-bottom d-flex"
                     style="display: {{ isset($product) ? 'flex' : 'none' }};">

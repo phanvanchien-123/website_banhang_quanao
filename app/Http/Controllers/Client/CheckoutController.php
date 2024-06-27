@@ -33,32 +33,34 @@ class CheckoutController extends Controller
         $this->orderService = $orderService;
         $this->orderDetailService =$orderDetailService;
     }
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $coupons = Coupon::all(); 
         $userId = Auth::id();
-        $cart = Carts::where('user_id', $userId)->firstOrFail(); // Lấy giỏ hàng của người dùng
-        // Lấy tất cả các mục trong giỏ hàng và tính tổng giá
-        $cartItems = $cart->cartItems;
-        $totalItems = $cart->cartItems->sum('quantity');
-
+        $cart = Carts::where('user_id', $userId)->firstOrFail();
+        $selectedItemIds = session('selected_cart_items', []);
+        $cartItems = Cart_items::whereIn('id', $selectedItemIds)->where('cart_id', $cart->id)->get();
+        $totalItems = $cartItems->sum('quantity');
         $totalPrice = $cartItems->sum(function ($item) {
             return $item->price * $item->quantity;
         });
-         // Kiểm tra mã giảm giá
-    $discount = 0;
-    $couponCode = $request->session()->get('coupon_code');
-    if ($couponCode) {
-        $coupon = Coupon::where('code', $couponCode)->first();
-        if ($coupon && !$coupon->isExpired()) {
-            $discount = $coupon->discount;
-            $totalPrice -= $discount;
-        } else {
-            $request->session()->forget('coupon_code');
+    
+        // Kiểm tra mã giảm giá
+        $discount = 0;
+        $couponCode = $request->session()->get('coupon_code');
+        if ($couponCode) {
+            $coupon = Coupon::where('code', $couponCode)->first();
+            if ($coupon && !$coupon->isExpired()) {
+                $discount = $coupon->discount;
+                $totalPrice -= $discount;
+            } else {
+                $request->session()->forget('coupon_code');
+            }
         }
-       
-    }
-    $appliedCouponCode = session('applied_coupon_code');
-        return view('Client.checkout.index',compact('cartItems','totalPrice','totalItems', 'discount','coupons','appliedCouponCode'));
+    
+        $appliedCouponCode = session('applied_coupon_code');
+    
+        return view('Client.checkout.index', compact('cartItems', 'totalPrice', 'totalItems', 'discount', 'coupons', 'appliedCouponCode'));
     }
     public function addOrder(CheckoutOrderRequest $request)
     {
@@ -79,14 +81,14 @@ class CheckoutController extends Controller
         $order->payment_type = $validated['payment_type'];
         $order->coupon_id= $coupon->id ?? null;
     
-    $userId = Auth::id();
-    $cart = Carts::where('user_id', $userId)->firstOrFail();
-    $cartItems = $cart->cartItems;
-    
-    // Tính tổng giá trị của giỏ hàng
-    $totalPrice = $cartItems->sum(function ($item) {
-        return $item->price * $item->quantity;
-    });
+        $userId = Auth::id();
+        $cart = Carts::where('user_id', $userId)->firstOrFail();
+        $selectedItemIds = session('selected_cart_items', []);
+        $cartItems = Cart_items::whereIn('id', $selectedItemIds)->where('cart_id', $cart->id)->get();
+       
+        $totalPrice = $cartItems->sum(function ($item) {
+            return $item->price * $item->quantity;
+        });
     
     // Kiểm tra mã giảm giá
     $discountAmount = 0;
@@ -141,9 +143,11 @@ class CheckoutController extends Controller
             // $this->sendMail($order, $totalPrice);
     
             // Xóa giỏ hàng
-            Cart_items::whereHas('cart', function ($query) use ($userId) {
-                $query->where('user_id', $userId);
-            })->delete();
+            // Cart_items::whereHas('cart', function ($query) use ($userId) {
+            //     $query->where('user_id', $userId);
+            // })->delete();
+            Cart_items::whereIn('id', $selectedItemIds)->delete();
+
     
             // Trả về kết quả thông báo
             return "Thành Công";
@@ -169,9 +173,9 @@ class CheckoutController extends Controller
         
         $userId = Auth::id();
         $cart = Carts::where('user_id', $userId)->firstOrFail();
-        $cartItems = $cart->cartItems;
-        
-        // Tính tổng giá trị của giỏ hàng
+        $selectedItemIds = session('selected_cart_items', []);
+        $cartItems = Cart_items::whereIn('id', $selectedItemIds)->where('cart_id', $cart->id)->get();
+       
         $totalPrice = $cartItems->sum(function ($item) {
             return $item->price * $item->quantity;
         });
@@ -306,9 +310,7 @@ class CheckoutController extends Controller
             $order=$this->orderService->find($vnp_TxnRef);
             $this->sendMail($order,$subtotal);
              // Xóa giỏ hàng 
-            Cart_items::whereHas('cart', function ($query) use ($userId) {
-                $query->where('user_id', $userId);
-            })->delete();
+             Cart_items::whereIn('id', $selectedItemIds)->delete();
             session([
                 'total' => $vnp_Amount,
                 'infor' => $vnp_OrderInfo,
@@ -342,10 +344,10 @@ class CheckoutController extends Controller
         $admins = User::role('super-admin')->get();
         foreach ($admins as $admin) {
             $admin->notify(new PaymentSuccessNotification($paymentDetails));
+            session()->flash('PaymentSuccess', 'Thanh toán thành công! +'. session('total'));
         }
     
         // Thiết lập flash message cho Toastr
-        session()->flash('PaymentSuccess', 'Thanh toán thành công! +'. session('total'));
         
         return view('Client.VNPay.VNPay');
     } 

@@ -7,12 +7,15 @@
             </div>
             <div class="col-9 border-end-0 rounded px-4 py-4 bg-body-tertiary shadow">
                 <div class="text-center">
-                    <img id="clickableImage" src="{{ Auth::user()->avatar ? asset('storage/' .Auth::user()->avatar) : Auth::user()->defaultAvatar() }}"
+                    <img id="clickableImage"
+                        src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : Auth::user()->defaultAvatar() }}"
                         alt="profile" height="100px" width="100px" class="border rounded-circle" style="cursor: pointer">
                 </div>
                 <div class="py-4">
-                    <form action="{{ route('admin.profile.update') }}" method="post" class="pt-2" enctype="multipart/form-data">
+                    <form action="{{ route('admin.profile.update') }}" method="post" class="pt-2"
+                        enctype="multipart/form-data">
                         @csrf
+                        @method('PATCH')
                         <input type="file" id="fileInput" class="d-none" name="avatar">
                         <div class="row">
                             <div class="col-12">
@@ -39,29 +42,121 @@
                                 </div>
                             </div>
                         </div>
+                        @if (auth()->user()->province_id || auth()->user()->province_id || auth()->user()->province_id)
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" type="text"
+                                            value="{{ auth()->user()->getAddressAttribute() }}" aria-label="Disabled input example"
+                                            disabled readonly>
+                                        <label for="Name">Địa chỉ</label>
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed text-primary ms-1" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+                                                    aria-expanded="false" aria-controls="collapseTwo">
+                                                    thay đổi
+                                                </button>
+                                            </h2>
+                                            <div id="collapseTwo" class="accordion-collapse collapse"
+                                                data-bs-parent="#accordionExample">
+                                                <div class="accordion-body">
+                                                    <div class="row mt-3">
+                                                        <div class="col-4">
+                                                            <div class="form-floating mb-3">
+                                                                <select class="form-select"
+                                                                    aria-label="Default select example" id="province"
+                                                                    name="province_id" onchange="loadDistricts()">
+                                                                    <option value="">--Chọn tỉnh/thành--</option>
+                                                                    @foreach ($provinces as $province)
+                                                                        <option value="{{ $province->id }}">
+                                                                            {{ $province->name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <div class="form-floating mb-3">
+                                                                <select class="form-select"
+                                                                    aria-label="Default select example" id="district"
+                                                                    name="district_id" onchange="loadWards()">
+                                                                    <option value="">--Chọn quận/huyện--</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <div class="form-floating mb-3">
+                                                                <select class="form-select"
+                                                                    aria-label="Default select example" id="ward"
+                                                                    name="ward_id">
+                                                                    <option value="">--Chọn xã/phường--</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @else
                         <div class="row">
                             <div class="col-4">
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="Country" placeholder="" name="country"
-                                        value="{{ Auth::user()->country }}">
-                                    <label for="Country">Country</label>
+                                    <select class="form-select" aria-label="Default select example" id="province" name="province_id" onchange="loadDistricts()">
+                                        <option value="">--Chọn tỉnh/thành--</option>
+                                        @foreach ($provinces as $province)
+                                            <option value="{{ $province->id }}">{{ $province->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="Town_city" placeholder=""
-                                        name="town_city" value="{{ Auth::user()->town_city }}">
-                                    <label for="Town_city">Town city</label>
+                                    <select class="form-select" aria-label="Default select example" id="district" name="district_id" onchange="loadWards()">
+                                        <option value="">--Chọn quận/huyện--</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="Street" placeholder=""
-                                        name="street_address" value="{{ Auth::user()->street_address }}">
-                                    <label for="Street">Street</label>
+                                    <select class="form-select" aria-label="Default select example" id="ward" name="ward_id">
+                                        <option value="">--Chọn xã/phường--</option>    
+                                    </select>
                                 </div>
                             </div>
                         </div>
+                        @endif
+                        {{-- <div class="row">
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" aria-label="Default select example" id="province" name="province_id" onchange="loadDistricts()">
+                                        <option value="">--Chọn tỉnh/thành--</option>
+                                        @foreach ($provinces as $province)
+                                            <option value="{{ $province->id }}">{{ $province->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" aria-label="Default select example" id="district" name="district_id" onchange="loadWards()">
+                                        <option value="">--Chọn quận/huyện--</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" aria-label="Default select example" id="ward" name="ward_id">
+                                        <option value="">--Chọn xã/phường--</option>    
+                                    </select>
+                                </div>
+                            </div>
+                        </div> --}}
+
+
+
 
                         <div class="text-end">
                             <button type="submit" class="btn btn-outline-primary">Save</button>
@@ -109,6 +204,10 @@
     </div>
 
     <script>
+        var districts = @json($districts);
+        var wards = @json($wards);
+    </script>
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             var clickableImage = document.getElementById('clickableImage');
             var fileInput = document.getElementById('fileInput');
@@ -130,4 +229,41 @@
             });
         });
     </script>
+
+    <script>
+        var districts = @json($districts);
+        var wards = @json($wards);
+
+        function loadDistricts() {
+            var provinceId = $('#province').val();
+            var districtSelect = $('#district');
+            districtSelect.empty().append('<option value="">--Chọn quận/huyện--</option>');
+
+            districts.forEach(function(district) {
+                if (district.province_id == provinceId) {
+                    var option = $('<option>', {
+                        value: district.id,
+                        text: district.name
+                    });
+                    districtSelect.append(option);
+                }
+            });
+        }
+
+        function loadWards() {
+            var districtId = $('#district').val();
+            var wardSelect = $('#ward');
+            wardSelect.empty().append('<option value="">--Chọn xã/phường--</option>');
+
+            wards.forEach(function(ward) {
+                if (ward.district_id == districtId) {
+                    var option = $('<option>', {
+                        value: ward.id,
+                        text: ward.name
+                    });
+                    wardSelect.append(option);
+                }
+            });
+        }
+    </script> --}}
 @endsection

@@ -119,6 +119,12 @@ return [
                 'route' => 'admin.product.cmt',
 
             ],
+            [
+                'icon' => '',
+                'name' => 'Kho',
+                'route' => 'admin.product.stock',
+
+            ],
         ],
     ],
     [
@@ -136,6 +142,34 @@ return [
         'routeGroup' => 'admin.order.*',
         'prefix' => ['order'],
 
+    ],
+    [
+        'icon' => 'bi bi-pip',
+        'name' => 'Giao diện',
+        'route' => 'admin.display.index',
+        'routeGroup' => 'admin.display.*',
+        'prefix' => ['display'],
+    ],
+    [
+        'icon' => 'bi bi-shop',
+        'name' => 'Nhà cung cấp',
+        'route' => 'admin.supplier.index',
+        'routeGroup' => 'admin.supplier.*',
+        'prefix' => ['supplier'],
+        'children' => [
+            [
+                'icon' => '',
+                'name' => 'Danh sách',
+                'route' => 'admin.supplier.index',
+
+            ],
+            [
+                'icon' => '',
+                'name' => 'Thêm mới',
+                'route' => 'admin.supplier.create',
+
+            ],
+        ],
     ],
     [
         'icon' => 'bi bi-people',

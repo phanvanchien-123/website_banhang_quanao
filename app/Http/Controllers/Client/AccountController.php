@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\Carts;
 use App\Models\Coupon;
+use App\Models\District;
+use App\Models\Province;
+use App\Models\Ward;
 use App\Service\Order\OrderServiceInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -53,9 +56,12 @@ class AccountController extends Controller
                 $cancelOrderCount++;
             }
         }
+        $provinces = Province::all();
+        $districts = District::all();
+        $wards = Ward::all();
 
         return view('Client.my_account.index', compact('orders', 'ordersCount', 'pendingOrdersCount','confiemedOrderCount'
-    ,'finishOrderCount','cancelOrderCount','confiemedorders','finishorders','cancelorders','pendingorders'));
+    ,'finishOrderCount','cancelOrderCount','confiemedorders','finishorders','cancelorders','pendingorders','provinces','districts','wards'));
     }
     public function show($id)
     {

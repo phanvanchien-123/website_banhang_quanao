@@ -3,23 +3,24 @@
 namespace App\Http\Controllers\Admin;
 
 // use App\Models\Ward;
+use Exception;
 use App\Models\Brand;
 use App\Models\Image;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Supplier;
 use App\Traits\ImageHandler;
 use Illuminate\Http\Request;
 use App\Models\Product_image;
 use App\Models\ProductDetail;
 use App\Models\Product_comment;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ProductRequest;
 use App\Service\Product\ProductServiceInterface;
-use App\Service\ProductComment\ProductCommentServiceInterface;
-use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Log;
+use App\Service\ProductComment\ProductCommentServiceInterface;
 
 class ProductController extends Controller
 {
@@ -51,7 +52,8 @@ class ProductController extends Controller
         //
         $categories = Category::all();
         $brands = Brand::all();
-        return view('admin.product.create', compact('categories','brands'));
+        $suppliers = Supplier::all();
+        return view('admin.product.create', compact('categories','brands','suppliers'));
 
     }
 
@@ -124,9 +126,10 @@ class ProductController extends Controller
         //
         $categories = Category::all();
         $brands = Brand::all();
+        $suppliers = Supplier::all();
         $product = Product::findOrFail($id);
 
-        return view('admin.product.edit',compact('product','categories','brands'));
+        return view('admin.product.edit',compact('product','categories','brands','suppliers'));
     }
 
     /**
@@ -182,10 +185,7 @@ class ProductController extends Controller
 
             return redirect()->back()->with(['success' => 'Sửa sản phẩm thành công']);
 
-        } catch (ModelNotFoundException $ex) {
-            Log::error("LỖI => ProductController@store => Không tìm thấy sản phẩm: " . $ex->getMessage());
-            return redirect()->back()->with(['error' => 'Không tìm thấy sản phẩm']);
-        } catch (Exception $ex) {
+        }catch (Exception $ex) {
             Log::error("ERROR => ProductController@store =>". $ex->getMessage());
             return redirect()->back()->with(['error' => 'Sửa sản phẩm thất bại']);
         }
@@ -219,10 +219,7 @@ class ProductController extends Controller
 
             return redirect()->back()->with(['success' => 'Xóa sản phẩm thành công']);
 
-        } catch (ModelNotFoundException $ex) {
-            Log::error("LỖI => ProductController@store => Không tìm thấy sản phẩm: " . $ex->getMessage());
-            return redirect()->back()->with(['error' => 'Không tìm thấy sản phẩm']);
-        } catch (Exception $ex) {
+        }catch (Exception $ex) {
             Log::error("ERROR => ProductController@store =>". $ex->getMessage());
             return redirect()->back()->with(['error' => 'Xóa sản phẩm thất bại']);
         }

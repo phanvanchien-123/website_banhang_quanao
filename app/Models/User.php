@@ -3,11 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use App\Models\Ward;
+use App\Models\District;
+use App\Models\Province;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
 class User extends Authenticatable
@@ -30,14 +33,38 @@ class User extends Authenticatable
         'phone',
         'avatar',
         'company_name',
-        'country',
-        'town_city',
-        'country',
+        'province_id',
+        'district_id',
+        'ward_id',
         
     ];
 
     public function defaultAvatar() {
         return asset('/theme_admin/theme/images/AvatarDefault.png');
+    }
+
+    public function getAddressAttribute()
+    {
+        if ($this->province_id && $this->district_id && $this->ward_id) {
+            $province = Province::where('id', $this->province_id)->first();
+            $district = District::where('id', $this->district_id)->first();
+            $ward = Ward::where('id', $this->ward_id)->first();
+
+            $address = '';
+            if ($province) {
+                $address .= $province->name;
+            }
+            if ($district) {
+                $address .= ', ' . $district->name;
+            }
+            if ($ward) {
+                $address .= ', ' . $ward->name;
+            }
+
+        return $address;
+        }
+
+        return 'Không có địa chỉ'; // Hoặc bạn có thể trả về giá trị mặc định khác nếu muốn
     }
 
     /**

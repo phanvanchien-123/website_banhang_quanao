@@ -6,7 +6,6 @@ use App\Models\Brand;
 use Illuminate\Support\Str;
 use App\Traits\ImageHandler;
 use Illuminate\Http\Request;
-use App\Helpers\CloudinaryHelper;
 use App\Http\Requests\BrandRequest;
 use App\Http\Controllers\Controller;
 use Exception;
@@ -90,7 +89,7 @@ class BrandController extends Controller
             $data = $request->except('avatar');
             $imagePath = $brand->avatar;
             if ($request->hasFile('avatar')) {
-                $imagePath = $this->updateImage($request->file('avatar'), $brand->avatar, 'theme_admin/upload/blog');
+                $imagePath = $this->updateImage($request->file('avatar'), $brand->avatar, 'theme_admin/upload/brand');
             }
             $data['avatar'] = $imagePath ;
 

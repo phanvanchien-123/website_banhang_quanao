@@ -1,13 +1,13 @@
 @extends('admin.layout.main')
 @section('content')
 @php
-  $action_url = route('admin.brand.store');
+  $action_url = route('admin.slide.store');
 @endphp
     <div class="d-flex justify-content-between align-items-center">
-        <h2>Thêm mới thương hiệu</h2>
-        <a href="{{ route('admin.brand.index') }}" class="text-decoration-none"><i class="bi bi-box-arrow-left"></i> Trở về</a>
+        <h2>Thêm mới Slide</h2>
+        <a href="{{ route('admin.slide.index') }}" class="text-decoration-none"><i class="bi bi-box-arrow-left"></i> Trở về</a>
     </div>
-    @include('admin.brand.form')
+    @include('admin.display.slide.form')
     {{-- <form method="POST" action="{{ route('admin.brand.store') }}" autocomplete="off">
         @csrf
         <div class="mb-3">
