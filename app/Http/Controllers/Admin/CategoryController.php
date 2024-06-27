@@ -24,9 +24,20 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        //
-        $categories = Category::paginate(10);
-        // dd($categories);
+        $sort = $request->get('sort', 'id'); // Mặc định sắp xếp theo tên sản phẩm
+        $order = $request->get('order', 'asc'); 
+
+        $categories = Category::query();
+
+        if ($request->has('search')) {
+            $name = $request->input('search');
+            $categories->where('name', 'like', '%' . $name . '%');
+        }
+
+        $categories->orderBy($sort, $order);
+
+        $categories = $categories->paginate(10);
+
         return view('admin.category.index',compact('categories'));
     }
 

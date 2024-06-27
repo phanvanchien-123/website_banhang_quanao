@@ -89,10 +89,10 @@ class AnalyticsController extends Controller
             // dd($orderStatusData);
         
         // Lấy danh sách khách hàng đặt hàng nhiều nhất
-            $topCustomersQuery = User::select('users.id', 'users.name', 'users.email', DB::raw('COUNT(orders.id) as total_orders'))
+            $topCustomersQuery = User::select('users.id', 'users.name', 'users.email', 'users.avatar', DB::raw('COUNT(orders.id) as total_orders'))
             ->join('orders', 'users.id', '=', 'orders.user_id')
             ->where('orders.status', '!=', 0)
-            ->groupBy('users.id', 'users.name', 'users.email')
+            ->groupBy('users.id', 'users.name', 'users.email', 'users.avatar')
             ->orderBy('total_orders', 'DESC')
             ->limit(5);
 
@@ -102,11 +102,11 @@ class AnalyticsController extends Controller
             $topCustomers = $topCustomersQuery->get();
 
         // Lấy danh sách sản phẩm bán chạy nhất
-            $topProductsQuery  = Product::select('products.id', 'products.name', DB::raw('SUM(order_details.qty) as total_quantity_sold'))
+            $topProductsQuery  = Product::select('products.id', 'products.name', 'products.avatar', DB::raw('SUM(order_details.qty) as total_quantity_sold'))
                 ->join('order_details', 'products.id', '=', 'order_details.product_id')
                 ->join('orders', 'order_details.order_id', '=', 'orders.id')
                 ->where('orders.status', '!=', 0)
-                ->groupBy('products.id', 'products.name')
+                ->groupBy('products.id', 'products.name', 'products.avatar')
                 ->orderBy('total_quantity_sold', 'DESC')
                 ->limit(5);
 

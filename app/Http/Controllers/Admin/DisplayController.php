@@ -14,10 +14,14 @@ class DisplayController extends Controller
     use ImageHandler;
 
     
-    public function index(){
+    public function index(Request $request)
+    {
+        $sort = $request->get('sort', 'id'); // Mặc định sắp xếp theo tên sản phẩm
+        $order = $request->get('order', 'asc'); // Mặc định sắp xếp tăng dần
+
+        $slides = Photo::orderBy($sort, $order)->where('type', 'slide')->paginate(10);
 
         $logo = Photo::where('type', 'logo')->get()->first();
-        $slides = Photo::where('type', 'slide')->get();
         $footerLinks = FooterLink::all();
 
         $viewData = [

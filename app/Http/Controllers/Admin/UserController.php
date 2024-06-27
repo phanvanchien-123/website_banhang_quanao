@@ -23,10 +23,22 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $users = User::paginate(10);
+        $sort = $request->get('sort', 'id'); // Mặc định sắp xếp theo tên sản phẩm
+        $order = $request->get('order', 'asc'); 
+
+        $users = User::query();
+
+        if ($request->has('search')) {
+            $name = $request->input('search');
+            $users->where('name', 'like', '%' . $name . '%');
+        }
+
+        $users->orderBy($sort, $order);
+
+        $users = $users->paginate(10);
+
         // dd($users);
         return view('admin.user.index',compact('users'));
     }

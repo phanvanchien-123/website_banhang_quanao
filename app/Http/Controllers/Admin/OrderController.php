@@ -5,14 +5,27 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Models\ProductDetail;
+use App\Models\Order_details;
 use App\Http\Controllers\Controller;
 
 class OrderController extends Controller
 {
     //
-    public function index(){
+    public function index(Request $request){
 
-        $orders = Order::paginate(10);
+        $sort = $request->get('sort', 'id'); // Mặc định sắp xếp theo tên sản phẩm
+        $order = $request->get('order', 'asc'); 
+
+        $orders = Order::query();
+
+        if ($request->has('search')) {
+            $name = $request->input('search');
+            $orders->where('id', 'like', '%' . $name . '%');
+        }
+
+        $orders->orderBy($sort, $order);
+
+        $orders = $orders->paginate(10);
 
          // Tính tổng total
          foreach ($orders as $order) {
@@ -70,7 +83,21 @@ class OrderController extends Controller
         return view('admin.order.show',compact('order'));
     }
 
-    public function delete(){
+    public function delete($id){
+        try{
+
+            $order = Order::findOrFail($id);
+            Order_details::where('order_id', $order->id)->delete();
+            
+            $order->delete();
+
+            return redirect()->back()->with(['success' => 'xoá đơn hàng thành công']);
+
+        }catch (Exception $ex) {
+            Log::error("ERROR => ProductController@store =>". $ex->getMessage());
+            return redirect()->back()->with(['error' => 'xoá đơn hàng thất bại']);
+        }
+        
 
     }
 }

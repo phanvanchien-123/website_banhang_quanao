@@ -62,7 +62,8 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Avata</th>
                                     <th scope="col">Title</th>
-                                    <th scope="col">Ngày tạo</th>
+                                    <th scope="col">Ngày tạo <a href="?sort=created_at&order={{ request('order') === 'asc' ? 'desc' : 'asc' }}"><i
+                                        class="bi bi-arrow-down-up"></i></a></th>
                                     <th scope="col">thao tác</th>
                                 </tr>
                             </thead>

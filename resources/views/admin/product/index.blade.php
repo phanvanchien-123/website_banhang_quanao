@@ -1,20 +1,20 @@
 @extends('admin.layout.main')
 @section('content')
-    <div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex justify-content-between align-items-center pb-4">
         <div class="d-flex align-items-center">
             <h2>Sản phẩm</h2> &nbsp&nbsp&nbsp&nbsp|<a href="{{ route('admin.product.stock') }}">Kho hàng</a>
         </div>
-        <a href="{{ route('admin.product.create') }}" class="text-decoration-none"><i class="bi bi-plus-square"></i> Thêm
-            mới</a>
     </div>
     <div class="input-group flex-nowrap my-3">
-        <span class="input-group-text" id="addon-wrapping">@</span>
         <div class="d-flex w-100">
-            <form action="" class="w-100">
-                <input type="text" class="form-control" placeholder="Search" name="search"
+            <a href="{{ route('admin.product.index') }}" class="btn btn-secondary rounded-0"><i class="bi bi-arrow-clockwise "></i></a>
+            <form action="" class="ps-2 d-flex">
+                <input type="text" class="form-control rounded-0" placeholder="Search" name="search"
                     value="{{ Request::get('search') }}">
+                <button type="submit" class="btn btn-primary ms-2 rounded-0"> tìm kiếm</button>
             </form>
-            {{-- <a href="" type="button" class="btn btn-outline-secondary ms-3">Search</a> --}}
+            <a href="{{ route('admin.product.create') }}" class="text-decoration-none ms-auto text-success"><i class="bi bi-plus-square h4"></i> Thêm
+                mới</a>
         </div>
     </div>
     <div>
@@ -23,10 +23,14 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Avata</th>
-                    <th scope="col">Tên sản phẩm</th>
-                    <th scope="col">Danh mục</th>
-                    <th scope="col">Giá</th>
-                    <th scope="col">Ngày tạo</th>
+                    <th scope="col">Tên sản phẩm <a href="?sort=name&order={{ request('order') === 'asc' ? 'desc' : 'asc' }}"><i
+                        class="bi bi-arrow-down-up"></i></a></th>
+                    <th scope="col">Danh mục <a href="?sort=product_category_id&order={{ request('order') === 'asc' ? 'desc' : 'asc' }}"><i
+                        class="bi bi-arrow-down-up"></i></a></th>
+                    <th scope="col">Giá <a href="?sort=price&order={{ request('order') === 'asc' ? 'desc' : 'asc' }}"><i
+                        class="bi bi-arrow-down-up"></i></a></th>
+                    <th scope="col">Ngày tạo <a href="?sort=created_at&order={{ request('order') === 'asc' ? 'desc' : 'asc' }}"><i
+                        class="bi bi-arrow-down-up"></i></a></th>
                     <th scope="col">Thao tác</th>
                 </tr>
             </thead>
@@ -41,9 +45,9 @@
                         <td>{{ number_format($item->price, 0, ',', '.') }} đ</td>
                         <td>{{ $item->created_at }}</td>
                         <td>
-                            <a href="{{ route('admin.product.edit', $item->id) }}"><i class="bi bi-pencil-square"></i></a>
+                            <a href="{{ route('admin.product.edit', $item->id) }}"><i class="bi bi-pencil-square text-warning"></i></a>
                             |
-                            <a href="{{ route('admin.product.delete', $item->id) }}"><i class="bi bi-trash2-fill"></i></a>
+                            <a href="{{ route('admin.product.delete', $item->id) }}"><i class="bi bi-trash2-fill text-danger"></i></a>
                         </td>
                     </tr>
                 @endforeach

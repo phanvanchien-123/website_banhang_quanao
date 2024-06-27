@@ -15,9 +15,22 @@ use Spatie\Permission\Models\Permission;
 class RoleController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
-        $roles = Role::paginate(10);
+        $sort = $request->get('sort', 'id'); // Mặc định sắp xếp theo tên sản phẩm
+        $order = $request->get('order', 'asc'); 
+
+        $roles = Role::query();
+
+        if ($request->has('search')) {
+            $name = $request->input('search');
+            $roles->where('name', 'like', '%' . $name . '%');
+        }
+
+        $roles->orderBy($sort, $order);
+
+        $roles = $roles->paginate(10);
+
         return view('admin.role.index', compact('roles'));
     }
 

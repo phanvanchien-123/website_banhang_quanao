@@ -2,7 +2,7 @@
 @section('content')
     <div class="d-flex align-items-center">
         <h2>Order ID: {{ $order->id }}</h2>
-        <div class="ms-4 h-75">
+        <div class="ms-4">
             <select class="form-select form-select-lg pt-2" aria-label="Large select example" data-comment-id="{{ $order->id }}">
                 <option value="0" {{ $order->status == 0 ? 'selected' : '' }}>Hủy bỏ</option>
                 <option value="1" {{ $order->status == 1 ? 'selected' : '' }}>Chờ Xác nhận đơn hàng</option>
@@ -13,6 +13,9 @@
                 <option value="7" {{ $order->status == 7 ? 'selected' : '' }}>Hoàn thành</option>
             </select>
         </div>
+
+        <a href="{{ route('admin.product.index') }}" class="text-decoration-none ms-auto"><i class="bi bi-box-arrow-left h4"></i> Trở về</a>
+
     </div>
 
     <p class="fw-lighter">{{ $order->created_at }}</p>
