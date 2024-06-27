@@ -56,8 +56,10 @@ class BrandController extends Controller
         //
         try {
             $data = $request->except('avatar');
-            $imagePath = $this->uploadImage($request->file('avatar'), 'theme_admin/upload/brand');
-            $data['avatar'] = $imagePath ;
+            if ($request->hasFile('avatar')) {
+                $imagePath = $this->uploadImage($request->file('avatar'), 'theme_admin/upload/brand');
+                $data['avatar'] = $imagePath ;
+            }
     
             $brand = Brand::create($data);
 

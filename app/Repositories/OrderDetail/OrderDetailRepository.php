@@ -11,5 +11,13 @@ class OrderDetailRepository extends BaseRepositories implements OrderDetailRepos
     public function getModel(){
         return Order_Details::class;
     }
+    public function countProductSold($productId)
+    {
+        return $this->model->where('product_id', $productId)
+            ->whereHas('order', function($query) {
+                $query->where('status', 7);
+            })
+            ->sum('qty');
+    }
  
 }

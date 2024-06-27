@@ -39,54 +39,80 @@
                 <div class="col-lg-6">
                     @if ($totalItems > 0)
                         {{-- <form class="needs-validation" method="POST" id="checkoutForm" action="/checkout"> --}}
-                        <form class="needs-validation" method="POST" id="checkoutForm" action="{{ route('qrpayment') }}">
+                        <form class="needs-validation" method="POST" id="checkoutForm" action="/checkout">
                             @csrf
                             <input type="hidden" name="user_id" value="{{ auth()->id() }}">
                             <input type="hidden" id="applied_coupon_code" name="applied_coupon_code" value="">
                             <input type="hidden" name="amount" value="{{ $totalPrice - ($discount ?? 0) }}">
                             <div id="billingAddress" class="row g-4">
                                 <h3 class="mb-3 theme-color">Billing address</h3>
+                            
                                 <div class="col-md-6">
                                     <label for="first_name" class="form-label">First Name</label>
-                                    <input type="text" class="form-control" id="first_name" name="first_name"
-                                        placeholder="First Name">
+                                    <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="first_name" name="first_name" placeholder="First Name" value="{{ old('first_name') }}">
+                                    @error('first_name')
+                                        <div class="invalid-feedback">{{ $errors->first('first_name')}}</div>
+                                    @enderror
                                 </div>
+                            
                                 <div class="col-md-6">
                                     <label for="last_name" class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" id="last_name" name="last_name"
-                                        placeholder="Last Name">
+                                    <input type="text" class="form-control @error('last_name') is-invalid @enderror" id="last_name" name="last_name" placeholder="Last Name" value="{{ old('last_name') }}">
+                                    @error('last_name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
+                            
                                 <div class="col-md-6">
                                     <label for="phone" class="form-label">Phone</label>
-                                    <input type="text" class="form-control" id="phone" name="phone"
-                                        placeholder="Enter Phone Number">
+                                    <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="Enter Phone Number" value="{{ old('phone') }}">
+                                    @error('phone')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
+                            
                                 <div class="col-md-6">
                                     <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email"
-                                        placeholder="Email">
+                                    <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="Email" value="{{ old('email') }}">
+                                    @error('email')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
+                            
                                 <div class="col-md-12">
                                     <label for="address" class="form-label">Address</label>
-                                    <input type="text" class="form-control" id="address" name="street_address"
-                                        placeholder="Address">
+                                    <input type="text" class="form-control @error('street_address') is-invalid @enderror" id="address" name="street_address" placeholder="Address" value="{{ old('street_address') }}">
+                                    @error('street_address')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
+                            
                                 <div class="col-md-3">
                                     <label for="city" class="form-label">City</label>
-                                    <input type="text" class="form-control" id="city" name="town_city"
-                                        placeholder="City">
+                                    <input type="text" class="form-control @error('town_city') is-invalid @enderror" id="city" name="town_city" placeholder="City" value="{{ old('town_city') }}">
+                                    @error('town_city')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
+                            
                                 <div class="col-md-3">
                                     <label for="country" class="form-label">Country</label>
-                                    <select class="form-select custom-form-select" id="country" name="country">
-                                        <option value="VietNam">Vietnam</option>
+                                    <select class="form-select custom-form-select @error('country') is-invalid @enderror" id="country" name="country">
+                                        <option value="">Select Country</option>
+                                        <option value="Vietnam" {{ old('country') == 'Vietnam' ? 'selected' : '' }}>Vietnam</option>
+                                        <!-- Add other countries as needed -->
                                     </select>
-                                    <div class="invalid-feedback">Please select a valid country.</div>
+                                    @error('country')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
+                            
                                 <div class="col-md-3">
                                     <label for="zip" class="form-label">Zip</label>
-                                    <input type="text" class="form-control" id="zip" name="postcode_zip"
-                                        placeholder="123456">
+                                    <input type="text" class="form-control @error('postcode_zip') is-invalid @enderror" id="zip" name="postcode_zip" placeholder="123456" value="{{ old('postcode_zip') }}">
+                                    @error('postcode_zip')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <hr class="my-lg-5 my-4">
@@ -199,7 +225,7 @@
                             var code = document.getElementById('code').value;
                             var token = document.querySelector('input[name="_token"]').value;
                             fetch('{{ route('apply.coupon') }}', {
-                            // fetch('https://5a7b-117-1-160-240.ngrok-free.app/voucher_discount/apply-coupon', {
+                                    // fetch('https://5a7b-117-1-160-240.ngrok-free.app/voucher_discount/apply-coupon', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',
@@ -227,7 +253,7 @@
                         document.getElementById('removeCouponButton').addEventListener('click', function() {
                             var token = document.querySelector('input[name="_token"]').value;
                             fetch('{{ route('remove.coupon') }}', {
-                            // fetch('https://5a7b-117-1-160-240.ngrok-free.app/voucher_discount/remove-coupon', {
+                                    // fetch('https://5a7b-117-1-160-240.ngrok-free.app/voucher_discount/remove-coupon', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',

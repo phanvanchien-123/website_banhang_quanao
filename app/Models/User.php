@@ -24,6 +24,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    protected $primaryKey ='id';
     protected $fillable = [
         'name',
         'email',
@@ -61,6 +62,32 @@ class User extends Authenticatable
             }
 
         return $address;
+        }
+
+        return 'Không có địa chỉ'; // Hoặc bạn có thể trả về giá trị mặc định khác nếu muốn
+    }
+
+    public function getAddressFrom($user_id)
+    {
+        $user = User::find($user_id);
+
+        if ($user && $user->province_id && $user->district_id && $user->ward_id) {
+            $province = Province::where('id', $user->province_id)->first();
+            $district = District::where('id', $user->district_id)->first();
+            $ward = Ward::where('id', $user->ward_id)->first();
+
+            $address = '';
+            if ($province) {
+                $address .= $province->name;
+            }
+            if ($district) {
+                $address .= ', ' . $district->name;
+            }
+            if ($ward) {
+                $address .= ', ' . $ward->name;
+            }
+
+            return $address;
         }
 
         return 'Không có địa chỉ'; // Hoặc bạn có thể trả về giá trị mặc định khác nếu muốn

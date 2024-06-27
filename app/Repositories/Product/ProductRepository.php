@@ -14,7 +14,13 @@ class ProductRepository extends BaseRepositories implements ProductRepositoryInt
     {
         return product::class;
     }
-
+    public function getproductsviewlong($limit){
+        $productsview= $this->model->where('view','>',100)->limit($limit)->get();
+        foreach ($productsview as $Product) {
+            $this->Evaluate($Product);
+        }
+        return $productsview;
+    }
     public function getRelatedProducts($product, $limit = 4)
     {
 
@@ -40,7 +46,7 @@ class ProductRepository extends BaseRepositories implements ProductRepositoryInt
         $avgRating = $countRating ? $sumRating / $countRating : 0;
         $Product->avgRating = $avgRating;
     }
-    public function getLatestProducts($limit = 10)
+    public function getLatestProducts($limit)
     {
         // Lấy các sản phẩm mới nhất
         $latestProducts = $this->model->orderBy('created_at', 'desc')
@@ -52,7 +58,7 @@ class ProductRepository extends BaseRepositories implements ProductRepositoryInt
         }
         return $latestProducts;
     }
-    public function getLatestFeaturedProduct($limit = 10)
+    public function getLatestFeaturedProduct($limit)
     {
         // Lấy các sản phẩm nổi bật mới nhất
         $featuredProducts = $this->model->where('featured', true)

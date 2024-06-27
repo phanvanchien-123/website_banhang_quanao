@@ -13,6 +13,7 @@ use App\Untilities\Constant;
 use Illuminate\Http\Request;
 use App\Models\ProductDetail;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckoutOrderRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Service\Order\OrderServiceInterface;
@@ -32,70 +33,62 @@ class CheckoutController extends Controller
         $this->orderService = $orderService;
         $this->orderDetailService =$orderDetailService;
     }
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $coupons = Coupon::all(); 
         $userId = Auth::id();
-        $cart = Carts::where('user_id', $userId)->firstOrFail(); // Lấy giỏ hàng của người dùng
-        // Lấy tất cả các mục trong giỏ hàng và tính tổng giá
-        $cartItems = $cart->cartItems;
-        $totalItems = $cart->cartItems->sum('quantity');
-
+        $cart = Carts::where('user_id', $userId)->firstOrFail();
+        $selectedItemIds = session('selected_cart_items', []);
+        $cartItems = Cart_items::whereIn('id', $selectedItemIds)->where('cart_id', $cart->id)->get();
+        $totalItems = $cartItems->sum('quantity');
         $totalPrice = $cartItems->sum(function ($item) {
             return $item->price * $item->quantity;
         });
-         // Kiểm tra mã giảm giá
-    $discount = 0;
-    $couponCode = $request->session()->get('coupon_code');
-    if ($couponCode) {
-        $coupon = Coupon::where('code', $couponCode)->first();
-        if ($coupon && !$coupon->isExpired()) {
-            $discount = $coupon->discount;
-            $totalPrice -= $discount;
-        } else {
-            $request->session()->forget('coupon_code');
+    
+        // Kiểm tra mã giảm giá
+        $discount = 0;
+        $couponCode = $request->session()->get('coupon_code');
+        if ($couponCode) {
+            $coupon = Coupon::where('code', $couponCode)->first();
+            if ($coupon && !$coupon->isExpired()) {
+                $discount = $coupon->discount;
+                $totalPrice -= $discount;
+            } else {
+                $request->session()->forget('coupon_code');
+            }
         }
-       
+    
+        $appliedCouponCode = session('applied_coupon_code');
+    
+        return view('Client.checkout.index', compact('cartItems', 'totalPrice', 'totalItems', 'discount', 'coupons', 'appliedCouponCode'));
     }
-    $appliedCouponCode = session('applied_coupon_code');
-        return view('Client.checkout.index',compact('cartItems','totalPrice','totalItems', 'discount','coupons','appliedCouponCode'));
-    }
-    public function addOrder(Request $request)
+    public function addOrder(CheckoutOrderRequest $request)
     {
-        $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'phone' => 'required|string|max:15',
-            'email' => 'required|email|max:255',
-            'street_address' => 'required|string|max:255',
-            'town_city' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'postcode_zip' => 'required|string|max:10',
-            'payment_type' => 'required|in:0,1',
-            'applied_coupon_code' => 'nullable|string|max:255', // Add validation for the coupon code
-        ]);
+        $validated = $request->validated();
         $couponCode = $validated['applied_coupon_code'];
-    $coupon = Coupon::where('code', $couponCode)->first();
-    $order = new Order();
-    $order->user_id = auth()->id();
-    $order->first_name = $validated['first_name'];
-    $order->last_name = $validated['last_name'];
-    $order->phone = $validated['phone'];
-    $order->email = $validated['email'];
-    $order->street_address = $validated['street_address'];
-    $order->town_city = $validated['town_city'];
-    $order->country = $validated['country'];
-    $order->status = Constant::order_status_ReceiveOrders;
-    $order->payment_type = $validated['payment_type'];
-    $order->coupon_id= $coupon->id ?? null;
+        $coupon = Coupon::where('code', $couponCode)->first();
+        
+        $order = new Order();
+        $order->user_id = auth()->id();
+        $order->first_name = $validated['first_name'];
+        $order->last_name = $validated['last_name'];
+        $order->phone = $validated['phone'];
+        $order->email = $validated['email'];
+        $order->street_address = $validated['street_address'];
+        $order->town_city = $validated['town_city'];
+        $order->country = $validated['country'];
+        $order->status = Constant::order_status_ReceiveOrders;
+        $order->payment_type = $validated['payment_type'];
+        $order->coupon_id= $coupon->id ?? null;
     
-    $userId = Auth::id();
-    $cart = Carts::where('user_id', $userId)->firstOrFail();
-    $cartItems = $cart->cartItems;
-    
-    // Tính tổng giá trị của giỏ hàng
-    $totalPrice = $cartItems->sum(function ($item) {
-        return $item->price * $item->quantity;
-    });
+        $userId = Auth::id();
+        $cart = Carts::where('user_id', $userId)->firstOrFail();
+        $selectedItemIds = session('selected_cart_items', []);
+        $cartItems = Cart_items::whereIn('id', $selectedItemIds)->where('cart_id', $cart->id)->get();
+       
+        $totalPrice = $cartItems->sum(function ($item) {
+            return $item->price * $item->quantity;
+        });
     
     // Kiểm tra mã giảm giá
     $discountAmount = 0;
@@ -150,28 +143,19 @@ class CheckoutController extends Controller
             // $this->sendMail($order, $totalPrice);
     
             // Xóa giỏ hàng
-            Cart_items::whereHas('cart', function ($query) use ($userId) {
-                $query->where('user_id', $userId);
-            })->delete();
+            // Cart_items::whereHas('cart', function ($query) use ($userId) {
+            //     $query->where('user_id', $userId);
+            // })->delete();
+            Cart_items::whereIn('id', $selectedItemIds)->delete();
+
     
             // Trả về kết quả thông báo
             return "Thành Công";
         }
     }
 
-    public function vnPayCheck(Request $request){
-         $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'phone' => 'required|string|max:15',
-            'email' => 'required|email|max:255',
-            'street_address' => 'required|string|max:255',
-            'town_city' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'postcode_zip' => 'required|string|max:10',
-            'payment_type' => 'required|in:0,1',
-            'applied_coupon_code' => 'nullable|string|max:255', // Add validation for the coupon code
-        ]);
+    public function vnPayCheck(CheckoutOrderRequest $request){
+        $validated = $request->validated();
         $couponCode = $validated['applied_coupon_code'];
         $coupon = Coupon::where('code', $couponCode)->first();
         $order = new Order();
@@ -189,9 +173,9 @@ class CheckoutController extends Controller
         
         $userId = Auth::id();
         $cart = Carts::where('user_id', $userId)->firstOrFail();
-        $cartItems = $cart->cartItems;
-        
-        // Tính tổng giá trị của giỏ hàng
+        $selectedItemIds = session('selected_cart_items', []);
+        $cartItems = Cart_items::whereIn('id', $selectedItemIds)->where('cart_id', $cart->id)->get();
+       
         $totalPrice = $cartItems->sum(function ($item) {
             return $item->price * $item->quantity;
         });
@@ -230,8 +214,7 @@ class CheckoutController extends Controller
     
            $product->save();
            $productDetail->save();
-        }
-
+        }     
         foreach($cartItems as $cart){
             $data = [
                 'order_id'=>$order->id,
@@ -322,7 +305,12 @@ class CheckoutController extends Controller
         , 'message' => 'success'
         , 'data' => $vnp_Url);
         if (isset($_POST['redirect'])) {
-
+            
+            $this->orderService->update(['status'=>Constant::order_status_Paid],$vnp_TxnRef);
+            $order=$this->orderService->find($vnp_TxnRef);
+            $this->sendMail($order,$subtotal);
+             // Xóa giỏ hàng 
+             Cart_items::whereIn('id', $selectedItemIds)->delete();
             session([
                 'total' => $vnp_Amount,
                 'infor' => $vnp_OrderInfo,
@@ -332,13 +320,6 @@ class CheckoutController extends Controller
 
             return redirect()->away($vnp_Url);
 
-            $this->orderService->update(['status'=>Constant::order_status_Paid],$vnp_TxnRef);
-            $order=$this->orderService->find($vnp_TxnRef);
-            $this->sendMail($order,$subtotal);
-             // Xóa giỏ hàng 
-            Cart_items::whereHas('cart', function ($query) use ($userId) {
-                $query->where('user_id', $userId);
-            })->delete();
             
             
 

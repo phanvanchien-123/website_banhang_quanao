@@ -25,4 +25,7 @@ class Blog extends Model
     public function blogComments(){
         return $this ->hasMany(blog_comment::class,'blog_id','id');
     }
+    public function users(){
+        return $this->belongsTo(User::class,'user_id','id');
+    }
 }

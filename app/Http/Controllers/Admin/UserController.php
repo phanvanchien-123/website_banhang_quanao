@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 
 use Exception;
 use App\Models\User;
+use App\Models\Ward;
+use App\Models\District;
+use App\Models\Province;
 use Illuminate\Support\Str;
 use App\Traits\ImageHandler;
 use Illuminate\Http\Request;
@@ -13,8 +16,8 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends Controller
 {
@@ -49,9 +52,13 @@ class UserController extends Controller
     public function create()
     {
         //
+        $provinces = Province::all();
+        $districts = District::all();
+        $wards = Ward::all();
+
         $roles = Role::all()->groupBy('group');
         $roleActive = [];
-        return view('admin.user.create',compact('roles','roleActive'));
+        return view('admin.user.create',compact('roles','roleActive','provinces','districts','wards'));
 
     }
 
@@ -61,12 +68,14 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         //
-        try {
+        // try {
             $data = $request->except('avatar');
             $data['password'] = Hash::make('123456');
 
-            $imagePath = $this->uploadImage($request->file('avatar'), 'theme_admin/upload/user');
-            $data['avatar'] = $imagePath ;    
+            if ($request->hasFile('avatar')) {
+                $imagePath = $this->uploadImage($request->file('avatar'), 'theme_admin/upload/user');
+                $data['avatar'] = $imagePath ;
+            }
 
 
             $user = User::create($data);
@@ -74,10 +83,10 @@ class UserController extends Controller
 
             return redirect()->route('admin.user.index')->with('success', 'Thêm mới user thành công');
 
-        } catch (Exception $ex) {
-            Log::error("ERROR => UserController@store =>". $ex->getMessage());
-            return redirect()->back()->with('error', 'Thêm mới user thất bại');
-        }
+        // } catch (Exception $ex) {
+        //     Log::error("ERROR => UserController@store =>". $ex->getMessage());
+        //     return redirect()->back()->with('error', 'Thêm mới user thất bại');
+        // }
 
         return redirect()->back();
 
@@ -98,11 +107,15 @@ class UserController extends Controller
     public function edit(User $user,$id)
     {
         //
+        $provinces = Province::all();
+        $districts = District::all();
+        $wards = Ward::all();
+
         $user = User::findOrFail($id);
         $roles = Role::all()->groupBy('group');
         $roleActive = DB::table('model_has_roles')->where('model_id', $id)->pluck('role_id')->toArray() ;
         // dd($user);
-        return view('admin.user.edit',compact('user','roles','roleActive'));
+        return view('admin.user.edit',compact('user','roles','roleActive','provinces','districts','wards'));
     }
 
     /**
@@ -112,6 +125,7 @@ class UserController extends Controller
     {
         //
         try{
+            // dd($request->all());
             $user = User::findOrFail($id);
             $data = $request->except('avatar');
             $imagePath = $user->avatar;
@@ -127,10 +141,7 @@ class UserController extends Controller
 
             return redirect()->back()->with(['success' => 'Cập nhật user thành công']);
 
-        } catch (ModelNotFoundException $ex) {
-            Log::error("LỖI => UserController@store => Không tìm thấy user: " . $ex->getMessage());
-            return redirect()->back()->with(['error' => 'Không tìm thấy user']);
-        } catch (Exception $ex) {
+        }catch (Exception $ex) {
             Log::error("ERROR => UserController@store =>". $ex->getMessage());
             return redirect()->back()->with(['error' => 'Cập nhật user thất bại']);
         }

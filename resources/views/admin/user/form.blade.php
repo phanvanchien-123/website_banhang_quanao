@@ -26,11 +26,92 @@
                     <small class="text-danger">{{ $errors->first('name') }}</small>
                 @enderror
             </div>
-            <div class="mb-3">
-                <label for="street_address" class="form-label">Địa chỉ</label>
-                <input type="text" class="form-control" id="street_address" placeholder="" name="street_address"
-                    value="{{ isset($user) ? $user->street_address : '' }}">
-            </div>
+            @if ((auth()->user()->province_id || auth()->user()->province_id || auth()->user()->province_id) && isset($user))
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text"
+                                value="{{ auth()->user()->getAddressFrom($user->id) }}" aria-label="Disabled input example"
+                                disabled readonly>
+                            <label for="Name">Địa chỉ</label>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed text-primary ms-1" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false"
+                                        aria-controls="collapseTwo">
+                                        thay đổi
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse"
+                                    data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <div class="row mt-3">
+                                            <div class="col-4">
+                                                <div class="form-floating mb-3">
+                                                    <select class="form-select" aria-label="Default select example"
+                                                        id="province" name="province_id" onchange="loadDistricts()">
+                                                        <option value="">--Chọn tỉnh/thành--</option>
+                                                        @foreach ($provinces as $province)
+                                                            <option value="{{ $province->id }}">
+                                                                {{ $province->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="form-floating mb-3">
+                                                    <select class="form-select" aria-label="Default select example"
+                                                        id="district" name="district_id" onchange="loadWards()">
+                                                        <option value="">--Chọn quận/huyện--</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="form-floating mb-3">
+                                                    <select class="form-select" aria-label="Default select example"
+                                                        id="ward" name="ward_id">
+                                                        <option value="">--Chọn xã/phường--</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="row">
+                    <div class="col-4">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" aria-label="Default select example" id="province"
+                                name="province_id" onchange="loadDistricts()">
+                                <option value="">--Chọn tỉnh/thành--</option>
+                                @foreach ($provinces as $province)
+                                    <option value="{{ $province->id }}">{{ $province->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" aria-label="Default select example" id="district"
+                                name="district_id" onchange="loadWards()">
+                                <option value="">--Chọn quận/huyện--</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" aria-label="Default select example" id="ward"
+                                name="ward_id">
+                                <option value="">--Chọn xã/phường--</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            @endif
             <div class="form-group mb-3">
                 <label for="name"><b>role:</b></label>
                 <div class="row">
@@ -61,9 +142,10 @@
                 <div class="border rounded">
                     <div id="imageWrapper" class="border-bottom d-flex" style="display: none;">
                         @if (isset($user))
-                             <img src="{{ asset('storage/' . $user->avatar)  }}" alt="" class="m-3" width="120px" height="120px">
+                            <img src="{{ asset('storage/' . $user->avatar) }}" alt="" class="m-3"
+                                width="120px" height="120px">
                         @endif
-                           
+
                     </div>
                     <input type="file" class="form-control" id="exampleFormControlInput2" placeholder=""
                         name="avatar" value="" onchange="previewImages(event)">
@@ -106,5 +188,9 @@
                 imageWrapper.style.display = 'none';
             }
         }
+    </script>
+    <script>
+        var districts = @json($districts);
+        var wards = @json($wards);
     </script>
 </form>

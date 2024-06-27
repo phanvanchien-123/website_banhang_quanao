@@ -69,7 +69,7 @@
                     <h2>Đăng Nhập</h2>
                 </div>
                 <div class="input">
-                    <label for="name">Username</label>
+                    <label for="name">Email</label>
                     <input type="email" id="name" name="email" :value="old('email')" required="" autofocus=""
                         autocomplete="name">
                         @error('email') <span class="text-danger mt-3">{{$message}}</span>@enderror
@@ -90,6 +90,9 @@
                         <span>Đăng nhập</span>
                         <i class="fa fa-check"></i>
                     </button>
+                </div>
+                <div class="border-top mt-4">
+                    <a href="{{ route('auth.google') }}">đăng nhập bằng google?</a>
                 </div>
 
                 <p>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart_items;
 use App\Models\Carts;
 use App\Models\Coupon;
 use Carbon\Carbon;
@@ -26,15 +27,11 @@ class CouponController extends Controller
         
         // Lấy ID người dùng hiện tại
         $userId = Auth::id();
-        
-        // Tìm giỏ hàng của người dùng
-        $cart = \App\Models\Carts::where('user_id', $userId)->first();
-        
-        // Lấy các sản phẩm trong giỏ hàng
-        $cartItems = $cart->cartItems;
-        
-        // Tính tổng giá trị của giỏ hàng
-        $totalPrice = $cartItems->sum(function ($item){
+        $cart = Carts::where('user_id', $userId)->firstOrFail();
+        $selectedItemIds = session('selected_cart_items', []);
+        $cartItems = Cart_items::whereIn('id', $selectedItemIds)->where('cart_id', $cart->id)->get();
+       
+        $totalPrice = $cartItems->sum(function ($item) {
             return $item->price * $item->quantity;
         });
     
@@ -82,11 +79,13 @@ class CouponController extends Controller
     public function removeCoupon(Request $request)
 {
     $userId = Auth::id();
-    $cart = Carts::where('user_id', $userId)->first();
-    $cartItems = $cart->cartItems;
-    $totalPrice = $cartItems->sum(function ($item) {
-        return $item->price * $item->quantity;
-    });
+        $cart = Carts::where('user_id', $userId)->firstOrFail();
+        $selectedItemIds = session('selected_cart_items', []);
+        $cartItems = Cart_items::whereIn('id', $selectedItemIds)->where('cart_id', $cart->id)->get();
+       
+        $totalPrice = $cartItems->sum(function ($item) {
+            return $item->price * $item->quantity;
+        });
 
     session()->forget('applied_coupon_code');
 

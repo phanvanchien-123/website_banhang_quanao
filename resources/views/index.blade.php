@@ -11,80 +11,39 @@
 <link rel="stylesheet" href="{{asset('/assets/vendors/uicons-regular-straight.css')}}"> --}}
 
     <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
-
-
-    <section class="pt-0 poster-section">
-        <div class="poster-image slider-for custome-arrow classic-arrow">
+    <style>
+        .container1 {
+         position: relative;
+         left: 100px;
+        }
+    </style>
+    <section class="home-slider position-relative pt-50">
+        <div class="hero-slider-1 dot-style-1 dot-style-1-position-1">
             @foreach ($slide as $item)
-                <div>
-                    <img src="{{ asset('storage/' . $item->path) }}" class="img-fluid blur-up lazyload" alt="">
-                </div>
-            @endforeach
-
-            {{-- <div>
-            <img src="assets/images/furniture-images/poster/2.png" class="img-fluid blur-up lazyload" alt="">
-        </div>
-        <div>
-            <img src="assets/images/furniture-images/poster/3.png" class="img-fluid blur-up lazyload" alt="">
-        </div> --}}
-        </div>
-        <div class="slider-nav image-show">
-            <div>
-                <div class="poster-img">
-                    <img src="assets/images/furniture-images/poster/t2.jpg" class="img-fluid blur-up lazyload"
-                        alt="">
-                    <div class="overlay-color">
-                        <i class="fas fa-plus theme-color"></i>
+            <div class="single-hero-slider single-animation-wrap">
+         
+                <div class="container1">
+                    <div class="row align-items-center slider-animated-1">
+                        <div class="col-lg-4 col-md-5">
+                            <div class="hero-slider-content-2">
+                               {!!$item->title!!}
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-8">
+                            <div class="single-slider-img single-slider-img-1">
+                                <img class="animated slider-1-1" src="{{ asset('storage/' . $item->path) }}" alt="">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div>
-                <div class="poster-img">
-                    <img src="assets/images/furniture-images/poster/t1.jpg" class="img-fluid blur-up lazyload"
-                        alt="">
-                    <div class="overlay-color">
-                        <i class="fas fa-plus theme-color"></i>
-                    </div>
-                </div>
-
-            </div>
-            <div>
-                <div class="poster-img">
-                    <img src="assets/images/furniture-images/poster/t3.jpg" class="img-fluid blur-up lazyload"
-                        alt="">
-                    <div class="overlay-color">
-                        <i class="fas fa-plus theme-color"></i>
-                    </div>
-                </div>
-            </div>
+                       
+                            
+                        @endforeach
         </div>
-
-        <div class="left-side-contain">
-            <div class="banner-left">
-                {{-- <h4>Sale <span class="theme-color">35% Off</span></h4>
-                <h1>New Latest <span>Dresses</span></h1>
-                <p>BUY ONE GET ONE <span class="theme-color">FREE</span></p>
-                <h2>$79.00 <span class="theme-color"><del>$65.00</del></span></h2>
-                <p class="poster-details mb-0">Lorem Ipsum is simply dummy text of the printing and typesetting
-                    industry.</p> --}}
-                    {!! $slide->first()->title !!}
-            </div>
-        </div>
-
-        <div class="right-side-contain">
-            <div class="social-image">
-                <h6>Facebook</h6>
-            </div>
-
-            <div class="social-image">
-                <h6>Instagram</h6>
-            </div>
-
-            <div class="social-image">
-                <h6>Twitter</h6>
-            </div>
-        </div>
+        <div class="slider-arrow hero-slider-1-arrow"></div>
     </section>
+   
     <!-- banner section start -->
     <section class="featured section-padding position-relative">
         <div class="container">
@@ -512,74 +471,71 @@
 
     <section class="section-padding">
         <div class="container wow fadeIn animated">
-            <h3 class="section-title mb-20"><span>Sản Phẩm Nổi Bật Cho : </span> Nam</h3>
+            <h3 class="section-title mb-20"><span>Sản Phẩm Được Nhiều Người Xem </h3>
             <div class="carausel-6-columns-cover position-relative">
                 <div class="slider-arrow slider-arrow-2 carausel-6-columns-arrow" id="carausel-6-columns-2-arrows"></div>
                 <div class="carausel-6-columns carausel-arrow-center" id="carausel-6-columns-2">
-                    @foreach ($featuredProductsCategory['Men'] as $item)
-                        <div class="product-cart-wrap small hover-up">
-                            <div class="product-img-action-wrap">
-                                <div class="product-img product-img-zoom">
-                                    <a href="product-details.html">
-                                        <img class="default-img" src="{{ asset('storage/' . $item->avatar) }}"
-                                            alt="">
-                                        <img class="hover-img" src="{{ asset('storage/' . $item->avatar) }}"
-                                            alt="">
-                                    </a>
-                                </div>
-                                <div class="product-action-1">
-                                    <a aria-label="Quick view" class="action-btn small hover-up"
-                                        href="/shop/details/{{ $item->id }}">
-                                        <i class="fi-rs-eye"></i></a>
-                                    <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="wishlist.php"
-                                        tabindex="0"><i class="fi-rs-heart"></i></a>
-                                </div>
-                                @if ($item->discount != null)
-                                    <div class="product-badges product-badges-position product-badges-mrg">
-                                        <span class="hot">SALE</span>
-                                    </div>
-                                @endif
+                    @foreach ($productsview as $item)
+                    <div class="product-cart-wrap small hover-up">
+                        <div class="product-img-action-wrap">
+                            <div class="product-img product-img-zoom">
+                                <a href="product-details.html">
+                                    <img class="default-img" src="{{asset('storage/'.$item->avatar)}}" alt="">
+                                    <img class="hover-img" src="{{asset('storage/'.$item->avatar)}}" alt="">
+                                </a>
                             </div>
-                            <div class="product-content-wrap">
-                                <div class="product-category">
-                                    <a href="shop.html">{{ $item->productCategory->name }}</a>
-                                </div>
-                                <h2><a href="product-details.html">{{ $item->name }}</a></h2>
-                                <div class="label-section">
-                                    {{-- <span class="badge badge-grey-color">#1 Best seller</span>
-                            <span class="label-text">in fashion</span> --}}
-                                    <ul class="rating my-2 d-inline-block">
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            @if ($i <= $item->avgRating)
-                                                <li>
-                                                    <i class="fas fa-star theme-color"></i>
-                                                </li>
-                                            @else
-                                                <li>
-                                                    <i class="fas fa-star "></i>
-                                                </li>
-                                            @endif
+                            <div class="product-action-1">
+                                <a aria-label="Quick view" class="action-btn small hover-up" href="/shop/details/{{$item->id}}">
+                                    <i class="fi-rs-eye"></i></a>
+                                <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="wishlist.php" tabindex="0"><i class="fi-rs-heart"></i></a>
+                            </div>
+                            @if ($item->discount !=null)
+                            <div class="product-badges product-badges-position product-badges-mrg">
+                                <span class="hot">SALE</span>
+                            </div>
+                            @endif
+                        </div>
+                        <div class="product-content-wrap">
+                            <div class="product-category">
+                                <a href="shop.html">{{$item->productCategory->name}}</a>
+                            </div>
+                            <h2><a href="product-details.html">{{$item->name}}</a></h2>
+                            <div class="label-section">
+                                {{-- <span class="badge badge-grey-color">#1 Best seller</span>
+                                <span class="label-text">in fashion</span> --}}
+                                <ul class="rating my-2 d-inline-block">
+                                    @for($i =1 ;$i<=5;$i++)
+                                     @if($i <=$item->avgRating)
+                                        <li>
+                                            <i class="fas fa-star theme-color"></i>
+                                        </li>
+                                        @else
+                                        <li>
+                                            <i class="fas fa-star "></i>
+                                        </li>
+                                        @endif
                                         @endfor
                                         <li>
-                                            (<span>{{ count($item->productComments) }}</span>)
+                                            (<span>{{count($item->productComments)}}</span>)
                                         </li>
-                                    </ul>
-                                </div>
-                                <div class="product-price">
-                                    @if ($item->discount)
-                                        <span> {{ number_format($item->discount, 3) }} VND </span>
-                                        <span class="old-price">{{ number_format($item->price, 3) }} VND</span>
-                                    @else
-                                        <span>{{ number_format($item->price, 3) }} VND</span>
-                                    @endif
-
-                                </div>
+                                </ul>
+                            </div>
+                            <div class="product-price">
+                                @if ($item->discount)
+                               <span>  {{number_format($item->discount,3)}} VND </span>
+                               <span class="old-price">{{number_format($item->price,3)}} VND</span>                
+                                  
+                                  @else
+                                <span>{{number_format($item->price,3)}} VND</span>
+                                  @endif
+                                
                             </div>
                         </div>
+                    </div>
                     @endforeach
-
+                    
                     <!--End product-cart-wrap-2-->
-
+                  
                     <!--End product-cart-wrap-2-->
                 </div>
             </div>

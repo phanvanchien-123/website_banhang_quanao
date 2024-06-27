@@ -23,14 +23,14 @@ class HomeController extends Controller
         $this->brands = $brandService;
     }
     public function index(){
-        $latestProducts = $this->productServices->getLatestProducts();
-        $featuredProducts = $this->productServices->getLatestFeaturedProduct();
+        $latestProducts = $this->productServices->getLatestProducts(8);
+        $featuredProducts = $this->productServices->getLatestFeaturedProduct(8);
         $featuredProductsCategory = $this->productServices->getFeaturedProducts();
         $ProductsDiscountedOver30 = $this->productServices->getProductsDiscountedOver30();
+        $productsview=$this->productServices->getproductsviewlong(7);
         $category = $this->productcategory->all();
         $brands = $this->brands->all();
 
-        
         $slide = Photo::where('type', 'slide')->get();
 
         $viewData = [
@@ -39,10 +39,13 @@ class HomeController extends Controller
             'featuredProducts' => $featuredProducts,
             'featuredProductsCategory' => $featuredProductsCategory,
             'ProductsDiscountedOver30' => $ProductsDiscountedOver30,
+            'productsview' => $productsview,
             'category' => $category,
-            'brands' => $slide,
+            'brands' => $brands,
         ];
 
         return view ('index',$viewData);
+
+        
     }
 }

@@ -124,4 +124,25 @@ class CartController extends Controller
             ->delete();
         return back()->with('success', 'Cart cleared successfully.');
     }
+    public function orderSelected(Request $request)
+{
+    $selectedItems = $request->input('selected_items', []);
+    if (empty($selectedItems)) {
+        return redirect()->back()->with('error', 'No items selected.');
+    }
+
+    $userId = Auth::id();
+    $cart = Carts::where('user_id', $userId)->firstOrFail();
+    $cartItems = Cart_items::whereIn('id', $selectedItems)->where('cart_id', $cart->id)->get();
+
+    if ($cartItems->isEmpty()) {
+        return redirect()->back()->with('error', 'Invalid items selected.');
+    }
+
+    // Save selected items to session
+    session(['selected_cart_items' => $cartItems->pluck('id')->toArray()]);
+
+    return redirect()->route('list')->with('success', 'Items selected for checkout.');
+}
+
 }

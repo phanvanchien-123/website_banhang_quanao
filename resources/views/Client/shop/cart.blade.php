@@ -1,17 +1,12 @@
 @extends('layouts.master')
 @section('content')
-<section class="breadcrumb-section section-b-space" style="padding-top:20px;padding-bottom:20px;">
+
+<!-- Breadcrumb Section -->
+<section class="breadcrumb-section section-b-space" style="padding-top:20px; padding-bottom:20px;">
     <ul class="circles">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
+        @for($i = 0; $i < 10; $i++)
+            <li></li>
+        @endfor
     </ul>
     <div class="container">
         <div class="row">
@@ -32,152 +27,200 @@
     </div>
 </section>
 
-<!-- Cart Section Start -->
+<!-- Cart Section -->
 <section class="cart-section section-b-space">
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center">
-                <table class="table cart-table">
-                    <thead>
-                        <tr class="table-head">
-                            <th scope="col">image</th>
-                            <th scope="col">product name</th>
-                            <th scope="col">price</th>
-                            <th scope="col">quantity</th>
-                            <th scope="col">total</th>
-                            <th scope="col">action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($cartItems as $item)
-                        <tr>
-                            <td>
-                                <a href="../product/details.html">
-                                    <img src="{{asset('storage/'.$item->product->avatar)}}" class="blur-up lazyloaded"
-                                        alt="">
-                                </a>
-                            </td>
-                            <td>
-                                <a href="../product/details.html">
-                                    {{$item->name}} <br> {{$item->color}} <br> Size : {{$item->size}}</a>
-                                <div class="mobile-cart-content row">
-                                    <div class="col">
+                <form action="{{ route('cart.orderSelected') }}" method="POST">
+                    @csrf
+                    <table class="table cart-table">
+                        <thead>
+                            <tr class="table-head">
+                             
+                              
+                                <th scope="col">
+                                    <input type="checkbox" id="select-all"> Tất cả
+                                </th>
+                                <th scope="col">Image</th>
+                                <th scope="col">Product Name</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($cartItems as $item)
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="selected_items[]" value="{{ $item->id }}" class="item-checkbox" data-price="{{ $item->price }}" data-quantity="{{ $item->quantity }}">
+                                    </td>
+                                    <td>
+                                        <a href="../product/details.html">
+                                            <img src="{{ asset('storage/'.$item->product->avatar) }}" class="blur-up lazyloaded" alt="">
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="../product/details.html">
+                                            {{ $item->product->name }} <br> {{ $item->color }} <br> Size: {{ $item->size }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <h2>{{ number_format($item->price, 3) }} VND</h2>
+                                    </td>
+                                    <td>
                                         <div class="qty-box">
                                             <div class="input-group">
-                                                <input type="text" name="quantity" class="form-control input-number"
-                                                    value="1">
+                                                <input type="number" name="quantity" required onchange="updateCart('{{ $item->id }}', this.value)" min="1" max="{{ $maxQuantities[$item->id] }}" class="form-control input-number" value="{{ $item->quantity }}">
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col">
-                                        <h2>{{$item->price}}</h2>
-                                    </div>
-                                    <div class="col">
-                                        <h2 class="td-color">
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-times"></i>
-                                            </a>
-                                        </h2>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                
-                                <h2>{{number_format($item->price,3)}} VND</h2>
-                            </td>
-                            <td>
-                                <div class="qty-box">
-
-                                    <div class="input-group">
-                                        <form action="{{ route('cart.update', $item->id) }}" method="POST">
-                                            @csrf
-                                        <input type="number" name="quantity"
-                                            data-rowid="ba02b0dddb000b25445168300c65386d" required onchange="this.form.submit()" min="1" max="{{ $maxQuantities[$item->id]}}"
-                                            class="form-control input-number" value="{{$item->quantity}}"></form>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <h2 class="td-color">{{ number_format(($item->quantity)*($item->price),3)}} VND</h2>
-                            </td>
-                            <td>
-                             <form action="{{ route('cart.delete',$item->id)}}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                    <button type="submit" class="btn btn-danger"> <i class="fas fa-times"></i></button>
-                            </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                       
-
-                       
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-12 mt-md-5 mt-4">
-                <div class="row">
-                    <div class="col-sm-7 col-5 order-1">
-                        <div class="left-side-button text-end d-flex d-block justify-content-end">
-                            <form action="{{route('cart.clearCart')}}" method="POST">
-                                @csrf
-                            <button type="submit" class="btn btn-danger"> Clear Cart</button>
-                            </form>
-                           
-                        </div>
+                                    </td>
+                                    <td>
+                                        <h2 class="td-color">{{ number_format($item->quantity * $item->price, 3) }} VND</h2>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger" onclick="deleteCartItem('{{ $item->id }}')">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <div >
+                   
                     </div>
-                    <div class="col-sm-5 col-7">
-                        <div class="left-side-button float-start">
-                            <a href="../shop.html" class="btn btn-solid-default btn fw-bold mb-0 ms-0">
-                                <i class="fas fa-arrow-left"></i> Continue Shopping</a>
-                        </div>
+              
+            </div>
+            <div class="row">
+                <div class="col-sm-7 col-5 order-1">
+                    <div class="left-side-button text-end d-flex d-block justify-content-end">
+                        <button type="button" class="btn btn-danger" onclick="clearCart()">Clear Cart</button>
+                    </div>
+                </div>
+                <div class="col-sm-5 col-7">
+                    <div class="left-side-button float-start">
+                        <a href="../shop.html" class="btn btn-solid-default btn fw-bold mb-0 ms-0">
+                            <i class="fas fa-arrow-left"></i> Continue Shopping</a>
                     </div>
                 </div>
             </div>
-
             <div class="cart-checkout-section">
                 <div class="row g-4">
                     <div class="col-lg-4 col-sm-6">
-                        <div class="promo-section">
-                            <form class="row g-3">
-                                <div class="col-7">
-                                    <input type="text" class="form-control" id="number" placeholder="Coupon Code">
-                                </div>
-                                <div class="col-5">
-                                    <button class="btn btn-solid-default rounded btn">Apply Coupon</button>
-                                </div>
-                            </form>
-                        </div>
+                        
                     </div>
 
                     <div class="col-lg-4 col-sm-6 ">
-                        <div class="checkout-button">
-                            <a href="{{route('list')}}" class="btn btn-solid-default btn fw-bold">
-                                Check Out <i class="fas fa-arrow-right ms-1"></i></a>
-                        </div>
+                        
                     </div>
 
                     <div class="col-lg-4">
                         <div class="cart-box">
                             <div class="cart-box-details">
-                                <div class="total-details">
+                                <div class="total-details">                             
                                     <div class="top-details">
-                                        <h3>Cart Totals</h3>
-                                        <h6>Sub Total <span>$26.00</span></h6>
-                                        <h6>Tax <span>$5.46</span></h6>
-
-                                        <h6>Total <span>$31.46</span></h6>
+                                        <h3>Thanh Toán</h3>
+                                        <h4>Tổng Tiền : <span id="total-price">0</span> </h4>
                                     </div>
                                     <div class="bottom-details">
-                                        <a href="checkout">Process Checkout</a>
+                                        <button type="submit" class="btn btn-solid-default btn fw-bold">Đặt Hàng</button>
                                     </div>
+                                </form>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
+        </div>
         </div>
     </div>
 </section>
+
+<script>
+   function updateTotalPrice() {
+        let totalPrice = 0;
+        document.querySelectorAll('.item-checkbox:checked').forEach(function(checkbox) {
+            let price = parseFloat(checkbox.dataset.price);
+            let quantity = parseInt(checkbox.dataset.quantity);
+            totalPrice += price * quantity;
+        });
+        document.getElementById('total-price').innerText = (totalPrice * 1000).toLocaleString('vi-VN') + ' VND';
+    }
+
+    document.getElementById('select-all').addEventListener('change', function(e) {
+        let checkboxes = document.querySelectorAll('.item-checkbox');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = e.target.checked;
+        });
+        updateTotalPrice();
+    });
+
+    document.querySelectorAll('.item-checkbox').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            updateTotalPrice();
+        });
+    });
+
+    // Initialize total price on page load
+    updateTotalPrice();
+    function updateCart(itemId, quantity) {
+        let form = document.createElement('form');
+        form.action = `{{ url('Cart/update') }}/${itemId}`;
+        form.method = 'POST';
+        form.style.display = 'none';
+
+        let csrfField = document.createElement('input');
+        csrfField.type = 'hidden';
+        csrfField.name = '_token';
+        csrfField.value = '{{ csrf_token() }}';
+        form.appendChild(csrfField);
+
+        let quantityField = document.createElement('input');
+        quantityField.type = 'hidden';
+        quantityField.name = 'quantity';
+        quantityField.value = quantity;
+        form.appendChild(quantityField);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    function deleteCartItem(itemId) {
+        let form = document.createElement('form');
+        form.action = `{{ url('Cart/delete') }}/${itemId}`;
+        form.method = 'POST';
+        form.style.display = 'none';
+
+        let csrfField = document.createElement('input');
+        csrfField.type = 'hidden';
+        csrfField.name = '_token';
+        csrfField.value = '{{ csrf_token() }}';
+        form.appendChild(csrfField);
+
+        let methodField = document.createElement('input');
+        methodField.type = 'hidden';
+        methodField.name = '_method';
+        methodField.value = 'DELETE';
+        form.appendChild(methodField);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+    function clearCart() {
+        let form = document.createElement('form');
+        form.action = `{{ route('cart.clearCart') }}`;
+        form.method = 'POST';
+        form.style.display = 'none';
+
+        let csrfField = document.createElement('input');
+        csrfField.type = 'hidden';
+        csrfField.name = '_token';
+        csrfField.value = '{{ csrf_token() }}';
+        form.appendChild(csrfField);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
+
 @endsection

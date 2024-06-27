@@ -46,25 +46,24 @@
                         </li>
 
                         <li class="nav-item mb-2">
-                            <button class="nav-link font-light" id="1-tab" data-bs-toggle="tab" data-bs-target="#order"
-                                type="button"><i class="fas fa-angle-right"></i>Orders</button>
+                            <button class="nav-link font-light" id="1-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">
+                                <span class="badge bg-primary me-1">{{$pendingOrdersCount}}</span><i class="fas fa-angle-right"></i> Đơn hàng chờ xác nhận
+                            </button>
+                        </li>
+                        
+                        <li class="nav-item mb-2">
+                            <button class="nav-link font-light" id="2-tab" data-bs-toggle="tab" data-bs-target="#wishlist" type="button">
+                                <span class="badge bg-primary me-1">{{$confiemedOrderCount}}</span><i class="fas fa-angle-right"></i> Đơn hàng đã được xác nhận
+                            </button>
+                        </li>
+                        
+
+                        <li class="nav-item mb-2">
+                            <button class="nav-link font-light" id="3-tab" data-bs-toggle="tab" data-bs-target="#save" type="button"> <span class="badge bg-primary me-1">{{$finishOrderCount}}</span><i class="fas fa-angle-right"></i> Đơn hàng giao thành công</button>
                         </li>
 
                         <li class="nav-item mb-2">
-                            <button class="nav-link font-light" id="2-tab" data-bs-toggle="tab"
-                                data-bs-target="#wishlist" type="button"><i
-                                    class="fas fa-angle-right"></i>Wishlist</button>
-                        </li>
-
-                        <li class="nav-item mb-2">
-                            <button class="nav-link font-light" id="3-tab" data-bs-toggle="tab" data-bs-target="#save"
-                                type="button"><i class="fas fa-angle-right"></i>Saved
-                                Address</button>
-                        </li>
-
-                        <li class="nav-item mb-2">
-                            <button class="nav-link font-light" id="4-tab" data-bs-toggle="tab" data-bs-target="#pay"
-                                type="button"><i class="fas fa-angle-right"></i>Payment</button>
+                            <button class="nav-link font-light" id="4-tab" data-bs-toggle="tab" data-bs-target="#pay" type="button">  <span class="badge bg-primary me-1">{{$cancelOrderCount}}</span><i class="fas fa-angle-right"></i> Đơn đã hủy</button>
                         </li>
 
                         <li class="nav-item mb-2">
@@ -111,25 +110,52 @@
                                                         <img src="/assets/images/svg/box1.png"
                                                             class="img-fluid blur-up lazyload" alt="">
                                                         <div>
-                                                            <h5 class="font-light">total order</h5>
-                                                            <h3>{{ $ordersCount }}</h3>
+                                                            <h5 class="font-light">Tất cả các đơn đã đặt</h5>
+                                                            <h3>{{$ordersCount}}</h3>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
 
+                                            
                                             <div class="col-lg-4 col-sm-6">
                                                 <div class="order-box">
                                                     <div class="order-box-image">
-                                                        <img src="/assets/images/svg/sent.png"
-                                                            class="img-fluid blur-up lazyload" alt="">
+                                                        <img src="/assets/images/svg/sent.png" class="img-fluid blur-up lazyload" alt="">
                                                     </div>
                                                     <div class="order-box-contain">
-                                                        <img src="/assets/images/svg/sent1.png"
-                                                            class="img-fluid blur-up lazyload" alt="">
+                                                        <img src="/assets/images/svg/sent1.png" class="img-fluid blur-up lazyload" alt="">
                                                         <div>
-                                                            <h5 class="font-light">pending orders</h5>
-                                                            <h3>{{ $pendingOrdersCount }}</h3>
+                                                            <h5 class="font-light">Những đơn hàng chưa được xác nhận </h5>
+                                                            <h3>{{$pendingOrdersCount}}</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-sm-6">
+                                                <div class="order-box">
+                                                    <div class="order-box-image">
+                                                        <img src="/assets/images/svg/sent.png" class="img-fluid blur-up lazyload" alt="">
+                                                    </div>
+                                                    <div class="order-box-contain">
+                                                        <img src="/assets/images/svg/sent1.png" class="img-fluid blur-up lazyload" alt="">
+                                                        <div>
+                                                            <h5 class="font-light">Những đơn hàng đã được xác nhận </h5>
+                                                            <h3>{{$confiemedOrderCount}}</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-sm-6">
+                                                <div class="order-box">
+                                                    <div class="order-box-image">
+                                                        <img src="/assets/images/svg/sent.png" class="img-fluid blur-up lazyload" alt="">
+                                                    </div>
+                                                    <div class="order-box-contain">
+                                                        <img src="/assets/images/svg/sent1.png" class="img-fluid blur-up lazyload" alt="">
+                                                        <div>
+                                                            <h5 class="font-light">Những đơn thành công</h5>
+                                                            <h3>{{$finishOrderCount}}</h3>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -211,467 +237,11 @@
                                 </div>
                             </div>
                         </div>
+                        @include('Client.my_account.pendingOrder')
+                       @include('Client.my_account.confiemedOrder')
+                       @include('Client.my_account.finishOrder')
+                       @include('Client.my_account.cancelOrder')
 
-                        <div class="tab-pane fade table-dashboard dashboard wish-list-section" id="order">
-                            <div class="box-head mb-3">
-                                <h3>My Order</h3>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table cart-table">
-                                    <thead>
-                                        <tr class="table-head">
-                                            <th scope="col">Order Id</th>
-                                            <th scope="col">Ngày Đặt Đơn </th>
-                                            <th scope="col"> Hình thức thanh toán</th>
-                                            <th scope="col">Trạng thái</th>
-                                            <th scope="col">Tổng Tiền</th>
-                                            <th scope="col">View</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($orders as $order)
-                                            <tr>
-
-                                                <td>
-                                                    <p class="mt-0">{{ $order->id }}</p>
-                                                </td>
-
-                                                <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d-m-Y') }}</td>
-                                                <td>{{ $order->payment_type == '0' ? 'Trực tiếp' : 'Online' }}</td>
-                                                <td>
-                                                    @if ($order->status == 1)
-                                                        <p class="danger-button btn btn-sm">
-                                                            {{ \App\Untilities\Constant::$order_status[$order->status] }}
-                                                        </p>
-                                                    @else
-                                                        <p class="success-button btn btn-sm">
-                                                            {{ \App\Untilities\Constant::$order_status[$order->status] }}
-                                                        </p>
-                                                    @endif
-
-                                                </td>
-
-                                                @if ($order->status == 1)
-                                                    {{-- Giả sử trạng thái 1 là trạng thái cho phép hủy đơn hàng --}}
-                                                    <td>
-                                                        <form
-                                                            action="/my_account/dashboard/cancel_order/{{ $order->id }}"
-                                                            method="POST" style="display:inline;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm">Hủy đơn
-                                                                hàng</button>
-                                                        </form>
-                                                    </td>
-                                                @endif
-
-                                                <td>
-                                                    <p class="theme-color fs-6">
-                                                        {{ number_format($order->total, 3) }}VND
-                                                    </p>
-                                                </td>
-                                                <td>
-                                                    <a href="/my_account/dashboard/{{ $order->id }}">
-                                                        <i class="far fa-eye"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="tab-pane fade table-dashboard dashboard wish-list-section" id="wishlist">
-                            <div class="box-head mb-3">
-                                <h3>My Wishlish</h3>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table cart-table">
-                                    <thead>
-                                        <tr class="table-head">
-                                            <th scope="col">image</th>
-                                            <th scope="col">Order Id</th>
-                                            <th scope="col">Product Details</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <a href="details.php">
-                                                    <img src="assets/images/fashion/product/front/1.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125021</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Outwear & Coats</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.php" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="details.php">
-                                                    <img src="assets/images/fashion/product/front/2.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125367</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Outwear & Coats</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.php" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="details.php">
-                                                    <img src="assets/images/fashion/product/front/3.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125948</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Sweatshirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.php" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="details.php">
-                                                    <img src="assets/images/fashion/product/front/4.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#127569</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Hoodie t-shirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.php" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="details.php">
-                                                    <img src="assets/images/fashion/product/front/5.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#127569</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Hoodie t-shirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.php" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="details.php">
-                                                    <img src="assets/images/fashion/product/front/6.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125021</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Sweatshirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.php" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="tab-pane fade dashboard" id="save">
-                            <div class="box-head">
-                                <h3>Save Address</h3>
-                                <button class="btn btn-solid-default btn-sm fw-bold ms-auto" data-bs-toggle="modal"
-                                    data-bs-target="#addAddress"><i class="fas fa-plus"></i>
-                                    Add New Address</button>
-                            </div>
-                            <div class="save-details-box">
-                                <div class="row g-3">
-                                    <div class="col-xl-4 col-md-6">
-                                        <div class="save-details">
-                                            <div class="save-name">
-                                                <h5>Mark Jugal</h5>
-                                                <div class="save-position">
-                                                    <h6>Home</h6>
-                                                </div>
-                                            </div>
-
-                                            <div class="save-address">
-                                                <p class="font-light">549 Sulphur Springs Road</p>
-                                                <p class="font-light">Downers Grove, IL</p>
-                                                <p class="font-light">60515</p>
-                                            </div>
-
-                                            <div class="mobile">
-                                                <p class="font-light mobile">Mobile No. +1-123-456-7890</p>
-                                            </div>
-
-                                            <div class="button">
-                                                <a href="javascript:void(0)" class="btn btn-sm">Edit</a>
-                                                <a href="javascript:void(0)" class="btn btn-sm">Remove</a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-xl-4 col-md-6">
-                                        <div class="save-details">
-                                            <div class="save-name">
-                                                <h5>Method Zaki</h5>
-                                                <div class="save-position">
-                                                    <h6>Office</h6>
-                                                </div>
-                                            </div>
-
-                                            <div class="save-address">
-                                                <p class="font-light">549 Sulphur Springs Road</p>
-                                                <p class="font-light">Downers Grove, IL</p>
-                                                <p class="font-light">60515</p>
-                                            </div>
-
-                                            <div class="mobile">
-                                                <p class="font-light mobile">Mobile No. +1-123-456-7890</p>
-                                            </div>
-
-                                            <div class="button">
-                                                <a href="javascript:void(0)" class="btn btn-sm">Edit</a>
-                                                <a href="javascript:void(0)" class="btn btn-sm">Remove</a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-xl-4 col-md-6">
-                                        <div class="save-details">
-                                            <div class="save-name">
-                                                <h5>Mark Jugal</h5>
-                                                <div class="save-position">
-                                                    <h6>Home</h6>
-                                                </div>
-                                            </div>
-
-                                            <div class="save-address">
-                                                <p class="font-light">549 Sulphur Springs Road</p>
-                                                <p class="font-light">Downers Grove, IL</p>
-                                                <p class="font-light">60515</p>
-                                            </div>
-
-                                            <div class="mobile">
-                                                <p class="font-light mobile">Mobile No. +1-123-456-7890</p>
-                                            </div>
-
-                                            <div class="button">
-                                                <a href="javascript:void(0)" class="btn btn-sm">Edit</a>
-                                                <a href="javascript:void(0)" class="btn btn-sm">Remove</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="tab-pane fade dashboard" id="pay">
-                            <div class="box-head">
-                                <h3>Card & Payment</h3>
-                                <button class="btn btn-solid-default btn-sm fw-bold ms-auto" data-bs-toggle="modal"
-                                    data-bs-target="#addPayment"><i class="fas fa-plus"></i>
-                                    Add New Card</button>
-                            </div>
-
-                            <div class="card-details-section">
-                                <div class="row g-4">
-                                    <div class="col-lg-4 col-sm-6">
-                                        <div class="payment-card-detail">
-                                            <div class="card-details">
-                                                <div class="card-number">
-                                                    <h4>XXXX - XXXX - XXXX - 2548</h4>
-                                                </div>
-
-                                                <div class="valid-detail">
-                                                    <div class="title">
-                                                        <span>valid</span>
-                                                        <span>thru</span>
-                                                    </div>
-                                                    <div class="date">
-                                                        <h3>12/23</h3>
-                                                    </div>
-                                                    <div class="primary">
-                                                        <span class="badge bg-pill badge-light">primary</span>
-                                                    </div>
-                                                </div>
-
-                                                <div class="name-detail">
-                                                    <div class="name">
-                                                        <h5>mark jecno</h5>
-                                                    </div>
-                                                    <div class="card-img">
-                                                        <img src="assets/images/payment-icon/1.jpg"
-                                                            class="img-fluid blur-up lazyloaded" alt="">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="edit-card">
-                                                <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                    href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                                <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                    delete</a>
-                                            </div>
-                                        </div>
-
-                                        <div class="edit-card-mobile">
-                                            <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                            <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                delete</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4 col-sm-6">
-                                        <div class="payment-card-detail">
-                                            <div class="card-details card-visa">
-                                                <div class="card-number">
-                                                    <h4>XXXX - XXXX - XXXX - 2548</h4>
-                                                </div>
-
-                                                <div class="valid-detail">
-                                                    <div class="title">
-                                                        <span>valid</span>
-                                                        <span>thru</span>
-                                                    </div>
-                                                    <div class="date">
-                                                        <h3>12/23</h3>
-                                                    </div>
-                                                    <div class="primary">
-                                                        <span class="badge bg-pill badge-light">primary</span>
-                                                    </div>
-                                                </div>
-
-                                                <div class="name-detail">
-                                                    <div class="name">
-                                                        <h5>mark jecno</h5>
-                                                    </div>
-                                                    <div class="card-img">
-                                                        <img src="assets/images/payment-icon/2.jpg"
-                                                            class="img-fluid blur-up lazyloaded" alt="">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="edit-card">
-                                                <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                    href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                                <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                    delete</a>
-                                            </div>
-                                        </div>
-
-                                        <div class="edit-card-mobile">
-                                            <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                            <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                delete</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4 col-sm-6">
-                                        <div class="payment-card-detail">
-                                            <div class="card-details dabit-card">
-                                                <div class="card-number">
-                                                    <h4>XXXX - XXXX - XXXX - 2548</h4>
-                                                </div>
-
-                                                <div class="valid-detail">
-                                                    <div class="title">
-                                                        <span>valid</span>
-                                                        <span>thru</span>
-                                                    </div>
-                                                    <div class="date">
-                                                        <h3>12/23</h3>
-                                                    </div>
-                                                    <div class="primary">
-                                                        <span class="badge bg-pill badge-light">primary</span>
-                                                    </div>
-                                                </div>
-
-                                                <div class="name-detail">
-                                                    <div class="name">
-                                                        <h5>mark jecno</h5>
-                                                    </div>
-                                                    <div class="card-img">
-                                                        <img src="assets/images/payment-icon/3.jpg"
-                                                            class="img-fluid blur-up lazyloaded" alt="">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="edit-card">
-                                                <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                    href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                                <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                    delete</a>
-                                            </div>
-                                        </div>
-
-                                        <div class="edit-card-mobile">
-                                            <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                            <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                delete</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                         <div class="tab-pane fade dashboard-profile dashboard" id="profile">
                             <div class="container">

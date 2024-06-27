@@ -4,6 +4,8 @@ use App\Http\Controllers\Client\AccountController;
 use App\Http\Controllers\materController;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Client;
+use App\Http\Controllers\Admin\AdminCouponController;
+use App\Http\Controllers\Client\BlogController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\CheckOutController;
 use App\Http\Controllers\Client\CouponController;
@@ -22,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/',[HomeController::class,'index']);
+Route::get('/',[HomeController::class,'index'])->name('home');
 
 Route::prefix('/shop')->group(function(){
         Route::get('',[ShopController::class,'index'])->name('client.shop.index');
@@ -30,6 +32,12 @@ Route::prefix('/shop')->group(function(){
         Route::post('/details/{id}/Comment',[ShopController::class,'postComment'])->name('Client.Comment');
        Route::post('/details/{id}',[ShopController::class,'show'])->name('Client.shop.show');
        Route::get('category/{categoryName}',[ShopController::class,'category']);
+       Route::get('/details/{id}/sizes', [ShopController::class, 'getSizesByColor'])->name('shop.details.sizes');
+});
+Route::prefix('/blog')->group(function(){
+    Route::get('',[BlogController::class,'index'])->name('blog.index');
+    Route::get('/{id}',[BlogController::class,'show']);
+    Route::post('/{id}/Comment',[BlogController::class,'postComment']);
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -39,6 +47,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('update/{id}',[CartController::class,'update'])->name('cart.update'); 
         Route::delete('delete/{id}',[CartController::class,'delete'])->name('cart.delete');
         Route::post('clear',[CartController::class,'clearCart'])->name('cart.clearCart');
+        Route::post('orderSelected', [CartController::class,'orderSelected'])->name('cart.orderSelected');
+
 
     });
     Route::prefix('checkout')->group(function(){
@@ -61,12 +71,20 @@ Route::middleware('auth')->group(function(){
             Route::get('/',[AccountController::class,'index'])->name('dashboard.index');
             Route::get('{id}',[AccountController::class,'show']);
             Route::delete('/cancel_order/{id}', [AccountController::class, 'cancelOrder'])->name('order.cancel');
+            Route::post('/reorder/{id}', [AccountController::class, 'reorder'])->name('order.reorder');
+
         });
     });
 });
 Auth::routes();
 
-Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' =>'auth'], function () {
+Route::group(['prefix' => 'auth' ], function ($router) {
+    Route::get('/google', [App\Http\Controllers\Auth\LoginGoogleController::class,'redirectToGoogle'])->name('auth.google');
+    Route::get('/google/callback', [App\Http\Controllers\Auth\LoginGoogleController::class,'handleGoogleCallback']);
+
+});
+
+Route::namespace('Admin')->prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('home',[Admin\HomeController::class,'index']) ->name('admin.home.index');
 
     Route::get('/notifications', [Admin\NotificationController::class, 'fetch'])->name('notifications.fetch');
