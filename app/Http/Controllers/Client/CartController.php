@@ -17,7 +17,13 @@ class CartController extends Controller
     public function index()
     {
         $userId = Auth::id();
-        $cart = Carts::where('user_id', $userId)->firstOrFail(); // Lấy giỏ hàng của người dùng
+        $cart = Carts::firstOrCreate(
+            ['user_id' => $userId], // Điều kiện để tìm kiếm
+            ['user_id' => $userId]  // Nếu không tìm thấy, tạo mới với các thuộc tính này
+        );
+        
+        // Lấy lại giỏ hàng để chắc chắn
+        $cart = Carts::where('user_id', $userId)->first(); // Lấy giỏ hàng của người dùng
         // Lấy tất cả các mục trong giỏ hàng và tính tổng giá
         $cartItems = $cart->cartItems;
         // Truy vấn cơ sở dữ liệu để lấy số lượng tối đa cho mỗi sản phẩm dựa trên color và size
