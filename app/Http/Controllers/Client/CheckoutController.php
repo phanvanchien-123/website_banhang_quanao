@@ -306,7 +306,7 @@ class CheckoutController extends Controller
         , 'data' => $vnp_Url);
         if (isset($_POST['redirect'])) {
             
-            $this->orderService->update(['status'=>Constant::order_status_Paid],$vnp_TxnRef);
+            // $this->orderService->update(['status'=>Constant::order_status_Paid],$vnp_TxnRef);
             $order=$this->orderService->find($vnp_TxnRef);
             $this->sendMail($order,$subtotal);
              // Xóa giỏ hàng 

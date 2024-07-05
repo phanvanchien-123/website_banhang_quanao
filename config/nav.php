@@ -2,11 +2,18 @@
 
 return [
     [
-        'icon' => 'icon-grid',
-        'name' => 'Home',
+        'icon' => 'bi bi-house',
+        'name' => 'Trang chủ',
         'route' => 'admin.home.index',
         'routeGroup' => 'admin.home.*',
         'prefix' => ['home'],
+    ],
+    [
+        'icon' => 'icon-grid',
+        'name' => 'Tại quầy',
+        'route' => 'admin.cashier.index',
+        'routeGroup' => 'admin.cashier.*',
+        'prefix' => ['cashier'],
     ],
     [
         'icon' => 'bi bi-stickies',
@@ -144,13 +151,6 @@ return [
 
     ],
     [
-        'icon' => 'bi bi-pip',
-        'name' => 'Giao diện',
-        'route' => 'admin.display.index',
-        'routeGroup' => 'admin.display.*',
-        'prefix' => ['display'],
-    ],
-    [
         'icon' => 'bi bi-shop',
         'name' => 'Nhà cung cấp',
         'route' => 'admin.supplier.index',
@@ -191,6 +191,13 @@ return [
 
             ],
         ],
+    ],
+    [
+        'icon' => 'bi bi-pip',
+        'name' => 'Cấu hình',
+        'route' => 'admin.display.index',
+        'routeGroup' => 'admin.display.*',
+        'prefix' => ['display'],
     ],
     [
         'icon' => 'bi bi-shield-lock-fill',

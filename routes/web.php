@@ -86,8 +86,18 @@ Route::group(['prefix' => 'auth' ], function ($router) {
 
 Route::namespace('Admin')->prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('home',[Admin\HomeController::class,'index']) ->name('admin.home.index');
+    // Route::get('cashier',[Admin\CashierController::class,'index']) ->name('admin.cashier.index');
 
     Route::get('/notifications', [Admin\NotificationController::class, 'fetch'])->name('notifications.fetch');
+
+    Route::group(['prefix' => 'cashier' ] , function () {
+        Route::get('',[Admin\CashierController::class,'index']) ->name('admin.cashier.index');
+
+        Route::get('/search-product', [Admin\CashierController::class,'searchProduct']);
+        Route::get('/product-details/{id}', [Admin\CashierController::class,'getProductDetails']);
+
+        Route::post('/print-invoice', [Admin\CashierController::class, 'printInvoice'])->name('cashier.print-invoice');   
+    });
 
     Route::group(['prefix' => 'blog' ] , function () {
         Route::get('',[Admin\BlogController::class,'index']) ->name('admin.blog.index');

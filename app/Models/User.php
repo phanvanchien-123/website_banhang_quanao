@@ -93,6 +93,11 @@ class User extends Authenticatable
         return 'Không có địa chỉ'; // Hoặc bạn có thể trả về giá trị mặc định khác nếu muốn
     }
 
+    public function getProvince(){
+        return $this ->hasOne(Province::class,'id','province_id');
+
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

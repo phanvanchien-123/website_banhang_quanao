@@ -27,7 +27,6 @@ class PayOSController extends Controller
         // Tạo mã đơn hàng duy nhất
         $orderCode = intval(substr(strval(microtime(true) * 10000), -6));
         $amount = $request->input('amount') * 1000; 
-        // dd($amount);
         $couponCode = $request->input('applied_coupon_code');
         $coupon = Coupon::where('code', $couponCode)->first();
         
@@ -42,7 +41,7 @@ class PayOSController extends Controller
         $order->street_address = $request->input('street_address');
         $order->town_city = $request->input('town_city');
         $order->country = 'VietNam';
-        $order->status = 0;
+        $order->status = 1;
         $order->payment_type = '1';
         $order->total = $amount;
         $order->coupon_id = $coupon ? $coupon->id : null;

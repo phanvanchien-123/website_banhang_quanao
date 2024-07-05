@@ -815,10 +815,18 @@
 
     <script>
         const apiKey = '095020f308344bb7832163323240606';
-        const city = '{{ auth()->user()->town_city }}';
+        const city = '{{ auth()->user()->getProvince->name }}';
+        const formattedCity = city
+            .normalize('NFD') 
+            .replace(/[\u0300-\u036f]/g, '') 
+            .replace(/đ/g, 'd') 
+            .replace(/Đ/g, 'D') 
+            .replace(/[^a-zA-Z ]/g, ''); 
+        
+            console.log(formattedCity);
 
-        function getWeather(city) {
-            const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&lang=vi`;
+        function getWeather(formattedCity) {
+            const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${formattedCity}&lang=vi`;
 
             axios.get(url)
                 .then(response => {
@@ -834,10 +842,10 @@
 
                     // Thêm thông tin chi tiết thời tiết nếu cần
                     const weatherInfo = `
-                <p>Condition: ${data.current.condition.text}</p>
-                <p>Humidity: ${data.current.humidity}%</p>
-                <p>Wind Speed: ${data.current.wind_kph} kph</p>
-            `;
+                        <p>Condition: ${data.current.condition.text}</p>
+                        <p>Humidity: ${data.current.humidity}%</p>
+                        <p>Wind Speed: ${data.current.wind_kph} kph</p>
+                    `;
                     document.getElementById('weather-info').innerHTML = weatherInfo;
                 })
                 .catch(error => {
@@ -848,13 +856,13 @@
 
         // Gọi hàm getWeather khi trang được tải
         document.addEventListener('DOMContentLoaded', function() {
-            getWeather(city);
+            getWeather(formattedCity);
         });
 
-        // Gọi hàm getWeather khi trang được tải
-        document.addEventListener('DOMContentLoaded', function() {
-            getWeather(city);
-        });
+        // // Gọi hàm getWeather khi trang được tải
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     getWeather(city);
+        // });
     </script>
 
 @endsection()

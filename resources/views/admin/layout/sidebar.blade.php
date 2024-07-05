@@ -161,12 +161,14 @@
                     $menuId = \Illuminate\Support\Str::slug($item['name']);
                 @endphp
                 <li class="nav-item {{ request()->routeIs($item['routeGroup']) ? 'active' : '' }}">
-                    <a class="nav-link" data-toggle="collapse" href="#menu-{{ $menuId }}" aria-expanded="false" aria-controls="menu-{{ $menuId }}">
+                    <a class="nav-link rounded-0" data-toggle="collapse" href="#menu-{{ $menuId }}"
+                        aria-expanded="false" aria-controls="menu-{{ $menuId }}">
                         <i class="{{ $item['icon'] }} menu-icon"></i>
                         <span class="menu-title">{{ $item['name'] }}</span>
                         <i class="menu-arrow"></i>
                     </a>
-                    <div class="collapse {{ request()->routeIs($item['routeGroup']) ? 'show' : '' }}" id="menu-{{ $menuId }}">
+                    <div class="collapse {{ request()->routeIs($item['routeGroup']) ? 'show' : '' }}"
+                        id="menu-{{ $menuId }}">
                         <ul class="nav flex-column sub-menu">
                             @foreach ($item['children'] as $child)
                                 <li class="nav-item">
@@ -180,15 +182,20 @@
                     </div>
                 </li>
             @else
-                <li class="nav-item ">
-                    <a class="nav-link" href="{{ route($item['route']) }}">
+                <li class="nav-item {{ $loop->iteration == 2 ? 'border-bottom border-secondary' : '' }} {{ request()->routeIs($item['routeGroup']) ? 'active' : '' }}">
+                    <a class="nav-link rounded-0" href="{{ route($item['route']) }}">
                         <i class="{{ $item['icon'] }} menu-icon"></i>
                         <span class="menu-title">{{ $item['name'] }}</span>
                     </a>
                 </li>
+                {{-- @if ($loop->iteration == 2)
+                    <p class="border-bottom border-secondary-subtle"></p>
+                @endif --}}
             @endif
         @endforeach
     </ul>
-    
-    
+
+    {{-- <h6 class="text-secondary border-bottom">các chức năng</h6> --}}
+
+
 </nav>
