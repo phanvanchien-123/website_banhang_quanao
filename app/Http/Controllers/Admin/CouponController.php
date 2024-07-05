@@ -7,11 +7,24 @@ use App\Http\Controllers\Controller;
 use App\Models\Coupon;
 use Illuminate\Http\Request;
 
-class AdminCouponController extends Controller
+class CouponController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $coupons = Coupon::paginate(10);
+        $sort = $request->get('sort', 'id'); // Mặc định sắp xếp theo tên sản phẩm
+        $order = $request->get('order', 'asc'); 
+
+        $coupons = Coupon::query();
+
+        if ($request->has('search')) {
+            $name = $request->input('search');
+            $coupons->where('code', 'like', '%' . $name . '%');
+        }
+
+        $coupons->orderBy($sort, $order);
+
+        $coupons = $coupons->paginate(10);
+
         return view('admin.coupons.index', compact('coupons'));
     }
 
@@ -20,7 +33,7 @@ class AdminCouponController extends Controller
         return view('admin.coupons.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, Coupon $coupon)
     {
         $request->validate([
             'code' => 'required|unique:coupons',
@@ -42,8 +55,9 @@ class AdminCouponController extends Controller
         return view('admin.coupons.edit', compact('coupon'));
     }
 
-    public function update(Request $request, Coupon $coupon)
+    public function update(Request $request, $id)
     {
+        $coupon = Coupon::findOrFail($id);
         $request->validate([
             'code' => 'required|unique:coupons,code,' . $coupon->id,
             'discount_value' => 'required|numeric',
@@ -58,8 +72,9 @@ class AdminCouponController extends Controller
         return redirect()->route('admin.coupon.index')->with('success', 'Coupon updated successfully.');
     }
 
-    public function destroy(Coupon $coupon)
+    public function delete(Coupon $coupon, $id )
     {
+        $coupon = Coupon::findOrFail($id);
         $coupon->delete();
 
         return redirect()->route('admin.coupon.index')->with('success', 'Coupon deleted successfully.');

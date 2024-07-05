@@ -91,6 +91,9 @@
                         <i class="fa fa-check"></i>
                     </button>
                 </div>
+                <div class="border-top mt-4">
+                    <a href="{{ route('auth.google') }}">đăng nhập bằng google?</a>
+                </div>
 
                 <p>
                     Không phải là thành viên? <a href="{{route('register')}}" class="theme-color">

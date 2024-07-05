@@ -32,12 +32,17 @@ class ProductController extends Controller
     public function index(Request $request) 
     {
         //
+        $sort = $request->get('sort', 'id'); // Mặc định sắp xếp theo tên sản phẩm
+        $order = $request->get('order', 'asc'); 
+
         $products = Product::query();
 
         if ($request->has('search')) {
             $name = $request->input('search');
             $products->where('name', 'like', '%' . $name . '%');
         }
+
+        $products->orderBy($sort, $order);
 
         $products = $products->paginate(10);
 
@@ -207,17 +212,17 @@ class ProductController extends Controller
 
             $this->deleteImage($product->avatar);
 
-        // Xóa các ảnh trong album
-        foreach ($product->productImages as $image) {
-            $this->deleteImage($image->path);
-            $image->delete();
-        }
+            // Xóa các ảnh trong album
+            foreach ($product->productImages as $image) {
+                $this->deleteImage($image->path);
+                $image->delete();
+            }
 
-            ProductDetail::where('product_id', $product->id)->delete();
+                ProductDetail::where('product_id', $product->id)->delete();
 
-            $product->delete();
+                $product->delete();
 
-            return redirect()->back()->with(['success' => 'Xóa sản phẩm thành công']);
+                return redirect()->back()->with(['success' => 'Xóa sản phẩm thành công']);
 
         }catch (Exception $ex) {
             Log::error("ERROR => ProductController@store =>". $ex->getMessage());

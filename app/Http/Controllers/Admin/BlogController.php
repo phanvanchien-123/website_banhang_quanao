@@ -22,8 +22,20 @@ class BlogController extends Controller
      */
     public function index(Request $request)
     {
-        //
-        $blogs = Blog::paginate(10);
+        $sort = $request->get('sort', 'id'); // Mặc định sắp xếp theo tên sản phẩm
+        $order = $request->get('order', 'asc'); 
+
+        $blogs = Blog::query();
+
+        if ($request->has('search')) {
+            $name = $request->input('search');
+            $blogs->where('title', 'like', '%' . $name . '%');
+        }
+
+        $blogs->orderBy($sort, $order);
+
+        $blogs = $blogs->paginate(10);
+
         return view('admin.blog.index',compact('blogs'));
     }
 

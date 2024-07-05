@@ -21,7 +21,6 @@ class CartController extends Controller
             ['user_id' => $userId], // Điều kiện để tìm kiếm
             ['user_id' => $userId]  // Nếu không tìm thấy, tạo mới với các thuộc tính này
         );
-        
         // Lấy lại giỏ hàng để chắc chắn
         $cart = Carts::where('user_id', $userId)->first(); // Lấy giỏ hàng của người dùng
         // Lấy tất cả các mục trong giỏ hàng và tính tổng giá
@@ -54,6 +53,15 @@ class CartController extends Controller
         $qty = $request->quantity;
         $size = $request->size;
         $color = $request->color;
+        // Tìm biến thể sản phẩm dựa trên kích thước và màu sắc
+        $productVariant = ProductDetail::where('product_id', $id)
+            ->where('size', $size)
+            ->where('color', $color)
+            ->first();
+        // Kiểm tra nếu biến thể sản phẩm không tồn tại
+        if (!$productVariant) {
+            return back()->with('error', 'Product variant not found.');
+        }
         // Tìm giỏ hàng của người dùng
         $cart = Carts::where('user_id', $userId)->first();
         // Nếu giỏ hàng không tồn tại, tạo mới
@@ -68,11 +76,19 @@ class CartController extends Controller
             ->where('color', $color)
             ->first();
         if ($existingCartItem) {
+            // Kiểm tra nếu số lượng yêu cầu vượt quá số lượng có sẵn của biến thể
+            if ($existingCartItem->quantity + $qty > $productVariant->qty) {
+                return back()->with('error', 'Số lượng yêu cầu vượt quá lượng hàng có sẵn cho mẫu mã này.');
+            }
             // Nếu sản phẩm đã tồn tại, cập nhật số lượng
             $existingCartItem->quantity += $qty;
             $existingCartItem->save();
-         return back()->with('success', 'Item quantity updated in cart successfully.');
+            return back()->with('success', 'Số lượng mặt hàng được cập nhật vào giỏ hàng thành công.');
         } else {
+            // Kiểm tra nếu số lượng yêu cầu vượt quá số lượng có sẵn của biến thể
+            if ($qty > $productVariant->qty) {
+                return back()->with('error', 'Số lượng yêu cầu vượt quá lượng hàng có sẵn cho mẫu mã này.');
+            }
             // Tạo một bản ghi mới trong giỏ hàng
             $cartItem = new Cart_items([
                 'cart_id' => $cart->id,
@@ -84,23 +100,25 @@ class CartController extends Controller
             ]);
             // Lưu bản ghi mới vào cơ sở dữ liệu
             $cartItem->save();
-            return back()->with('success', 'Item added to cart successfully.');
+            return back()->with('success', 'Đã thêm mặt hàng vào giỏ hàng thành công.');
         }
     }
+    
+    
     public function update($id, Request $request)
     {
         // Tìm mục trong giỏ hàng dựa trên ID
         $cartItem = Cart_items::find($id);
         // Kiểm tra nếu mục trong giỏ hàng không tồn tại
         if (!$cartItem) {
-            return back()->with('error', 'Cart item not found.');
+            return back()->with('error', 'Không tìm thấy mục giỏ hàng.');
         }
         // Lấy thông tin từ request
         $qty = $request->input('quantity');
         // Cập nhật thông tin mục trong giỏ hàng
         $cartItem->quantity = $qty;
         $cartItem->save();
-        return back();
+        return back()->with('success', 'Cập Nhật số lượng thành công.');
     }
     public function delete($id)
     {
@@ -118,7 +136,7 @@ class CartController extends Controller
         }
         // Xóa mục khỏi giỏ hàng
         $cartItem->delete();
-        return back()->with('success', 'Item removed from cart successfully.');
+        return back()->with('success', 'Đã xóa mặt hàng khỏi giỏ hàng thành công.');
     }
     public function clearCart()
     {
@@ -128,7 +146,7 @@ class CartController extends Controller
             $query->where('user_id', $userId);
         })
             ->delete();
-        return back()->with('success', 'Cart cleared successfully.');
+        return back()->with('success', 'Đã xóa giỏ hàng thành công.');
     }
     public function orderSelected(Request $request)
 {
@@ -148,7 +166,7 @@ class CartController extends Controller
     // Save selected items to session
     session(['selected_cart_items' => $cartItems->pluck('id')->toArray()]);
 
-    return redirect()->route('list')->with('success', 'Items selected for checkout.');
+    return redirect()->route('list');
 }
 
 }

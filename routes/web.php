@@ -3,6 +3,7 @@
 use App\Http\Controllers\Client\AccountController;
 use App\Http\Controllers\materController;
 use App\Http\Controllers\Admin;
+use App\Http\Controllers\Client;
 use App\Http\Controllers\Admin\AdminCouponController;
 use App\Http\Controllers\Client\BlogController;
 use App\Http\Controllers\Client\CartController;
@@ -23,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/',[HomeController::class,'index']);
+Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('check.email.verified');
 
 Route::prefix('/shop')->group(function(){
         Route::get('',[ShopController::class,'index'])->name('client.shop.index');
@@ -54,7 +55,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('',[CheckOutController::class,'index'])->name('list');
         Route::post('/',[CheckOutController::class,'addOrder']);
         Route::post('/vnPayCheck',[CheckOutController::class,'vnPayCheck'])->name('vnPayCheck.index');
-        Route::get('/Vnpay',[CheckOutController::class,'returnVNPay']);
+        Route::get('/vnpay-return', [CheckOutController::class, 'vnPayReturn'])->name('checkout.vnpayReturn');
+
     });
 
 });
@@ -75,7 +77,17 @@ Route::middleware('auth')->group(function(){
         });
     });
 });
-Auth::routes();
+Auth::routes(
+    [
+        'verify'=>true
+    ]
+);
+
+Route::group(['prefix' => 'auth' ], function ($router) {
+    Route::get('/google', [App\Http\Controllers\Auth\LoginGoogleController::class,'redirectToGoogle'])->name('auth.google');
+    Route::get('/google/callback', [App\Http\Controllers\Auth\LoginGoogleController::class,'handleGoogleCallback']);
+
+});
 
 Route::namespace('Admin')->prefix('admin')->middleware(['auth','auth.admin'])->group(function () {
     Route::get('home',[Admin\HomeController::class,'index']) ->name('admin.home.index');
@@ -110,14 +122,14 @@ Route::namespace('Admin')->prefix('admin')->middleware(['auth','auth.admin'])->g
     });
 
     Route::group(['prefix' => 'coupon' ] , function () {
-        Route::get('',[Admin\AdminCouponController::class,'index']) ->name('admin.coupon.index');
-        Route::get('create',[Admin\AdminCouponController::class,'create']) ->name('admin.coupon.create');
-        Route::post('store',[Admin\AdminCouponController::class,'store']) ->name('admin.coupon.store');
+        Route::get('',[Admin\CouponController::class,'index']) ->name('admin.coupon.index');
+        Route::get('create',[Admin\CouponController::class,'create']) ->name('admin.coupon.create');
+        Route::post('store',[Admin\CouponController::class,'store']) ->name('admin.coupon.store');
 
-        Route::get('edit/{id}',[Admin\AdminCouponController::class,'edit']) ->name('admin.coupon.edit');
-        Route::post('update/{id}',[Admin\AdminCouponController::class,'update']) ->name('admin.coupon.update');
+        Route::get('edit/{id}',[Admin\CouponController::class,'edit']) ->name('admin.coupon.edit');
+        Route::post('update/{id}',[Admin\CouponController::class,'update']) ->name('admin.coupon.update');
 
-        Route::get('delete/{id}',[Admin\AdminCouponController::class,'delete']) ->name('admin.coupon.delete');
+        Route::get('delete/{id}',[Admin\CouponController::class,'delete']) ->name('admin.coupon.delete');
 
     });
     
@@ -233,3 +245,10 @@ Route::namespace('Admin')->prefix('admin')->middleware(['auth','auth.admin'])->g
     });
   
 });
+
+Route::group(['prefix' => 'PayOS'], function(){
+    Route::post('/QRpayment', [Client\PayOSController::class, 'createPayment' ])->name('qrpayment');
+    Route::get('/success', [Client\PayOSController::class, 'success'])->name('QRsuccess');
+    Route::post('/handleWebhook', [Client\PayOSController::class, 'handleWebhook'])->name('handleWebhook');
+});
+

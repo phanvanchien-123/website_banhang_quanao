@@ -18,10 +18,22 @@ class BrandController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $brands = Brand::paginate(10);
+        $sort = $request->get('sort', 'id'); // Mặc định sắp xếp theo tên sản phẩm
+        $order = $request->get('order', 'asc'); 
+
+        $brands = Brand::query();
+
+        if ($request->has('search')) {
+            $name = $request->input('search');
+            $brands->where('name', 'like', '%' . $name . '%');
+        }
+
+        $brands->orderBy($sort, $order);
+
+        $brands = $brands->paginate(10);
         // dd($brand);
         return view('admin.brand.index',compact('brands'));
     }
@@ -44,8 +56,10 @@ class BrandController extends Controller
         //
         try {
             $data = $request->except('avatar');
-            $imagePath = $this->uploadImage($request->file('avatar'), 'theme_admin/upload/brand');
-            $data['avatar'] = $imagePath ;
+            if ($request->hasFile('avatar')) {
+                $imagePath = $this->uploadImage($request->file('avatar'), 'theme_admin/upload/brand');
+                $data['avatar'] = $imagePath ;
+            }
     
             $brand = Brand::create($data);
 

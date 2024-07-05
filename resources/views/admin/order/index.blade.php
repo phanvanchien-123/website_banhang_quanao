@@ -1,15 +1,31 @@
 @extends('admin.layout.main')
 @section('content')
-    <h2>Order List</h2>
+    <h2 class="pb-4">Order List</h2>
+    <div class="input-group flex-nowrap my-3">
+        <div class="d-flex w-100">
+            <a href="{{ route('admin.order.index') }}" class="btn btn-secondary rounded-0"><i
+                    class="bi bi-arrow-clockwise "></i></a>
+            <form action="" class="ps-2 d-flex">
+                <input type="text" class="form-control rounded-0" placeholder="Search" name="search"
+                    value="{{ Request::get('search') }}">
+                <button type="submit" class="btn btn-primary ms-2 rounded-0"> tìm kiếm</button>
+            </form>
+        </div>
+    </div>
     <table class="table table-hover">
         <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Tên khách hàng</th>
-                <th scope="col">Ngày tạo</th>
-                <th scope="col">Hình thức thanh toán</th>
-                <th scope="col">Tổng tiền</th>
-                <th scope="col">Trạng thái</th>
+                <th scope="col">Tên khách hàng <a href="?sort=first_name&order={{ request('order') === 'asc' ? 'desc' : 'asc' }}"><i
+                    class="bi bi-arrow-down-up"></i></a></th>
+                <th scope="col">Ngày tạo <a href="?sort=created_at&order={{ request('order') === 'asc' ? 'desc' : 'asc' }}"><i
+                    class="bi bi-arrow-down-up"></i></a></th>
+                <th scope="col">Hình thức thanh toán <a href="?sort=payment_type&order={{ request('order') === 'asc' ? 'desc' : 'asc' }}"><i
+                    class="bi bi-arrow-down-up"></i></a></th>
+                <th scope="col">Tổng tiền <a href="?sort=total&order={{ request('order') === 'asc' ? 'desc' : 'asc' }}"><i
+                    class="bi bi-arrow-down-up"></i></a></th>
+                <th scope="col">Trạng thái <a href="?sort=status&order={{ request('order') === 'asc' ? 'desc' : 'asc' }}"><i
+                    class="bi bi-arrow-down-up"></i></a></th>
                 <th scope="col">thao tác</th>
             </tr>
         </thead>
@@ -20,7 +36,7 @@
                     <td>{{ $item->first_name }}</td>
                     <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') }}</td>
                     <td>{{ $item->payment_type == '0' ? 'Trực tiếp' : 'Online' }}</td>
-                    <td>{{ $item->total_sum }}</td>
+                    <td>{{ $item->total }}</td>
                     <td>
                         <select class="form-select form-select-lg mb-3 w-75" aria-label="Large select example" data-comment-id="{{ $item->id }}">
                             <option value="0" {{ $item->status == 0 ? 'selected' : '' }}>Hủy bỏ</option>
@@ -34,8 +50,8 @@
                         </select>
                     </td>
                     <td>
-                        <a href="{{ route('admin.order.show', $item->id) }}"><i class="bi bi-eye-fill"></i></a> |
-                        <a href="{{ route('admin.order.delete', $item->id) }}"><i class="bi bi-trash2-fill"></i></a>
+                        <a href="{{ route('admin.order.show', $item->id) }}"><i class="bi bi-eye-fill text-warning"></i></a> |
+                        <a href="{{ route('admin.order.delete', $item->id) }}"><i class="bi bi-trash2-fill text-danger"></i></a>
                     </td>
                 </tr>
             @endforeach

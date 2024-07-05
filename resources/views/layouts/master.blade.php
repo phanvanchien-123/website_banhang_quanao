@@ -147,7 +147,7 @@
                                             <li><a href="/Cart" class="nav-link menu-title">Giỏ Hàng</a></li>
                                             <li><a href="{{ route('index.coupon') }}" class="nav-link menu-title">Mã
                                                     giảm Giá</a></li>
-                                            <li><a href="contact-us.html" class="nav-link menu-title">Contact Us</a>
+                                        
                                             </li>
                                             <li><a href="{{route('blog.index')}}" class="nav-link menu-title">Blog</a></li>
                                         </ul>
@@ -289,6 +289,7 @@
                                             @endauth <i data-feather="user"></i>
                                         </div>
                                         <div class="onhover-div profile-dropdown">
+                                           
                                             <ul>
                                                 @if (Route::has('login'))
                                                     @auth
@@ -325,6 +326,36 @@
 
                                             </ul>
                                         </div>
+                                    </li>
+                                    <li>
+                                        @if (session('success'))
+                                        <div class="alert alert-success" id="success-alert">
+                                            {{ session('success') }}
+                                        </div>
+                                    @endif
+                                    
+                                    @if (session('error'))
+                                        <div class="alert alert-danger" id="error-alert">
+                                            {{ session('error') }}
+                                        </div>
+                                    @endif
+                                    
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            setTimeout(function() {
+                                                var successAlert = document.getElementById('success-alert');
+                                                if (successAlert) {
+                                                    successAlert.style.display = 'none';
+                                                }
+                                                
+                                                var errorAlert = document.getElementById('error-alert');
+                                                if (errorAlert) {
+                                                    errorAlert.style.display = 'none';
+                                                }
+                                            }, 5000); // 5000 milliseconds = 5 seconds
+                                        });
+                                    </script>
+                                    
                                     </li>
                                 </ul>
                             </div>
@@ -533,7 +564,7 @@
             right: 20px;
         }
     </style>
-    <div class="chatbot">
+    {{-- <div class="chatbot">
         <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
 <df-messenger
   intent="WELCOME"
@@ -541,7 +572,11 @@
   agent-id="1049c744-88dd-4e38-a58d-44441f78f907"
   language-code="vi"
 ></df-messenger>
-    </div>
+    </div> --}}
+    {{-- <div class="zalo-chat-widget" data-oaid="2824334511651503846" data-welcome-message="Rất vui khi được hỗ trợ bạn!" data-autopopup="0" data-width="" data-height=""></div>
+
+<script src="https://sp.zalo.me/plugins/sdk.js"></script> --}}
+<!--Start of Fchat.vn--><script type="text/javascript" src="https://cdn.fchat.vn/assets/embed/webchat.js?id=6680fae7254c0d605e503e84" async="async"></script><!--End of Fchat.vn-->
     <div class="tap-to-top">
         <a href="#home">
             <i class="fas fa-chevron-up"></i>

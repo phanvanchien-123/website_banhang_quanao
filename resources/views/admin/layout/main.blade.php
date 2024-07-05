@@ -55,6 +55,9 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+
 </head>
 
 <body class="">
@@ -69,8 +72,8 @@
             @include('admin.layout.sidebar')
 
             <!-- partial -->
-            <div class="main-panel">
-                <div class="content-wrapper">
+            <div class="main-panel ">
+                <div class="content-wrapper bg-body-tertiary">
                     @yield('content')
                 </div>
             </div>

@@ -17,11 +17,22 @@ class SupplierController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $suppliers = Supplier::paginate(10);
-        // dd($brand);
+        $sort = $request->get('sort', 'id'); // Mặc định sắp xếp theo tên sản phẩm
+        $order = $request->get('order', 'asc'); 
+
+        $suppliers = Supplier::query();
+
+        if ($request->has('search')) {
+            $name = $request->input('search');
+            $suppliers->where('name', 'like', '%' . $name . '%');
+        }
+
+        $suppliers->orderBy($sort, $order);
+
+        $suppliers = $suppliers->paginate(10);
+
         return view('admin.supplier.index',compact('suppliers'));
     }
 
@@ -43,8 +54,11 @@ class SupplierController extends Controller
         //
         try {
             $data = $request->except('avatar');
-            $imagePath = $this->uploadImage($request->file('avatar'), 'theme_admin/upload/supplier');
-            $data['avatar'] = $imagePath ;
+
+            if ($request->hasFile('avatar')) {
+                $imagePath = $this->uploadImage($request->file('avatar'), 'theme_admin/upload/supplier');
+                $data['avatar'] = $imagePath ;
+            }
     
             $supplier = Supplier::create($data);
 

@@ -2,7 +2,7 @@
 @section('content')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <h2>Thống kê</h2>
+    <h2 class="pb-4">Thống kê</h2>
     <div class="p-4 d-flex">
         <form action="{{ route('admin.analytics.index') }}" method="GET" onsubmit="return validateForm()">
             <label for="start_date">From:</label>
@@ -16,6 +16,11 @@
     </div>
     <div class="container">
         <div class="row">
+            <div class="d-flex">
+                <h4>Doanh thu</h4>
+                <a class="ps-4 h6 export-excel text-success" href="#" data-chart="salesProfitChart"><i
+                        class="bi bi-folder-symlink"></i>export</a>
+            </div>
             <div class="col-12 rounded shadow">
                 <canvas id="salesProfitChart" height="500px"></canvas>
             </div>
@@ -23,10 +28,24 @@
 
         <div class="row mt-5">
             <div class="col-6">
-                <canvas id="summaryChart" class="rounded shadow" height="350px"></canvas>
+                <div class="d-flex">
+                    <h4>Tổng hợp</h4>
+                    <a class="ps-4 h6 export-excel text-success" href="#" data-chart="summaryChart"><i
+                            class="bi bi-folder-symlink "></i>export</a>
+                </div>
+                <div class="rounded shadow">
+                    <canvas id="summaryChart" height="350px"></canvas>
+                </div>
             </div>
             <div class="col-6 ">
-                <canvas id="orderStatusChart" class="rounded shadow"></canvas>
+                <div class="d-flex">
+                    <h4>Đơn hàng</h4>
+                    <a class="ps-4 h6 export-excel text-success" href="#" data-chart="orderStatusChart"><i
+                            class="bi bi-folder-symlink "></i>export</a>
+                </div>
+                <div class="rounded shadow">
+                    <canvas id="orderStatusChart" height="350px"></canvas>
+                </div>
             </div>
         </div>
 
@@ -37,8 +56,15 @@
                     <ul>
                         @foreach ($topCustomers as $customer)
                             <li>
-                                <h4>{{ $customer->name }} ({{ $customer->email }})</h4>
-                                <p>Tổng số đơn hàng: {{ $customer->total_orders }}</p>
+                                <div class="d-flex mt-4">
+                                    <img src="{{ asset('storage/' . $customer->avatar) }}" alt="" height="60px"
+                                        width="60px" class="border">
+                                    <div class="ps-4">
+                                        <h5>{{ $customer->name }} ({{ $customer->email }})</h5>
+                                        <p>Tổng số đơn hàng: {{ $customer->total_orders }}</p>
+                                    </div>
+                                </div>
+
                             </li>
                         @endforeach
                     </ul>
@@ -50,22 +76,22 @@
                     <ul>
                         @foreach ($topProducts as $product)
                             <li>
-                                <h4>{{ $product->name }} (id: {{ $product->id }})</h4>
-                                <p>Tổng số lượng bán ra: {{ $product->total_quantity_sold }}</p>
+                                <div class="d-flex mt-4">
+                                    <img src="{{ asset('storage/' . $product->avatar) }}" alt="" height="60px"
+                                        width="60px" class="border">
+                                    <div class="ps-4">
+                                        <h5>{{ $product->name }} (id: {{ $product->id }})</h5>
+                                        <p>Tổng số lượng bán ra: {{ $product->total_quantity_sold }}</p>
+                                    </div>
+                                </div>
+
+
                             </li>
                         @endforeach
                     </ul>
                 </div>
             </div>
         </div>
-        {{-- <div class="row">
-            <div class="col-6">
-
-            </div>
-            <div class="col-6">
-
-            </div>
-        </div> --}}
     </div>
 
     <script>
@@ -234,6 +260,55 @@
             createSalesProfitChart();
             createSummaryChart();
             createOrderStatusChart();
+
+
+            // Hàm xuất dữ liệu ra Excel
+            function exportChartToExcel(chartId) {
+                const chart = Chart.getChart(chartId);
+                if (!chart) {
+                    alert('Biểu đồ không tồn tại');
+                    return;
+                }
+
+                const chartData = chart.data;
+                const labels = chartData.labels;
+                const datasets = chartData.datasets;
+
+                // Tạo một mảng 2D để lưu dữ liệu
+                let data = [
+                    ['Label']
+                ];
+                datasets.forEach(dataset => {
+                    data[0].push(dataset.label);
+                });
+
+                for (let i = 0; i < labels.length; i++) {
+                    const row = [labels[i]];
+                    datasets.forEach(dataset => {
+                        row.push(dataset.data[i]);
+                    });
+                    data.push(row);
+                }
+
+                // Chuyển mảng 2D thành một worksheet của Excel
+                const worksheet = XLSX.utils.aoa_to_sheet(data);
+
+                // Tạo workbook và thêm worksheet vào đó
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+                // Xuất workbook thành file Excel
+                XLSX.writeFile(workbook, `${chartId}_data.xlsx`);
+            }
+
+            // Gắn sự kiện click cho các nút export
+            document.querySelectorAll('.export-excel').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const chartId = this.getAttribute('data-chart');
+                    exportChartToExcel(chartId);
+                });
+            });
         });
     </script>
 

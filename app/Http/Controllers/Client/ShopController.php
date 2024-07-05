@@ -118,7 +118,7 @@ class ShopController extends Controller
 
         if (!$newOrderExists) {
             // Nếu không có đơn hàng mới sau đánh giá trước đó, không cho phép đánh giá
-            return redirect()->back()->with('error', 'Bạn đã đánh giá sản phẩm này. Vui lòng mua lại sản phẩm để đánh giá tiếp.');
+            return redirect()->back()->with('errorcomnet', 'Bạn đã đánh giá sản phẩm này. Vui lòng mua lại sản phẩm để đánh giá tiếp.');
         }
     } else {
         // Nếu chưa có đánh giá trước đó, kiểm tra xem người dùng đã mua sản phẩm này chưa
@@ -131,13 +131,13 @@ class ShopController extends Controller
 
         if (!$orderExists) {
             // Nếu người dùng chưa mua sản phẩm này, không cho phép đánh giá
-            return redirect()->back()->with('error', 'Bạn phải mua sản phẩm này trước khi có thể bình luận.');
+            return redirect()->back()->with('errorcomnet', 'Bạn phải mua sản phẩm này trước mới được đánh giá về sản phẩm.');
         }
     }
 
     // Nếu có đơn hàng mới hoặc chưa từng đánh giá, tạo bình luận
     $this->productCommentServices->create($request->all());
-    return redirect()->back()->with('success', 'Bình luận của bạn đã được gửi.');
+    return redirect()->back()->with('successcoment', 'Bình luận của bạn đã được gửi.');
     }
     public function category($categoryName,Request $request){
         $categories = $this->productCategoryServices->all();
