@@ -157,8 +157,12 @@
                             <div class="menu-right">
                                 <ul>
                                     <li>
-                                        <div class="search-box theme-bg-color">
-                                            <i data-feather="search"></i>
+                                        <div class="mobile-search search-style-3 mobile-header-border">
+                                            <form action="#">
+                                                <input type="text" name="search" class="form-control search-type"
+                                            value="{{ request('search') }}" placeholder="Tìm kiếm sản phẩm..">
+                                                <button type="submit"><i class="fi-rs-search"></i></button>
+                                            </form>
                                         </div>
                                     </li>
                                     <li class="onhover-dropdown wislist-dropdown">
@@ -363,7 +367,8 @@
                                 <form method="GET" class="search-full" action="shop">
                                     <div class="input-group">
                                         <span class="input-group-text">
-                                            <i data-feather="search" class="font-light"></i>
+                                            <button type="submit">
+                                            <i data-feather="search" class="font-light"></i></button>
                                         </span>
                                         <input type="text" name="search" class="form-control search-type"
                                             value="{{ request('search') }}" placeholder="Search here..">
@@ -371,6 +376,7 @@
                                             <i data-feather="x" class="font-light"></i>
                                         </span>
                                     </div>
+                                  
                                 </form>
                             </div>
                         </div>
