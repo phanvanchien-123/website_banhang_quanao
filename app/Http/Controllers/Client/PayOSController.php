@@ -5,6 +5,7 @@ use Throwable;
 use PayOS\PayOS;
 use App\Models\User;
 use App\Models\Carts;
+use App\Models\Cart_items;
 use App\Models\Order;
 use App\Models\Coupon;
 use App\Models\Product;
@@ -15,6 +16,8 @@ use App\Models\ProductDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\PaymentSuccessNotification;
+use Illuminate\Support\Facades\Log;
+
 // use App\Service\PayOSService;
 
 class PayOSController extends Controller
@@ -92,14 +95,13 @@ class PayOSController extends Controller
     public function success(Request $request)
     {
         return redirect()->route('dashboard.index')->with('PayOSsuccess', 'Payment successful!');
-
     }
 
     public function handleWebhook(Request $request)
     {
         $webhookData = json_decode($request->getContent(), true);
 
-        \Log::info('Webhook received', $webhookData);
+        Log::info('Webhook received', $webhookData);
 
         try {
             $PAYOS_CHECKSUM_KEY = env('PAYOS_CHECKSUM_KEY');
@@ -130,16 +132,21 @@ class PayOSController extends Controller
                 $this->processOrderDetails($order);
 
                 // Xóa giỏ hàng của người dùng sau khi đơn hàng được cập nhật thành công
-                $cart = Carts::where('user_id', $order->user_id)->first();
-                if ($cart) {
-                    $cart->cartItems()->delete();
-                    $cart->delete();
-                }
+                // $cart = Carts::where('user_id', $order->user_id)->first();
+                // if ($cart) {
+                //     $cart->cartItems()->delete();
+                //     $cart->delete();
+                // }
+                $cart = Carts::where('user_id', $order->user_id)->firstOrFail();
+                $selectedItemIds = session('selected_cart_items', []);
+                $cartItems = Cart_items::whereIn('id', $selectedItemIds)->where('cart_id', $cart->id)->get();
+                Cart_items::whereIn('id', $selectedItemIds)->delete();
+                session()->forget(['selected_cart_items', 'total', 'infor']);
             }
 
             return response()->json(['message' => 'Webhook handled successfully'], 200);
         } catch (\Throwable $th) {
-            \Log::error('Error handling webhook', ['error' => $th->getMessage()]);
+            Log::error('Error handling webhook', ['error' => $th->getMessage()]);
             return response()->json(['message' => 'Error handling webhook', 'error' => $th->getMessage()], 500);
         }
     }

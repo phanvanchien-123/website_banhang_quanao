@@ -58,11 +58,14 @@ class BlogController extends Controller
         try {
             $data = $request->except('image');
             $data['category'] = '0' ;
-            // $data['user_id'] = 1 ;
             $data['user_id'] = Auth::user()->id ;
-            $imagePath = $this->uploadImage($request->file('image'), 'theme_admin/upload/blog');
-            $data['image'] = $imagePath ;
-            // $data['image'] = 1 ;
+            if ($request->hasFile('avatar')) {
+                $imagePath = $this->uploadImage($request->file('avatar'), 'theme_admin/upload/brand');
+                $data['avatar'] = $imagePath ;
+            }else{
+                 $data['image'] = 0 ;
+            }
+           
 
             $blog = Blog::create($data);
 

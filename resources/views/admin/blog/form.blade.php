@@ -49,15 +49,17 @@
                 @enderror
             </div>
             <div class="mb-3">
-                <label for="exampleFormControlInput2" class="form-label">Hình ảnh</label>
-                <div class="border rounded">
-                    <div id="imageWrapper" class="border-bottom d-flex" style="display: none;">
+                <div class="mb-3">
+                    <label for="avatar" class="form-label">Hình ảnh</label>
+                    <div id="avatarWrapper" class="border-bottom d-flex"
+                        style="display: {{ isset($blog) ? 'flex' : 'none' }};">
                         @if (isset($blog->image))
-                            <img src="{{ asset('storage/' . $blog->image) }}" alt="" class="m-3" width="120px" height="120px">
+                            <img src="{{ asset('storage/' . $blog->image) }}" alt="" class="m-3"
+                                width="120px" height="120px">
                         @endif
                     </div>
-                    <input type="file" class="form-control" id="exampleFormControlInput2" placeholder=""
-                        name="image" value="" onchange="previewImages(event)">
+                    <input type="file" class="form-control" id="avatar" name="image"
+                        onchange="previewAvatar(event)">
                 </div>
                 @error('image')
                     <small class="text-danger">{{ $errors->first('image') }}</small>
@@ -85,3 +87,4 @@
         display: none;
     }
 </style>
+

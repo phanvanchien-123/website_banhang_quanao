@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Carts;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -51,7 +52,7 @@ class LoginGoogleController extends Controller
                 return redirect()->route('home');
             }
         
-        } catch (Exception $e) {
+        } catch (Exception  $e) {
             dd($e->getMessage());
         }
     }

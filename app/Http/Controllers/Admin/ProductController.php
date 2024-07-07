@@ -230,7 +230,14 @@ class ProductController extends Controller
         }
 
         return redirect()->back();
+    }
 
+    public function deleteDetail($id)
+    {
+        $detail = ProductDetail::findOrFail($id);
+        $detail->delete();
+
+        return response()->json(['success' => true]);
     }
 
     public function stock(Request $request) 

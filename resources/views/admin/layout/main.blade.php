@@ -57,6 +57,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 </head>
 
@@ -102,7 +104,6 @@
     <script src="{{ asset('theme_admin/theme/js/settings.js') }}"></script>
     <script src="{{ asset('theme_admin/theme/js/todolist.js') }}"></script>
     <script src="{{ asset('theme_admin/theme/js/todolist.js') }}"></script>
-    <script src="{{ asset('theme_admin/theme/js/previewFileImage.js') }}"></script>
 
 
     {{-- <script src="{{ asset('theme_admin/theme/js/') }}"></script>
@@ -131,8 +132,11 @@
             var paymentSuccessMessage = "{{ session('PaymentSuccess') }}";
         @endif
     </script>
+    
     <script src="{{ asset('theme_admin/theme/js/notifications.js') }}"></script>
-    <script src="{{ asset('theme_admin/theme/js/profile.js') }}"></script>
+    <script src="{{ asset('theme_admin/theme/js/previewFileImage.js') }}"></script>
+    <script src="{{ asset('theme_admin/theme/js/confirmAlert.js') }}"></script>
+
 </body>
 
 </html>

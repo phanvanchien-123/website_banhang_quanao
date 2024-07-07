@@ -43,8 +43,10 @@
                         <td>
                             <a href="{{ route('admin.user.edit', $item->id) }}"><i
                                     class="bi bi-pencil-square text-warning"></i></a> |
-                            <a href="{{ route('admin.user.delete', $item->id) }}"><i
-                                    class="bi bi-trash2-fill text-danger"></i></a>
+                            <a href="#"
+                                onclick="confirmDelete(event, '{{ route('admin.user.delete', $item->id) }}')">
+                                <i class="bi bi-trash2-fill text-danger"></i>
+                            </a>
                         </td>
                     </tr>
                 @endforeach

@@ -249,22 +249,29 @@ margin-top: 10px;
                             </div>
                         </div>
                         <div id="stock-info">
-                            @if ($products->qty > 0)
-                                @if ($products->qty < 5)
-                                    <p class="danger-button btn btn-sm">Còn ít hàng {{$products->qty}}</p>
-                                @else
+                           
                                     <h6 class="product-title product-title-2 d-block">
                                         <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#sizemodal">Còn : {{$products->qty}} sản phẩm có sẵn</a>
                                     </h6>
-                                @endif
-                            @else
-                                <p class="danger2-button btn btn-sm">Hết hàng</p>
-                            @endif
+                                
                         </div>
-                    
+                    <style>
+                        .quantity{
+                            width: 60px;
+                          position: relative;
+                          left: 30px;
+                        }
+                    </style>
                         <div class="input-group quantity-input">
-                            <h6 class="product-title product-title-2 d-block">Quantity:</h6>
-                            <input type="number" name="quantity" id="quantity" class="form-control input-number" value="1" min="1" max="">
+                            <h6 class="product-title product-title-2 d-block">Quantity: </h6>
+                            <input type="number" name="quantity" id="quantity" class="quantity" value="1" min="1" max="">
+
+<script>
+document.getElementById('quantity').addEventListener('keydown', function(e) {
+    e.preventDefault();
+});
+</script>
+
                         </div>
                     
                         <form id="add-to-cart-form" method="POST" action="{{ route('cart.add', ['id' => $products->id]) }}" style="display: none;">
@@ -593,15 +600,15 @@ margin-top: 10px;
                                                         class="btn default-light-theme default-theme default-theme-2">Submit</button>
                                                 </div>
                                             </form>
-                                            @if (session('success'))
+                                            @if (session('successcoment'))
     <div class="alert alert-success">
-        {{ session('success') }}
+        {{ session('successcoment') }}
     </div>
 @endif
 
-@if (session('error'))
+@if (session('errorcomnet'))
     <div class="alert alert-danger">
-        {{ session('error') }}
+        {{ session('errorcomnet') }}
     </div>
 @endif
                                             @endauth

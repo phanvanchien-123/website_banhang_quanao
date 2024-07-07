@@ -2,44 +2,47 @@
     @csrf
     <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">Tên danh mục</label>
-        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" name="name"  value="{{ isset($category) ? $category->name : ''}}">
+        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" name="name"
+            value="{{ isset($category) ? $category->name : '' }}">
         @error('name')
-                <small class="text-danger">{{ $errors->first('name')  }}</small>
+            <small class="text-danger">{{ $errors->first('name') }}</small>
         @enderror
-      </div>
-      <div class="mb-3">
-        <label for="exampleFormControlInput2" class="form-label">Hình ảnh</label>
-        <div class="border rounded">
-            <div id="imageWrapper" class="border-bottom d-flex" style="display: none;">
+    </div>
+    <div class="mb-3">
+        <div class="mb-3">
+            <label for="avatar" class="form-label">Hình ảnh</label>
+            <div id="avatarWrapper" class="border-bottom d-flex"
+                style="display: {{ isset($category) ? 'flex' : 'none' }};">
                 @if (isset($category->avatar))
-                    <img src="{{ asset('storage/' . $category->avatar) }}" alt="" class="m-3" width="120px" height="120px">    
-                @endif                    
+                    <img src="{{ asset('storage/' . $category->avatar) }}" alt="" class="m-3" width="120px"
+                        height="120px">
+                @endif
             </div>
-            <input type="file"  class="form-control" id="exampleFormControlInput2" placeholder="" name="avatar" value="" onchange="previewImages(event)">
+            <input type="file" class="form-control" id="avatar" name="avatar" onchange="previewAvatar(event)">
         </div>
         @error('avatar')
-                <small class="text-danger">{{ $errors->first('avatar')  }}</small>
+            <small class="text-danger">{{ $errors->first('avatar') }}</small>
         @enderror
-      </div>
-      <div class="mb-3">
+    </div>
+    <div class="mb-3">
         <label for="exampleFormControlTextarea1" class="form-label">mô tả</label>
-        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description"> {{ isset($category) ? $category->description : ''}}</textarea>
-      </div>
-      <button type="submit" class="btn btn-outline-primary">Lưu dữ liệu</button>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description"> {{ isset($category) ? $category->description : '' }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-outline-primary">Lưu dữ liệu</button>
 
 
-      <script>
+    <script>
         function previewImages(event) {
             const input = event.target;
             const imageWrapper = document.getElementById('imageWrapper');
-    
+
             // Xóa các ảnh hiển thị trước đó
             imageWrapper.innerHTML = '';
-    
+
             if (input.files && input.files.length > 0) {
                 // Hiển thị phần tử chứa ảnh
                 imageWrapper.style.display = 'flex';
-    
+
                 // Duyệt qua từng tệp hình ảnh và hiển thị
                 for (let i = 0; i < input.files.length; i++) {
                     const reader = new FileReader();

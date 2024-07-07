@@ -815,7 +815,7 @@
 
     <script>
         const apiKey = '095020f308344bb7832163323240606';
-        const city = '{{ auth()->user()->getProvince->name }}';
+        const city = '{{ auth()->user()->getProvince->name ?? '' }}';
         const formattedCity = city
             .normalize('NFD') 
             .replace(/[\u0300-\u036f]/g, '') 

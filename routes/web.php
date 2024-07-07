@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/',[HomeController::class,'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('check.email.verified');
 
 Route::prefix('/shop')->group(function(){
         Route::get('',[ShopController::class,'index'])->name('client.shop.index');
@@ -55,7 +55,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('',[CheckOutController::class,'index'])->name('list');
         Route::post('/',[CheckOutController::class,'addOrder']);
         Route::post('/vnPayCheck',[CheckOutController::class,'vnPayCheck'])->name('vnPayCheck.index');
-        Route::get('/Vnpay',[CheckOutController::class,'returnVNPay']);
+        Route::get('/vnpay-return', [CheckOutController::class, 'vnPayReturn'])->name('checkout.vnpayReturn');
+
     });
 
 });
@@ -76,7 +77,11 @@ Route::middleware('auth')->group(function(){
         });
     });
 });
-Auth::routes();
+Auth::routes(
+    [
+        'verify'=>true
+    ]
+);
 
 Route::group(['prefix' => 'auth' ], function ($router) {
     Route::get('/google', [App\Http\Controllers\Auth\LoginGoogleController::class,'redirectToGoogle'])->name('auth.google');
@@ -95,6 +100,8 @@ Route::namespace('Admin')->prefix('admin')->middleware(['auth'])->group(function
 
         Route::get('/search-product', [Admin\CashierController::class,'searchProduct']);
         Route::get('/product-details/{id}', [Admin\CashierController::class,'getProductDetails']);
+
+        Route::post('/createOrder', [Admin\CashierController::class, 'createOrder'])->name('cashier.createOrder');   
 
         Route::post('/print-invoice', [Admin\CashierController::class, 'printInvoice'])->name('cashier.print-invoice');   
     });
@@ -158,6 +165,7 @@ Route::namespace('Admin')->prefix('admin')->middleware(['auth'])->group(function
         Route::post('update/{id}',[Admin\ProductController::class,'update']) ->name('admin.product.update');
 
         Route::get('delete/{id}',[Admin\ProductController::class,'delete']) ->name('admin.product.delete');   
+        Route::delete('deleteDetail/{id}',[Admin\ProductController::class,'deleteDetail']) ->name('admin.product.deleteDetail');   
 
         Route::get('stock',[Admin\ProductController::class,'stock']) ->name('admin.product.stock');
 

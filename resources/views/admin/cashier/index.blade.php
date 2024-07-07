@@ -91,14 +91,17 @@
                     <p class="text-end" id="current-date"></p>
 
                     <div class="d-flex flex-row-reverse">
-    
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="creator" value="{{ Auth::user()->name }}">
-                                <label for="creator">Người lập</label>
-                            </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="creator" value="{{ Auth::user()->name }}">
+                            <label for="creator">Người lập</label>
+                        </div>
                     </div>
-                    <div class="py-4 text-center"><button type="button" class="btn btn-outline-primary" id="createInvoiceBtn">Tạo hóa
-                            đơn</button></div>
+                    <div class="py-4 text-center">
+                        <button type="button" class="btn btn-outline-primary" id="createInvoiceBtn">Tạo hóa đơn</button>
+                        {{-- <button type="button" class="btn btn-outline-primary"onclick="confirmCreate(event)">Tạo hóa
+                            đơn</button> --}}
+                    </div>
 
                 </div>
             </div>
@@ -130,10 +133,10 @@
                                     const tr = document.createElement('tr');
                                     const imageUrl = `/storage/${product.avatar}`;
                                     tr.innerHTML = `
-                                <td><img src="${imageUrl}" alt="${product.name}" width="30px" height="30px"></td>
-                                <td>${product.name}</td>
-                                <td>${product.price}</td>
-                            `;
+                                        <td role="button"><img src="${imageUrl}" alt="${product.name}" width="30px" height="30px"></td>
+                                        <td role="button">${product.name}</td>
+                                        <td role="button">${product.price}</td>
+                                    `;
                                     tr.addEventListener('click', function() {
                                         addProductToList(product);
                                         searchResults.innerHTML = '';
@@ -142,7 +145,7 @@
                                     });
                                     searchResults.appendChild(tr);
                                 });
-                                resultSearch.style.display = 'block'; // Show resultSearch div
+                                resultSearch.style.display = ''; // Show resultSearch div
                             } else {
                                 resultSearch.style.display = 'none'; // Hide resultSearch div
                             }
@@ -251,23 +254,61 @@
         document.getElementById('current-date').textContent = formatCurrentDate();
     </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const createInvoiceBtn = document.getElementById('createInvoiceBtn');
-            const csrfToken = document.head.querySelector('meta[name="csrf-token"]').content;
+<script>
+    // async function confirmCreate(event) {
+    //     event.preventDefault();
 
-            createInvoiceBtn.addEventListener('click', function() {
-                const customerName = document.getElementById('customerName').value;
-                const customerPhone = document.getElementById('customerPhone').value;
-                const customerAddress = document.getElementById('customerAddress').value;
-                // const receiver = document.getElementById('receiver').value;
-                // const deliverer = document.getElementById('deliverer').value;
-                const creator = document.getElementById('creator').value;
-                const currentDate = new Date().toLocaleDateString('en-US');
+    //     const swalWithBootstrapButtons = Swal.mixin({
+    //         customClass: {
+    //             confirmButton: "btn btn-success ms-4",
+    //             cancelButton: "btn btn-danger"
+    //         },
+    //         buttonsStyling: false
+    //     });
 
-                const billItems = [];
-                document.querySelectorAll('#billItem tr').forEach(
-                row => { // Select rows directly from #billItem
+    //     try {
+    //         const result = await swalWithBootstrapButtons.fire({
+    //             title: "Xác nhận tạo đơn hàng và in hóa đơn?",
+    //             icon: "warning",
+    //             showCancelButton: true,
+    //             confirmButtonText: "Yes, do it!",
+    //             cancelButtonText: "No, cancel!",
+    //             reverseButtons: true
+    //         });
+
+    //         if (result.isConfirmed) {
+    //             await new Promise(resolve => {
+    //                 document.getElementById('createInvoiceBtn').addEventListener('click', resolve, { once: true });
+    //                 document.getElementById('createInvoiceBtn').click();
+    //             });
+    //         } else if (result.dismiss === Swal.DismissReason.cancel) {
+    //             swalWithBootstrapButtons.fire({
+    //                 title: "Cancelled",
+    //                 text: "Your imaginary file is safe :)",
+    //                 icon: "error"
+    //             });
+    //         }
+    //     } catch (error) {
+    //         console.error('Error handling confirmation:', error);
+    //     }
+
+    //     $('.swal2-confirm.btn-success.ms-4').attr('id', 'createInvoiceBtn');
+    // }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const createInvoiceBtn = document.getElementById('createInvoiceBtn');
+        const csrfToken = document.head.querySelector('meta[name="csrf-token"]').content;
+
+        createInvoiceBtn.addEventListener('click', async function() {
+            const customerName = document.getElementById('customerName').value;
+            const customerPhone = document.getElementById('customerPhone').value;
+            const customerAddress = document.getElementById('customerAddress').value;
+            const creator = document.getElementById('creator').value;
+            const currentDate = new Date().toLocaleDateString('en-US');
+
+            const billItems = [];
+            document.querySelectorAll('#billItem tr').forEach(
+                row => { // Lấy thông tin từ các hàng trong #billItem
                     const productName = row.cells[1].innerText;
                     const quantity = row.cells[2].innerText;
                     const unitPrice = row.cells[3].innerText;
@@ -278,47 +319,66 @@
                         unitPrice,
                         totalPrice
                     });
+                }
+            );
+
+            const data = {
+                customerName,
+                customerPhone,
+                customerAddress,
+                creator,
+                currentDate,
+                billItems
+            };
+
+            try {
+                const createOrderResponse = await fetch('/admin/cashier/createOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        data
+                    })
                 });
 
-                const invoiceData = {
-                    customerName,
-                    customerPhone,
-                    customerAddress,
-                    // receiver,
-                    // deliverer,
-                    creator,
-                    currentDate,
-                    billItems
-                };
+                if (!createOrderResponse.ok) {
+                    throw new Error('Failed to create order');
+                }
 
-                // Send invoiceData to server for processing
-                fetch('cashier/print-invoice', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        body: JSON.stringify({
-                            invoiceData
-                        })
+                const printInvoiceResponse = await fetch('cashier/print-invoice', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        'invoiceData': data
                     })
-                    .then(response => response.text())
-                    .then(html => {
-                        const printWindow = window.open('', 'PRINT', 'height=600,width=800');
-                        printWindow.document.write(html);
-                        printWindow.document.close();
-                        printWindow.focus();
+                });
 
-                        setTimeout(() => {
-                            printWindow.print();
-                            printWindow.close();
-                        }, 1000);
-                    })
-                    .catch(error => {
-                        console.error('Error creating invoice:', error);
-                        // Handle error
-                    });
-            });
+                if (!printInvoiceResponse.ok) {
+                    throw new Error('Failed to print invoice');
+                }
+
+                const html = await printInvoiceResponse.text();
+                const printWindow = window.open('', 'PRINT', 'height=600,width=800');
+                printWindow.document.write(html);
+                printWindow.document.close();
+                printWindow.focus();
+
+                setTimeout(() => {
+                    printWindow.print();
+                    printWindow.close();
+                }, 1000);
+            } catch (error) {
+                console.error('Error processing invoice:', error);
+                // Xử lý khi có lỗi xảy ra
+            }
         });
-    </script>
+    });
+</script>
+
+
 @endsection

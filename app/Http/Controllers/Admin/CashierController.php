@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\ProductDetail;
@@ -27,10 +28,42 @@ class CashierController extends Controller
         return response()->json($productDetails);
     }
 
+    public function createOrder(Request $request){
+
+        $validatedData = $request->validate([
+            'data.customerName' => 'required|string|max:255',
+            'data.customerPhone' => 'required|string|max:20',
+            'data.customerAddress' => 'required|string|max:255',
+        ]);
+
+        $total = 0;
+        foreach ($request->input('data.billItems') as $item) {
+            $total += floatval($item['totalPrice']);
+        }
+
+        $order = new Order();
+        $order->first_name = $request->input('data.customerName');
+        $order->last_name = 'x';
+        $order->phone = $request->input('data.customerPhone');
+        $order->user_id = 999999999;
+        $order->country = 'VN';
+        $order->street_address = 'x';
+        $order->town_city = 'x';
+        $order->email = 'x';
+        $order->total = $total;
+        $order->payment_type = '0';
+        $order->status = 1;
+
+        $order->save();
+
+        return response()->json([
+            'status' => 'success', // Example invoice number
+        ]);
+
+    }
+
     public function createInvoice(Request $request)
     {
-        // Validate request data (customer name, phone, address, etc.)
-
         // Prepare invoice data
         $invoiceData = $request->only([
             'customerName',
@@ -43,9 +76,6 @@ class CashierController extends Controller
             'billItems'
         ]);
 
-        // Process further as needed (e.g., save to database, generate invoice number, etc.)
-
-        // Example: return response with invoice data (e.g., invoice number, etc.)
         return response()->json([
             'invoiceNumber' => 'INV2024001', // Example invoice number
             'invoiceData' => $invoiceData
@@ -62,4 +92,6 @@ class CashierController extends Controller
 
         return view('admin.cashier.bill', compact('invoiceData','total'));
     }
+
+
 }

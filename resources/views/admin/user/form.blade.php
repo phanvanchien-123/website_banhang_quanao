@@ -31,8 +31,8 @@
                     <div class="col-12">
                         <div class="form-floating mb-3">
                             <input class="form-control" type="text"
-                                value="{{ auth()->user()->getAddressFrom($user->id) }}" aria-label="Disabled input example"
-                                disabled readonly>
+                                value="{{ auth()->user()->getAddressFrom($user->id) }}"
+                                aria-label="Disabled input example" disabled readonly>
                             <label for="Name">Địa chỉ</label>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
@@ -138,17 +138,17 @@
         </div>
         <div class="col-md-5">
             <div class="mb-3">
-                <label for="exampleFormControlInput2" class="form-label">Hình ảnh</label>
-                <div class="border rounded">
-                    <div id="imageWrapper" class="border-bottom d-flex" style="display: none;">
-                        @if (isset($user))
+                <div class="mb-3">
+                    <label for="avatar" class="form-label">Hình ảnh</label>
+                    <div id="avatarWrapper" class="border-bottom d-flex"
+                        style="display: {{ isset($user) ? 'flex' : 'none' }};">
+                        @if (isset($user->avatar))
                             <img src="{{ asset('storage/' . $user->avatar) }}" alt="" class="m-3"
                                 width="120px" height="120px">
                         @endif
-
                     </div>
-                    <input type="file" class="form-control" id="exampleFormControlInput2" placeholder=""
-                        name="avatar" value="" onchange="previewImages(event)">
+                    <input type="file" class="form-control" id="avatar" name="avatar"
+                        onchange="previewAvatar(event)">
                 </div>
             </div>
         </div>

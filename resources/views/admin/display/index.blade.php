@@ -146,38 +146,6 @@
                                             data-id="{{ $item->id }}"></button>
                                     </div>
                                 </div>
-                                {{-- @empty
-                                <div class="row attribute-row">
-                                    <input type="hidden" name="ids[]" value="">
-                                    <div class="col-md-3 mb-3">
-                                        <label for="subtitle0" class="form-label">Sub title:</label>
-                                        <input type="text" class="form-control" id="subtitle0" placeholder="" name="subtitle[]" value="">
-                                        @error('subtitle.*')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <label for="link0" class="form-label">Link</label>
-                                        <input type="text" class="form-control" id="link0" placeholder="" name="link[]" value="">
-                                        @error('link.*')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <label for="title0" class="form-label">Title</label>
-                                        <select class="form-select" aria-label="Default select example" name="title[]">
-                                            <option value="1">About us</option>
-                                            <option value="2">New categories</option>
-                                            <option value="3">Get help</option>
-                                        </select>
-                                        @error('title.*')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-1 mb-3">
-                                        <button type="button" class="btn btn-danger removeAttributeBtn" data-id="">Xóa</button>
-                                    </div>
-                                </div> --}}
                             @endforeach
                         </div>
                         <button type="submit" class="btn btn-primary">Save</button>
@@ -232,27 +200,27 @@
                 newAttributeRow.className = 'row attribute-row';
 
                 newAttributeRow.innerHTML = `
-            <input type="hidden" name="ids[]" value="">
-            <div class="col-md-3 mb-3">
-                <label for="subtitle${newIndex}" class="form-label">Sub title:</label>
-                <input type="text" class="form-control" id="subtitle${newIndex}" placeholder="" name="subtitle[]" value="">
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="link${newIndex}" class="form-label">Link</label>
-                <input type="text" class="form-control" id="link${newIndex}" placeholder="" name="link[]" value="">
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="title${newIndex}" class="form-label">Title</label>
-                <select class="form-select" aria-label="Default select example" name="title[]">
-                    <option value="1">About us</option>
-                    <option value="2">New categories</option>
-                    <option value="3">Get help</option>
-                </select>
-            </div>
-            <div class="col-md-1 mb-3">
-                <button type="button" class="btn btn-close removeAttributeBtn" data-id=""></button>
-            </div>
-        `;
+                    <input type="hidden" name="ids[]" value="">
+                    <div class="col-md-3 mb-3">
+                        <label for="subtitle${newIndex}" class="form-label">Sub title:</label>
+                        <input type="text" class="form-control" id="subtitle${newIndex}" placeholder="" name="subtitle[]" value="">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="link${newIndex}" class="form-label">Link</label>
+                        <input type="text" class="form-control" id="link${newIndex}" placeholder="" name="link[]" value="">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="title${newIndex}" class="form-label">Title</label>
+                        <select class="form-select" aria-label="Default select example" name="title[]">
+                            <option value="1">About us</option>
+                            <option value="2">New categories</option>
+                            <option value="3">Get help</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1 mb-3">
+                        <button type="button" class="btn btn-close removeAttributeBtn" data-id=""></button>
+                    </div>
+                `;
 
                 attributeContainer.appendChild(newAttributeRow);
                 attachRemoveHandler(newAttributeRow.querySelector('.removeAttributeBtn'));

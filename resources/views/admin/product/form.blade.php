@@ -92,10 +92,15 @@
                     <div id="albumWrapper" class="border-bottom d-flex"
                         style="display: {{ isset($product->productImages) && count($product->productImages) > 0 ? 'flex' : 'none' }};">
                         @if (isset($product->productImages))
-                            @foreach ($product->productImages as $img)
-                                <img src="{{ asset('storage/' . $img->path) }}" alt="" class="m-3"
-                                    width="120px" height="120px">
-                            @endforeach
+                            <div class="row">
+                                @foreach ($product->productImages as $img)
+                                    <div class="col-4">
+                                        <img src="{{ asset('storage/' . $img->path) }}" alt="" class="m-3"
+                                            width="120px" height="120px">
+                                    </div>
+                                @endforeach
+                            </div>
+
                         @endif
                     </div>
                     <input type="file" multiple class="form-control" id="album" name="images[]"
@@ -112,74 +117,90 @@
                 Thông tin sản phẩm
             </div>
             <div class="border border-top-0 px-3">
-                <div class="mb-3">
-                    <label for="sku" class="form-label">Mã sản phẩm</label>
-                    <input type="text" class="form-control" id="sku" placeholder="" name="sku"
-                        value="{{ isset($product) ? $product->sku : '' }}">
-                    @error('sku')
-                        <small class="text-danger">{{ $errors->first('sku') }}</small>
-                    @enderror
-                </div>
-
-                <div class="mb-3">
-                    <label for="exampleFormControlInput3" class="form-label">giá</label>
-                    <input type="number" class="form-control" id="exampleFormControlInput3" placeholder="VND"
-                        name="price" value="{{ isset($product) ? $product->price : '' }}">
-                    @error('price')
-                        <small class="text-danger">{{ $errors->first('price') }}</small>
-                    @enderror
-                </div>
-                <div class="mb-3">
-                    <label for="exampleFormControlInput4" class="form-label">Số lượng</label>
-                    <input type="number" class="form-control" id="exampleFormControlInput4" placeholder=""
-                        name="qty" value="{{ isset($product) ? $product->qty : '' }}">
-                    @error('qty')
-                        <small class="text-danger">{{ $errors->first('qty') }}</small>
-                    @enderror
-                </div>
-                <div class="mb-3">
-                    <label for="exampleFormControlInput5" class="form-label">Discount</label>
-                    <input type="number" class="form-control" id="exampleFormControlInput5" placeholder="%"
-                        name="discount" value="{{ isset($product) ? $product->discount : '' }}">
-                    @error('discount')
-                        <small class="text-danger">{{ $errors->first('discount') }}</small>
-                    @enderror
-                </div>
-                <div class="mb-3">
-                    <label for="weight" class="form-label">Cân nặng (kilogram)</label>
-                    <input type="number" class="form-control" id="weight" placeholder="" name="weight"
-                        value="{{ isset($product) ? $product->weight : '' }}">
-                    @error('weight')
-                        <small class="text-danger">{{ $errors->first('weight') }}</small>
-                    @enderror
-                </div>
-                <div class="mb-3">
-                    <label for="editor" class="form-label">tag</label>
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder=""
-                        name="tag" value="{{ isset($product) ? $product->tag : '' }}">
-                    @error('tag')
-                        <small class="text-danger">{{ $errors->first('tag') }}</small>
-                    @enderror
-                </div>
-                <div class="mb-3">
-                    <label for="editor" class="form-label">featured</label>
-                    <div class="d-flex">
-                        <div class="form-check ms-5">
-                            <input class="form-check-input" type="radio" name="featured" value="1"
-                                id="flexRadioDefault1">
-                            <label class="form-check-label" for="flexRadioDefault1">
-                                có
-                            </label>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="sku" class="form-label">Mã sản phẩm</label>
+                            <input type="text" class="form-control" id="sku" placeholder="" name="sku"
+                                value="{{ isset($product) ? $product->sku : '' }}">
+                            @error('sku')
+                                <small class="text-danger">{{ $errors->first('sku') }}</small>
+                            @enderror
                         </div>
-                        <div class="form-check ms-5">
-                            <input class="form-check-input" type="radio" name="featured" value="0"
-                                id="flexRadioDefault2" checked>
-                            <label class="form-check-label" for="flexRadioDefault2">
-                                không
-                            </label>
+                        <div class="mb-3">
+                            <label for="cost" class="form-label">giá nhập</label>
+                            <input type="number" class="form-control" id="cost" placeholder="VND"
+                                name="cost" value="{{ isset($product) ? $product->cost : '' }}">
+                            @error('cost')
+                                <small class="text-danger">{{ $errors->first('cost') }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput3" class="form-label">giá bán</label>
+                            <input type="number" class="form-control" id="exampleFormControlInput3"
+                                placeholder="VND" name="price"
+                                value="{{ isset($product) ? $product->price : '' }}">
+                            @error('price')
+                                <small class="text-danger">{{ $errors->first('price') }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput4" class="form-label">Số lượng</label>
+                            <input type="number" class="form-control" id="exampleFormControlInput4" placeholder=""
+                                name="qty" value="{{ isset($product) ? $product->qty : '' }}">
+                            @error('qty')
+                                <small class="text-danger">{{ $errors->first('qty') }}</small>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput5" class="form-label">Discount</label>
+                            <input type="number" class="form-control" id="exampleFormControlInput5" placeholder="%"
+                                name="discount" value="{{ isset($product) ? $product->discount : '' }}">
+                            @error('discount')
+                                <small class="text-danger">{{ $errors->first('discount') }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="weight" class="form-label">Cân nặng (kilogram)</label>
+                            <input type="number" class="form-control" id="weight" placeholder="" name="weight"
+                                value="{{ isset($product) ? $product->weight : '' }}">
+                            @error('weight')
+                                <small class="text-danger">{{ $errors->first('weight') }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="editor" class="form-label">tag</label>
+                            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder=""
+                                name="tag" value="{{ isset($product) ? $product->tag : '' }}">
+                            @error('tag')
+                                <small class="text-danger">{{ $errors->first('tag') }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="editor" class="form-label">featured</label>
+                            <div class="d-flex">
+                                <div class="form-check ms-5">
+                                    <input class="form-check-input" type="radio" name="featured" value="1"
+                                        id="flexRadioDefault1">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        có
+                                    </label>
+                                </div>
+                                <div class="form-check ms-5">
+                                    <input class="form-check-input" type="radio" name="featured" value="0"
+                                        id="flexRadioDefault2" checked>
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        không
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+
             </div>
         </div>
         <div class="col-md-5">
@@ -221,7 +242,7 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <button type="button" class="btn-close removeAttributeBtn"
+                                <button type="button" data-id="{{ $item->id }}" class="btn-close removeAttributeBtn"
                                     aria-label="Close"></button>
                             </div>
                         </div>
@@ -285,7 +306,23 @@
                     });
                     // Thêm sự kiện click cho nút "Xóa" của phần tử ban đầu
                     $('.removeAttributeBtn').click(function() {
+                        var productId = $(this).data('id');
+
                         $(this).closest('.d-flex').remove(); // Xóa phần tử cha chứa nút "Xóa"
+                        $.ajax({
+                            url: `/admin/product/deleteDetail/${productId}`,
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                    .getAttribute('content')
+                            },
+                            success: function(response) {
+                                console.log('Product detail deleted successfully');
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error deleting product detail:', error);
+                            }
+                        });
                     });
                 });
             </script>

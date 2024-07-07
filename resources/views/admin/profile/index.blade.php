@@ -266,4 +266,6 @@
             });
         }
     </script> --}}
+    <script src="{{ asset('theme_admin/theme/js/profile.js') }}"></script>
+
 @endsection

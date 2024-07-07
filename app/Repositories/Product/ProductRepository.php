@@ -167,7 +167,28 @@ class ProductRepository extends BaseRepositories implements ProductRepositoryInt
         $priceMax = $request->price_max;
         $priceMin = str_replace('$', '', $priceMin);
         $priceMax = str_replace('$', '', $priceMax);
-        $products = ($priceMin != null && $priceMax != null) ? $products->whereBetween('price', [$priceMin, $priceMax]) : $products;
+        $products = ($priceMin != null && $priceMax != null)
+        ? $products->where(function($query) use ($priceMin, $priceMax) {
+            $query->where(function($subQuery) use ($priceMin, $priceMax) {
+                // Điều kiện lọc sản phẩm có giảm giá nằm trong khoảng giá
+                $subQuery->whereBetween('discount', [$priceMin, $priceMax])
+                         ->orWhere(function($subSubQuery) use ($priceMin, $priceMax) {
+                             $subSubQuery->where('discount', '>', 0)  // Sản phẩm có giảm giá
+                                         ->whereBetween('price', [$priceMin, $priceMax]);
+                         });
+            })
+            ->orWhere(function($subQuery) use ($priceMin, $priceMax) {
+                // Điều kiện lọc sản phẩm không có giảm giá và giá gốc nằm trong khoảng giá
+                $subQuery->where('discount',0)  // Sản phẩm không có giảm giá
+                         ->whereBetween('price', [$priceMin, $priceMax]);
+            });
+        })
+        : $products;
+    
+    
+    
+    
+
 
         // color
         $color = $request->color;
