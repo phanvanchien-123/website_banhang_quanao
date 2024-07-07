@@ -52,7 +52,7 @@ class CashierController extends Controller
         $order->email = 'x';
         $order->total = $total;
         $order->payment_type = '0';
-        $order->status = 1;
+        $order->status = 7;
 
         $order->save();
 
