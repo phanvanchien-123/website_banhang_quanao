@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('check.email.verified');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::prefix('/shop')->group(function(){
         Route::get('',[ShopController::class,'index'])->name('client.shop.index');

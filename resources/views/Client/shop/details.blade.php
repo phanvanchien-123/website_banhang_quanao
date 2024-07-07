@@ -373,10 +373,26 @@ document.getElementById('quantity').addEventListener('keydown', function(e) {
                                     var selectedSize = $('#selected-size').val();
                                     var selectedQuantity = $('#quantity').val();
                     
-                                    if (!selectedColor || !selectedSize || !selectedQuantity) {
-                                        alert('Please select color, size, and enter quantity.');
-                                        return false;
-                                    }
+                                    if (!selectedColor && !selectedSize) {
+    alert('Vui lòng chọn màu sắc, kích thước và nhập số lượng.');
+    return false;
+}
+
+if (!selectedColor) {
+    alert('Vui lòng chọn màu sắc.');
+    return false;
+}
+
+if (!selectedSize) {
+    alert('Vui lòng chọn kích thước.');
+    return false;
+}
+
+if (!selectedQuantity) {
+    alert('Vui lòng nhập số lượng.');
+    return false;
+}
+
                     
                                     $('#selected-color').val(selectedColor);
                                     $('#selected-quantity').val(selectedQuantity);
