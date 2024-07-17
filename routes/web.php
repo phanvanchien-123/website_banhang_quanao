@@ -56,6 +56,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/',[CheckOutController::class,'addOrder']);
         Route::post('/vnPayCheck',[CheckOutController::class,'vnPayCheck'])->name('vnPayCheck.index');
         Route::get('/vnpay-return', [CheckOutController::class, 'vnPayReturn'])->name('checkout.vnpayReturn');
+        Route::get('/thanks', [CheckOutController::class, 'thanks']);
 
     });
 
@@ -78,9 +79,7 @@ Route::middleware('auth')->group(function(){
     });
 });
 Auth::routes(
-    [
-        'verify'=>true
-    ]
+   
 );
 
 Route::group(['prefix' => 'auth' ], function ($router) {

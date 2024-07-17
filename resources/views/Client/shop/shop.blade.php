@@ -5,8 +5,12 @@
     <div class="page-header breadcrumb-wrap">
         <div class="container">
             <div class="breadcrumb">
-                <a href="index.html" rel="nofollow">Home</a>
-                <span></span> Shop
+                <a href="/" rel="nofollow">Home</a>
+                <span></span> <a href="/shop">Shop</a>
+                <span></span> 
+        @if(request()->segment(2) == 'category')
+            {{ ucfirst(request()->segment(3)) }}
+        @endif
             </div>
         </div>
     </div>
@@ -16,7 +20,7 @@
                 <div class="col-lg-9">
                     <div class="shop-product-fillter">
                         <div class="totall-product">
-                          <p> Có tất cả <strong class="text-brand">{{count($products)}}</strong> sản phẩm</p>
+                          <p> Hiển thị <strong class="text-brand">{{ count($products)}}</strong> sản phẩm</p>
                         </div>
                         <div class="sort-by-product-area">
                             <div class="col-12">
@@ -67,35 +71,32 @@
                                         <a aria-label="Add To Wishlist" class="action-btn hover-up" href="wishlist.php"><i class="fi-rs-heart"></i></a>
                                         <a aria-label="Compare" class="action-btn hover-up" href="compare.php"><i class="fi-rs-shuffle"></i></a>
                                     </div>
-                                    @if ($item->discount !=null)
+                                    @if ((($item->price - $item->discount)/$item->price * 100 )==30)
                                     <div class="product-badges product-badges-position product-badges-mrg">
-                                        <span class="hot">SALE</span>
+                                        <span class="hot">SALE 30 %</span>
                                     </div>
                                     @endif
+
                                 </div>
                                 <div class="product-content-wrap">
                                     <div class="product-category">
                                         <a href="/shop/details/{{$item->id}}">{{$item->productCategory->name}}</a>
                                     </div>
                                     <h2><a href="/shop/details/{{$item->id}}">{{$item->name}}</a></h2>
+                                   @if ($item->orderDetails->sum('qty') > 5)
+                                       <h6 class="theme-color">Đang bán chạy</h6>
+                                   @endif
                                     <div class="label-section">
                                         {{-- <span class="badge badge-grey-color">#1 Best seller</span>
                                         <span class="label-text">in fashion</span> --}}
                                         <ul class="rating my-2 d-inline-block">
-                                            @for($i =1 ;$i<=5;$i++)
-                                             @if($i <=$item->avgRating)
-                                                <li>
-                                                    <i class="fas fa-star theme-color"></i>
-                                                </li>
-                                                @else
-                                                <li>
-                                                    <i class="fas fa-star "></i>
-                                                </li>
-                                                @endif
-                                                @endfor
-                                                <li>
-                                                    (<span>{{count($item->productComments)}}</span>)
-                                                </li>
+                                            <div class="product-rate-cover text-end">
+                                                <div class="product-rate d-inline-block">
+                                                    <div class="product-rating" style="width:{{($item->avgRating)*2*10}}%">
+                                                    </div>
+                                                </div>
+                                                <span class="font-small ml-5 text-muted"> ({{ number_format($item->avgRating,1) }}/5)</span>
+                                            </div>
                                         </ul>
                                     </div>
                                     <div class="product-price">

@@ -37,9 +37,11 @@ class ShopController extends Controller
     }
     public function index(Request $request){
         $products = $this->productServices->getPagination($request);
+        $countproducts = $this->productServices->all();
         $categories = $this->productCategoryServices->all();
         $brands = $this->productBrands->all();
-        return view ('Client.shop.shop',compact('products','categories','brands'));
+        $orderCount =$this->orderdetails->countProductSold($products);
+        return view ('Client.shop.shop',compact('products','categories','brands','countproducts','orderCount'));
     }
     // public function show($id, Request $request)
     // {
@@ -80,7 +82,7 @@ class ShopController extends Controller
         $brands = $this->productBrands->all();
         $colors = $products->productDetails->pluck('color')->unique();
         $relatedProducts = $this->productServices->getRelatedProducts($products);
-        $comments = $this->productCommentServices->getCommentsByProductId($id,2);
+        $comments = $this->productCommentServices->getCommentsByProductId($id,5);
      $relatedproducts= $this->productServices->getRelatedProducts($products);
      $orderCount =$this->orderdetails->countProductSold($id);
         return view('client.shop.details', compact('products', 'relatedProducts', 'colors','comments','relatedproducts','categories','brands','orderCount'));

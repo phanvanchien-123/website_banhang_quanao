@@ -22,14 +22,10 @@ class CheckoutOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
+            'home_address' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
             'phone' => 'required|string|max:15',
             'email' => 'required|email|max:255',
-            'street_address' => 'required|string|max:255',
-            'town_city' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'postcode_zip' => 'required|string|max:10', 
             'applied_coupon_code' => 'nullable|string|max:50',
             'payment_type' => 'required',
         ];
@@ -41,15 +37,12 @@ class CheckoutOrderRequest extends FormRequest
     public function messages()
     {
         return [
-            'first_name.required' => 'Tên đầu tiên là bắt buộc.',
-            'last_name.required' => 'Họ là bắt buộc.',
+            'home_address.required' => 'Chưa cập nhật địa chỉ nhà cụ thể.',
+            'address.required' => 'Chưa cập nhật đại chỉ.',
             'phone.required' => 'Số điện thoại là bắt buộc.',
             'email.required' => 'Email thì cần thiết.',
             'email.email' => 'Email phải là địa chỉ email hợp lệ.',
-            'street_address.required' => 'Địa chỉ đường phố là bắt buộc.',
-            'town_city.required' => 'Thị trấn hoặc thành phố là bắt buộc.',
-            'country.required' => 'Quốc gia là bắt buộc.',
-            'postcode_zip.required' => 'Mã bưu điện hoặc ZIP là bắt buộc.',
+           
         ];
     }
 }

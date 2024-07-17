@@ -59,9 +59,10 @@ class BlogController extends Controller
             $data = $request->except('image');
             $data['category'] = '0' ;
             $data['user_id'] = Auth::user()->id ;
-            if ($request->hasFile('avatar')) {
-                $imagePath = $this->uploadImage($request->file('avatar'), 'theme_admin/upload/brand');
-                $data['avatar'] = $imagePath ;
+           $data['view']=0;
+            if ($request->hasFile('image')) {
+                $imagePath = $this->uploadImage($request->file('image'), 'theme_admin/upload/blog');
+                $data['image'] = $imagePath ;
             }else{
                  $data['image'] = 0 ;
             }
@@ -71,7 +72,8 @@ class BlogController extends Controller
 
             return redirect()->route('admin.blog.index')->with(['success' => 'Thêm mới blog thành công']);
 
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             Log::error("ERROR => BrandController@store =>" . $ex->getMessage());
             return redirect()->back()->with(['error' => 'Thêm mới blog thất bại']);
         }

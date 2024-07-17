@@ -5,14 +5,25 @@
     </div>
     <form action="{{request()->segment(2) == 'details' ? '/shop' : ''}}">
     <div class="widget-category mb-30">
-        <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
-        <ul class="categories">
-            @foreach ($categories as $item)
-            <li><a href="/shop/category/{{$item->name}}">{{$item->name}}</a></li><br>
-            @endforeach
-           
-           
-        </ul>
+        <h5 class="section-title style-1 mb-30 wow fadeIn animated">Danh Mục</h5>
+        <h4>Quần</h4>
+       
+    <ul>
+        @foreach ($categories as $item)
+            @if (strpos($item->name, 'Quần') !== false)
+                <li><a href="/shop/category/{{$item->name}}" class="highlight">{{$item->name}}</a></li><br>
+            @endif
+        @endforeach
+    </ul>
+
+    <h4>Áo</h4>
+    <ul>
+        @foreach ($categories as $item)
+            @if (strpos($item->name, 'Áo') !== false)
+                <li><a href="/shop/category/{{$item->name}}" class="highlight">{{$item->name}}</a></li><br>
+            @endif
+        @endforeach
+    </ul>
     </div>
     </form>
   

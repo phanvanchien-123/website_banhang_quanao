@@ -1,99 +1,117 @@
-@extends('layouts.master')
-@section('content')
-
-<!-- Breadcrumb Section -->
-<section class="breadcrumb-section section-b-space" style="padding-top:20px; padding-bottom:20px;">
-    <ul class="circles">
-        @for($i = 0; $i < 10; $i++)
-            <li></li>
-        @endfor
+<div class="col-lg-3 primary-sidebar sticky-sidebar">
+    <div class="row">
+        <div class="col-lg-12 col-mg-6"></div>
+        <div class="col-lg-12 col-mg-6"></div>
+    </div>
+    <form action="{{request()->segment(2) == 'details' ? '/shop' : ''}}">
+    <div class="widget-category mb-30">
+        <h5 class="section-title style-1 mb-30 wow fadeIn animated">Danh Mục</h5>
+        <h4>Quần</h4>
+       
+    <ul>
+        @foreach ($categories as $item)
+            @if (strpos($item->name, 'Quần') !== false)
+                <li><a href="/shop/category/{{ $item->name }}" class="highlight">{{ $item->name }}</a></li><br>
+            @endif
+        @endforeach
     </ul>
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h3>Cart</h3>
-                <nav>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="../index.htm">
-                                <i class="fas fa-home"></i>
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">Cart</li>
-                    </ol>
-                </nav>
+
+    <h4>Áo</h4>
+    <ul>
+        @foreach ($categories as $item)
+            @if (strpos($item->name, 'Áo') !== false)
+                <li><a href="/shop/category/{{ $item->name }}" class="highlight">{{ $item->name }}</a></li><br>
+            @endif
+        @endforeach
+    </ul>
+    </div>
+    </form>
+  
+    <!-- Fillter By Price -->
+    <div class="sidebar-widget price_range range mb-30">
+        <div class="widget-header position-relative mb-20 pb-10">
+            <h5 class="widget-title mb-10">Price</h5>
+            
+        </div>
+        
+            <div id="collapseFour" class="accordion-collapse collapse show"
+            aria-labelledby="headingFour" >
+            <div class="accordion-body">
+                <div class="range-slider category-list" >
+                    <input type="text" class="js-range-slider" id="js-range-price" value="">  
+                </div>
+             <div><button class="btn btn-sm btn-default" id="updateURLButton" type="submit">Tìm Kiếm</button>
+                </div> 
+              
             </div>
         </div>
-    </div>
-</section>
 
-<!-- Cart Section -->
-<section class="cart-section section-b-space">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <form action="{{ route('cart.orderSelected') }}" method="POST">
-                    @csrf
-                    <table class="table cart-table">
-                        <thead>
-                            <tr class="table-head">
-                                <th scope="col">Select</th>
-                                <th scope="col">Image</th>
-                                <th scope="col">Product Name</th>
-                                <th scope="col">Price</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Total</th>
-                                <th scope="col">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($cartItems as $item)
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" name="selected_items[]" value="{{ $item->id }}">
-                                    </td>
-                                    <td>
-                                        <a href="../product/details.html">
-                                            <img src="{{ asset('storage/'.$item->product->avatar) }}" class="blur-up lazyloaded" alt="">
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="../product/details.html">
-                                            {{ $item->product->name }} <br> {{ $item->color }} <br> Size: {{ $item->size }}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <h2>{{ number_format($item->price, 3) }} VND</h2>
-                                    </td>
-                                    <td>
-                                        <div class="qty-box">
-                                            <div class="input-group">
-                                                <form action="{{ route('cart.update', $item->id) }}" method="POST">
-                                                    @csrf
-                                                    <input type="number" name="quantity" required onchange="this.form.submit()" min="1" max="{{ $maxQuantities[$item->id] }}" class="form-control input-number" value="{{ $item->quantity }}">
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <h2 class="td-color">{{ number_format($item->quantity * $item->price, 3) }} VND</h2>
-                                    </td>
-                                    <td>
-                                        <form action="{{ route('cart.delete', $item->id) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger"><i class="fas fa-times"></i></button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    <button type="submit" class="btn btn-solid-default btn fw-bold">Order Selected Items</button>
-                </form>
+       
+       
+      
+    </div>
+    <form action="{{request()->segment(2) == 'details' ? '/shop' : ''}}">
+    <div class="list-group">
+        <div class="list-group-item mb-10 mt-10">
+            <label class="fw-900">Color</label>
+            
+            <div class="color-picker">
+                <input type="radio" id="color-red" name="color" value="red"  onchange="this.form.submit();" 
+                {{ request('color')=='red' ? 'checked' : ''}}>
+                <label for="color-red" class="color-red"></label>
+                <input type="radio" id="color-blue" name="color" value="blue" onchange="this.form.submit();" 
+                {{ request('color')=='blue' ? 'checked' : ''}}>
+                <label for="color-blue" class="color-blue"></label>
+                <input type="radio" id="color-black" name="color" value="black"  onchange="this.form.submit();" 
+                {{ request('color')=='black' ? 'checked' : ''}}>
+                <label for="color-black" class="color-black"></label>
+                <input type="radio" id="color-green" name="color" value="green" onchange="this.form.submit();" 
+                {{ request('color')=='green' ? 'checked' : ''}}>
+                <label for="color-green" class="color-green"></label>
+                <!-- Thêm các màu khác tại đây -->
             </div>
+            <script>
+                function updateUrl(color) {
+                 window.location.href = window.location.pathname + '?color=' + color;
+}
+             </script>
         </div>
     </div>
-</section>
+    
+        <div class="sidebar-widget price_range range mb-30">
+         
+            
+            <div class="list-group">
+                <div class="list-group-item mb-10 mt-10">
+                    <label class="fw-900">Brand</label>
+                    <div class="custome-checkbox">
+                        @foreach ($brands as $item)
+                        <input 
+                            class="form-check-input" 
+                            type="checkbox" 
+                            name="brand[{{$item->id}}]" 
+                            {{ (request("brand")[$item->id] ?? '') =='on' ? 'checked' : '' }}
+                            id="exampleCheckbox{{$item->id}}" 
+                            onchange="this.form.submit();" 
+                            value="on"
+                        >
+                        <label class="form-check-label" for="exampleCheckbox{{$item->id}}">
+                            <span>{{$item->name}}</span>
+                        </label>
+                        <br>
+                    @endforeach
+                       
 
-@endsection
+                    </div>
+                    
+                </div>
+                
+            </div>
+          
+           
+        </div>
+        </form>
+    <!-- Product sidebar Widget -->
+  
+   
+</div>

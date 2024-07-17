@@ -10,6 +10,7 @@ use App\Models\Province;
 use App\Models\Ward;
 use App\Service\Order\OrderServiceInterface;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -108,43 +109,77 @@ class AccountController extends Controller
         return redirect()->back()->with('error', 'Không thể hủy đơn hàng này.');
     }
     public function reorder($id)
-    {
+{
+    DB::beginTransaction();
+
+    try {
         // Find the canceled order by ID
-        $order = $this->orderService->find($id);
-    
+        $canceledOrder = $this->orderService->find($id);
+
         // Check if the order exists and is canceled
-        if ($order && $order->status == 0) { // Assuming status 0 is the canceled status
-            // Update the status of the original order to active
-            $order->status = 1; // Assuming status 1 is the active status
-            $order->save();
-    
-            // Get the order details
+        if ($canceledOrder && $canceledOrder->status == 0) { // Assuming status 0 is the canceled status
+
+            // Create a new order with the details of the canceled order
+            $newOrder = $canceledOrder->replicate();
+            $newOrder->status = 1; // Assuming status 1 is the active status
+            $newOrder->created_at = now();
+            $newOrder->updated_at = now();
+            $newOrder->save();
+
+            // Get the order details of the canceled order
             $orderDetails = DB::table('order_details')->where('order_id', $id)->get();
+
             foreach ($orderDetails as $detail) {
-                // Reduce product quantity if it was previously restored
+                // Adjust product quantity
                 $product = \App\Models\Product::find($detail->product_id);
                 if ($product) {
                     $product->qty -= $detail->qty;
                     $product->save();
                 }
+
+                // Adjust product detail quantity
                 $productDetail = DB::table('product_details')
                     ->where('product_id', $detail->product_id)
                     ->where('size', $detail->size)
                     ->where('color', $detail->color)
                     ->first();
-    
+
                 if ($productDetail) {
                     DB::table('product_details')
                         ->where('id', $productDetail->id)
                         ->update(['qty' => $productDetail->qty - $detail->qty]);
                 }
+
+                // Create new order detail for the new order
+                $newOrderDetail = (array) $detail;
+                unset($newOrderDetail['id']); // Remove the old ID
+                $newOrderDetail['order_id'] = $newOrder->id;
+                $newOrderDetail['created_at'] = now();
+                $newOrderDetail['updated_at'] = now();
+
+                DB::table('order_details')->insert($newOrderDetail);
             }
-    
-            return redirect()->back()->with('success', 'Đơn hàng đã được đặt lại.');
+
+            // Delete the order details of the canceled order
+            DB::table('order_details')->where('order_id', $id)->delete();
+
+            // Delete the canceled order
+            $canceledOrder->delete();
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Đơn hàng mới đã được tạo và đơn hàng đã hủy cùng các chi tiết đã bị xóa.');
+        } else {
+            throw new Exception('Order not found or not canceled.');
         }
-    
-        return redirect()->back()->with('error', 'Không thể đặt lại đơn hàng này.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+
+        return redirect()->back()->with('error', 'Không thể tạo đơn hàng mới. Error: ' . $e->getMessage());
     }
+}
+
+    
     
 
 }

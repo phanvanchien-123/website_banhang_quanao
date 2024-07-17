@@ -43,57 +43,33 @@
                           <h3 class="mb-3 theme-color">Status : <b>{{\App\Untilities\Constant::$order_status[$order->status]}}</b></h3>
                            <h3 class="mb-3 theme-color">Billing address</h3>
                            <div class="col-md-6">
-                               <label for="name" class="form-label">First_Name</label>
-                               <input type="text" class="form-control" id="name" name="first_name" value="{{$order->first_name}}"
+                               <label for="name" class="form-label">Name</label>
+                               <input type="text" class="form-control" id="name" name="first_name" value="{{$order->user->name}}"
                                    placeholder="First_Name">
                            </div>
                            <div class="col-md-6">
-                               <label for="name" class="form-label">Last Name</label>
-                               <input type="text" class="form-control" id="name" name="last_name"value="{{$order->last_name}}"
+                               <label for="name" class="form-label">Phone</label>
+                               <input type="text" class="form-control" id="name" name="last_name"value="{{$order->phone}}"
                                    placeholder="Last Name">
                            </div>
                            <div class="col-md-6">
-                               <label for="name" class="form-label">Companay Name</label>
-                               <input type="text" class="form-control" id="name" name="company_name"value="{{$order->company_name}}"
+                               <label for="name" class="form-label">Email</label>
+                               <input type="text" class="form-control" id="name" name="company_name"value="{{$order->email}}"
                                    placeholder="Enter Full Name">
                            </div>
-                           <div class="col-md-6">
-                               <label for="phone" class="form-label">Phone</label>
-                               <input type="text" class="form-control" id="phone" name="phone" value="{{$order->phone}}"
+                           <div class="col-md-12">
+                               <label for="phone" class="form-label">Địa chỉ</label>
+                               <input type="text" class="form-control" id="phone" name="phone" value="{{$order->address}}"
                                    placeholder="Enter Phone Number">
                            </div>
-                           <div class="col-md-6">
-                               <label for="phone" class="form-label">Email</label>
-                               <input type="text" class="form-control" id="phone" name="email" value="{{$order->phone}}"
+                           <div class="col-md-12">
+                               <label for="phone" class="form-label">Địa chỉ nhà </label>
+                               <input type="text" class="form-control" id="phone" name="email" value="{{$order->home_address}}"
                                    placeholder="Email">
                            </div>
                            
    
-                           <div class="col-md-12">
-                               <label for="address" class="form-label">Address</label>
-                               <input type="text" class="form-control" id="phone" name="street_address" value="{{$order->street_address}}"
-                               placeholder="Address">
-                           </div>
-   
-                           <div class="col-md-3">
-                               <label for="city" class="form-label">City</label>
-                               <input type="text" class="form-control" id="city" name="town_city" placeholder="town_city" value="{{$order->town_city}}"> 
-   
-                           </div>
-   
-                           <div class="col-md-3">
-                               <label for="country" class="form-label">Country</label>
-                               <input type="text" class="form-control" id="city" name="town_city" placeholder="town_city"  value="{{$order->country}}">
-
-                               <div class="invalid-feedback">
-                                   Please select a valid country.
-                               </div>
-                           </div>
-                          
-                           <div class="col-md-3">
-                               <label for="zip" class="form-label">Zip</label>
-                               <input type="text" class="form-control" id="zip" name="postcode_zip"  value="{{$order->postcode_zip}}">
-                           </div>
+                           
    
                            <div class="col-md-12 form-check ps-0 mt-3 custome-form-check"
                                style="padding-left:15px !important;">
@@ -114,12 +90,12 @@
                        <div class="d-block my-3">
                            <div class="form-check custome-radio-box">
                                <input class="form-check-input" type="radio" name="payment_type" id="paypal" checked="" value="pay_later" 
-                              {{$order->payment_type == 'pay_later' ? 'checked': ''}} >
+                              {{$order->payment_type == '0' ? 'checked': ''}} >
                                <label class="form-check-label" for="paypal">Pay Later</label>
                            </div>
                            <div class="form-check custome-radio-box">
                                <input class="form-check-input" type="radio" name="payment_type" id="debit" value="online_payment"
-                               {{$order->payment_type == 'online_payment' ? 'checked': ''}}>
+                               {{$order->payment_type == '1' ? 'checked': ''}}>
                                <label class="form-check-label" for="debit">Online Payment</label>
                            </div>
                         
@@ -141,18 +117,28 @@
                                 <tr>
                                     <th colspan="2">Product</th>
                                     <th>Total</th>
+                                    @if ($order->status==7)
+                                        <th>Đánh giá</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($order->orderDetails as $item)
                                 <tr>
-                                    <td class="image product-thumbnail"><img src="{{ asset('storage/'.$item->products->avatar) }}" alt="#"></td>
+                                    <td class="image product-thumbnail">
+                                        <a href="/shop/details/{{$item->product_id}}"><img src="{{ asset('storage/'.$item->products->avatar) }}" alt="#"></a></td>
                                     <td>
-                                        <h5><a href="product-details.html">{{ $item->products->name }}<br>SIZE: {{ $item->size }}<br>Color: {{ $item->color }}</a></h5>
+                                        <h5><a href="">{{ $item->products->name }}<br>SIZE: {{ $item->size }}<br>Color: {{ $item->color }}</a></h5>
                                         <span class="product-qty">x{{ $item->qty}}</span>
                                     </td>
                                     <td>{{number_format(($item->qty) *($item->amount),3)}} VND</td>
+                                    @if ($order->status==7)
+                                    <td><a href="/shop/details/{{$item->product_id}}">Đánh giá sản phẩm</a></td>
+                                    @endif
+                                  
+
                                 </tr>
+                                
                                 @endforeach
                                 <tr>
                                     <th>SubTotal</th>
@@ -190,6 +176,7 @@
                                 </tr>
                             </tbody>
                         </table>
+                       
                     </div>
                 </div>
                 {{-- <div class="your-cart-box">

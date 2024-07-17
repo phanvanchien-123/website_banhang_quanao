@@ -5,9 +5,9 @@
     <div class="page-header breadcrumb-wrap">
         <div class="container">
             <div class="breadcrumb">
-                <a href="index.html" rel="nofollow">Home</a>
-                <span></span> Blog
-                <span></span> Technology
+                <a href="/" rel="nofollow">Home</a>
+                <span></span> <a href="/blog">Blog</a>
+                <span></span> {{$blogs->title}}
             </div>
         </div>
     </div>
@@ -46,16 +46,16 @@
                                         <div class="single-comment justify-content-between d-flex">
                                             <div class="user justify-content-between d-flex">
                                                 <div class="thumb text-center">
-                                                    <img src="assets/imgs/page/avatar-6.jpg" alt="">
+                                                    <img src="{{ $item->user->avatar ? asset('storage/'.$item->user->avatar) : asset('/assets/images/fashion/avatar/_default-user.png') }}" alt="User Avatar">
                                                     <h6><a href="#">{{$item->user->name}}</a></h6>
-                                                    <p class="font-xxs">{{$item->created_at}}</p>
+                                                 
                                                 </div>
                                                 <div class="desc">
                                                     
                                                     <p>{{$item->messages}}</p>
                                                     <div class="d-flex justify-content-between">
                                                         <div class="d-flex align-items-center">
-                                                            <p class="font-xs mr-30">{{$item->created_at}}</p>
+                                                            <p class="font-xs mr-30">{{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') }}</p>
                                                           
                                                         </div>
                                                     </div>

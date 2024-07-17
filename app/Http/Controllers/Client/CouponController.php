@@ -39,17 +39,19 @@ class CouponController extends Controller
         if ($coupon) {
             // Kiểm tra xem mã giảm giá có hết hạn không
             if ($coupon->expires_at && Carbon::parse($coupon->expires_at)->isPast()) {
-                return response()->json(['success' => false, 'message' => 'Coupon has expired.']);
+                return response()->json(['success' => false, 'message' => '
+Phiếu giảm giá đã hết hạn.']);
             }
     
             // Kiểm tra điều kiện tối thiểu của đơn hàng (nếu có)
             if ($coupon->minimum_order_value && $totalPrice < $coupon->minimum_order_value) {
-                return response()->json(['success' => false, 'message' => 'Minimum order value not met for this coupon.']);
+                return response()->json(['success' => false, 'message' => 'Giá trị đặt hàng tối thiểu không được đáp ứng cho phiếu giảm giá này.']);
             }
     
             // Kiểm tra xem mã giảm giá có vượt quá số lần sử dụng không
             if ($coupon->usage_limit && $coupon->used_count >= $coupon->usage_limit) {
-                return response()->json(['success' => false, 'message' => 'Coupon usage limit has been reached.']);
+                return response()->json(['success' => false, 'message' => '
+Đã đạt đến giới hạn sử dụng phiếu giảm giá.']);
             }
     
             // Tính toán giá trị giảm giá
@@ -69,10 +71,10 @@ class CouponController extends Controller
           
     
             // Trả về phản hồi JSON
-            return response()->json(['success' => true, 'discount' => number_format($discountAmount, 2), 'total' => number_format($totalPrice, 2), 'message' => 'Coupon applied successfully.']);
+            return response()->json(['success' => true, 'discount' => number_format($discountAmount, 2), 'total' => number_format($totalPrice, 2), 'message' => 'Phiếu giảm giá được áp dụng thành công']);
         } else {
             // Mã giảm giá không hợp lệ
-            return response()->json(['success' => false, 'message' => 'Invalid coupon code.']);
+            return response()->json(['success' => false, 'message' => 'Mã phiếu giảm giá không hợp lệ.']);
         }
     }
     
@@ -81,14 +83,13 @@ class CouponController extends Controller
     $userId = Auth::id();
         $cart = Carts::where('user_id', $userId)->firstOrFail();
         $selectedItemIds = session('selected_cart_items', []);
-        $cartItems = Cart_items::whereIn('id', $selectedItemIds)->where('cart_id', $cart->id)->get();
-       
+        $cartItems = Cart_items::whereIn('id', $selectedItemIds)->where('cart_id', $cart->id)->get();     
         $totalPrice = $cartItems->sum(function ($item) {
             return $item->price * $item->quantity;
         });
 
     session()->forget('applied_coupon_code');
 
-    return response()->json(['success' => true, 'total' => number_format($totalPrice, 3), 'message' => 'Coupon removed successfully.']);
+    return response()->json(['success' => true, 'total' => number_format($totalPrice, 3), 'message' => 'Đã hủy phiếu giảm giá thành công.']);
 }
 }

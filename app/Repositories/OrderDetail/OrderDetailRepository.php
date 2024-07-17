@@ -5,6 +5,7 @@ namespace App\Repositories\OrderDetail;
 
 use App\Models\Order_Details;
 use App\Repositories\BaseRepositories;
+use Illuminate\Support\Facades\DB;
 
 class OrderDetailRepository extends BaseRepositories implements OrderDetailRepositoryInterface
 {
@@ -19,5 +20,5 @@ class OrderDetailRepository extends BaseRepositories implements OrderDetailRepos
             })
             ->sum('qty');
     }
- 
+   
 }

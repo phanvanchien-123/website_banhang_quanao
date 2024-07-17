@@ -120,7 +120,7 @@
                         <div class="main-menu">
                             <div class="menu-left">
                                 <div class="brand-logo">
-                                    <a href="index.htm">
+                                    <a href="/">
                                         <img src="{{ asset('storage/' . $logo->path) }}"
                                             class="h-logo img-fluid blur-up lazyload" alt="logo">
                                     </a>
@@ -157,13 +157,7 @@
                             <div class="menu-right">
                                 <ul>
                                     <li>
-                                        <div class="mobile-search search-style-3 mobile-header-border">
-                                            <form action="#">
-                                                <input type="text" name="search" class="form-control search-type"
-                                            value="{{ request('search') }}" placeholder="Tìm kiếm sản phẩm..">
-                                                <button type="submit"><i class="fi-rs-search"></i></button>
-                                            </form>
-                                        </div>
+                                        
                                     </li>
                                     <li class="onhover-dropdown wislist-dropdown">
                                         <div class="cart-media">
@@ -275,7 +269,7 @@
                                                             </div>
                                                             <div class="shopping-cart-button">
                                                                 <a href="/Cart" class="outline">View cart</a>
-                                                                <a href="">Checkout</a>
+                                                                
                                                             </div>
                                                         </div>
                                                     </div>
@@ -363,6 +357,7 @@
                                     </li>
                                 </ul>
                             </div>
+                            
                             <div class="search-full">
                                 <form method="GET" class="search-full" action="shop">
                                     <div class="input-group">
@@ -384,6 +379,22 @@
                 </div>
             </div>
         </div>
+        <style>
+            .search{
+                width: 400px;
+                margin-left: 150px;
+            }
+        </style>
+        <div class="search">
+            <div class="mobile-search search-style-3 mobile-header-border">
+                <form method="GET" action="shop">
+                    <input type="text" name="search" class="form-control search-type"
+                value="{{ request('search') }}" placeholder="Tìm kiếm sản phẩm..">
+                    <button type="submit"><i class="fi-rs-search"></i></button>
+                </form>
+            </div>
+        </div>
+        
     </header>
 
     <div class="mobile-menu d-sm-none">
