@@ -43,7 +43,7 @@
 
                     <div class="row pt-4">
                         <div class="col-7 avatar">
-                            <img src="http://127.0.0.1:8000/storage/theme_admin/upload/photo/pGXYoynx3DNuMVglYQFcTMdSXMn6bXIPxsrjHGaF.png"
+                            <img src="{{ asset('storage/'.$logo->path )  }}"
                                 alt="" class="h-100 w-100">
                         </div>
                         <div class="col-5 shopInfor">

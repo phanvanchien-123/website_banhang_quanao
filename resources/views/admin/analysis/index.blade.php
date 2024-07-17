@@ -57,8 +57,8 @@
                         @foreach ($topCustomers as $customer)
                             <li>
                                 <div class="d-flex mt-4">
-                                    <img src="{{ asset('storage/' . $customer->avatar) }}" alt="" height="60px"
-                                        width="60px" class="border">
+                                    <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : Auth::user()->defaultAvatar() }}"
+                                        alt="profile" height="75px" width="75px" class="border">
                                     <div class="ps-4">
                                         <h5>{{ $customer->name }} ({{ $customer->email }})</h5>
                                         <p>Tổng số đơn hàng: {{ $customer->total_orders }}</p>

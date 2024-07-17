@@ -89,7 +89,7 @@ Route::group(['prefix' => 'auth' ], function ($router) {
 
 });
 
-Route::namespace('Admin')->prefix('admin')->middleware(['auth'])->group(function () {
+Route::namespace('Admin')->prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('home',[Admin\HomeController::class,'index']) ->name('admin.home.index');
     // Route::get('cashier',[Admin\CashierController::class,'index']) ->name('admin.cashier.index');
 
@@ -224,7 +224,7 @@ Route::namespace('Admin')->prefix('admin')->middleware(['auth'])->group(function
 
     });
 
-    Route::group(['prefix' => 'role'] , function () {
+    Route::group(['prefix' => 'role', 'middleware' => 'role:super-admin'] , function () {
         Route::get('',[Admin\RoleController::class,'index']) ->name('admin.role.index');
 
         
@@ -237,7 +237,7 @@ Route::namespace('Admin')->prefix('admin')->middleware(['auth'])->group(function
         Route::get('delete/{id}',[Admin\RoleController::class,'delete']) ->name('admin.role.delete');
     });
 
-    Route::group(['prefix' => 'display'] , function () {
+    Route::group(['prefix' => 'display', 'middleware' => 'role:super-admin'] , function () {
         Route::get('',[Admin\DisplayController::class,'index']) ->name('admin.display.index');
         Route::post('/creatrOrUpdateLogo',[Admin\DisplayController::class,'creatrOrUpdateLogo']) ->name('admin.display.creatrOrUpdateLogo');
         Route::post('/creatrOrUpdateFlink',[Admin\DisplayController::class,'creatrOrUpdateFlink']) ->name('admin.display.creatrOrUpdateFlink');
