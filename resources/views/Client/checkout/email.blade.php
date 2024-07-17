@@ -46,18 +46,20 @@
                     <div class="row mt-5" style="margin-top: 35px; display: flex;">
                         <div class="col-6"
                              style="margin-bottom: 25px; flex: 0 0 50%; width: 50%; box-sizing: border-box;">
-                            <b>{{ $order->first_name . ', ' . $order->last_name }}</b>
+                            Tên Khách hàng : <b>{{ $order->user->name}}</b>
                             <br>
                             <span>
-                                <a style="color: white !important;" href="mailto:{{ $order->email }}" target="_blank">{{ $order->email }}</a>
+                              Email :   <a style="color: white !important;" href="mailto:{{ $order->email }}" target="_blank">{{ $order->email }}</a>
                             </span>
                             <br>
-                            <span>{{ $order->phone }}</span>
+                            Số Điện thoại : <span>{{ $order->phone }}</span>
                         </div>
                         <div class="col-6" style="flex: 0 0 50%; width: 50%; box-sizing: border-box;">
                             <b>Ngày đặt hàng:</b> {{ date('d/m/yy H:i', strtotime($order->created_at)) }}
                             <br>
-                            <b>Địa chỉ:</b> {{ $order->street_address . ' - ' .  $order->town_city }}
+                            <b>Địa chỉ:</b> {{ $order->address }}
+                            <b>Địa chỉ nhà:</b> {{ $order->home_address }}
+
                         </div>
                     </div>
                 </div>
@@ -72,7 +74,7 @@
                                 alt="">
                         </td>
 
-                        @if($order->payment_type == "pay_later")
+                        @if($order->payment_type == "0")
                             <td class="pl-3" style=" padding-left:15px;">
                                 <span class="d-inline"
                                       style="color:#424853; font-family:trebuchet,sans-serif; font-size:16px; font-weight:normal; line-height:22px;">
@@ -81,7 +83,7 @@
                             </td>
                         @endif
 
-                        @if($order->payment_type == "online_payment")
+                        @if($order->payment_type == "1")
                             <td class="pl-3" style=" padding-left:15px;">
                                 <span class="d-inline"
                                       style="color:#424853; font-family:trebuchet,sans-serif; font-size:16px; font-weight:normal; line-height:22px;">
@@ -107,87 +109,57 @@
                         <table class="table table-sm table-hover"
                                style="text-align: left;  width: 100%; margin-bottom: 5px; border-collapse: collapse;">
                             <thead>
-                            <tr>
-                                <th style="padding: 5px 0;">Sản Phẩm</th>
-                                <th style="padding: 5px 20px 5px 0; text-align: right;">TOTAL</th>
-                            </tr>
+                                <tr>
+                                    <th colspan="">Product</th>
+                                    <th>Total</th>
+                                   
+                                </tr>
                             </thead>
                             <tbody>
-                            @foreach($order->orderDetails as $orderDetail)
+                                @foreach ($order->orderDetails as $item)
                                 <tr>
-                                    <td style="border-top: 1px solid #dee2e6; padding: 5px 0;">
-                                        {{ $orderDetail->products->name . ' (x' . $orderDetail->qty . ')'}}
+                                    
+                                    <td>
+                                        <h5><a href="">{{ $item->products->name }}<br>SIZE: {{ $item->size }}<br>Color: {{ $item->color }}</a></h5>
+                                        <span class="product-qty">x{{ $item->qty}}</span>
                                     </td>
-                                    <td style="border-top: 1px solid #dee2e6; padding: 5px 20px 5px 0; text-align: right;">
-                                        {{ $orderDetail->total }} $
+                                    <td>{{number_format(($item->qty) *($item->amount),3)}} VND</td>
+                                   
+                                  
+
+                                </tr>
+                                
+                                @endforeach
+                                <tr>
+                                    <th>SubTotal</th>
+                                    <td class="product-subtotal" colspan="2">{{ number_format(array_sum(array_column($order->orderDetails->toArray(),'total')),3)}}VND</td>
+                                </tr>
+                                <tr>
+                                    <th>Mã giảm giá </th>
+                                    <td colspan="2"><em>
+                                    @if ($order->coupon == null)
+                                        không áp mã giảm giá 
+                                    @else
+                                        - {{ number_format($order->coupon->discount_value,3)}} VND
+                                    @endif
+                                    </em></td>
+                                </tr>
+                                
+                                <tr>
+                                    <th>Total</th>
+                                    <td colspan="2" class="product-subtotal">
+                                        <span id="totalAmount" class="font-xl text-brand fw-900">{{ number_format($order->total, 3) }} VND</span>
                                     </td>
                                 </tr>
-                            @endforeach
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <div class="row mt-2" style="margin-top: 15px;">
-                <div class="container-fluid">
-                    <div class="row pl-3 py-2" style="background-color: #f4f8fd; padding: 10px 0 10px 20px;">
-                        <b>Chi tiết thanh toán</b>
-                    </div>
-                    <div class="row pl-3 py-2"
-                         style="background-color: #fff; font-size: 18px; padding: 2px 20px 10px 20px;">
-                        <div class="col-12 p-0">
-                            <hr style="border-top: 1px solid #0000001a;">
-                            <table class="mt-2 w-100"
-                                   style="font-size: 16px; width: 100%; text-align: left;  margin-bottom: 5px;">
-                                <tr>
-                                    <td class="">Shipping fee</td>
-                                    <td class="pr-3 text-right" style="text-align: right; padding-right: 20px;">
-                                        0.0 $
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="">Tổng</td>
-                                    <td class="pr-3 text-right" style="text-align: right; padding-right: 20px;">
-                                        {{ $subtotal }} $
-                                    </td>
-                                </tr>
-                                {{-- <tr style="font-size: 18px;">
-                                    <td><b>TOTAL</b></td>
-                                    <td class="pr-3 text-right" style="text-align: right; padding-right: 20px;">
-                                        <b>{{ $total }} $</b>
-                                    </td>
-                                </tr> --}}
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
 
-            <div class="row mt-2 mb-4" style="margin-top: 15px; margin-bottom: 25px;">
-                <div class="container-fluid">
-                    <div class="row pl-3 py-2" style="background-color: #f4f8fd; padding: 10px 0 10px 20px;">
-                        <b style="color: #00509d; font-size: 18px;">More information</b>
-                    </div>
-                    <div class="row pl-3 py-2" style="background-color: #fff; padding: 10px 20px;">
-                        <p>You can check the appearance of the product (brand, model, color, quantity,...) before
-                            payment and can refuse to receive the goods if not satisfied. Please do not activate an
-                            electrical-electronic device or try the product.</p>
-
-                        <p>If the product shows signs of damage / broken or does not match the information on the
-                            website, please contact the store within 48 hours from the time of receipt for
-                            assistance.</p>
-
-                        <p>Please keep the invoice, product box and warranty card (if any) for return or warranty when
-                            needed.</p>
-
-                        <p>You can refer to the Help Center page or contact the store by leaving a message at the
-                            Contact page or mailing here. Hotline 1900 9999 (8:00 - 9:00 both Saturday and Sunday).</p>
-
-                        <b>CodeLean thank you.</b>
-                    </div>
-                </div>
-            </div>
+           
 
             <div class="row">
                 <div class="container-fluid">

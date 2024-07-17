@@ -15,6 +15,7 @@
                     <th  scope="col"> Hình thức thanh toán</th>
                     <th scope="col">Trạng thái</th>
                     <th scope="col">Tổng Tiền</th>
+                  
                     <th scope="col">View</th>
                 </tr>
             </thead>
@@ -52,6 +53,7 @@
                             {{ number_format($order->total,3)}}VND
                         </p>
                     </td>
+                    
                     <td>
                         <a href="/my_account/dashboard/{{$order->id}}">
                             <i class="far fa-eye"></i>

@@ -286,7 +286,7 @@
                                                             <input type="text" class="form-control" id="Company"
                                                                 placeholder="" name="company_name"
                                                                 value="{{ Auth::user()->company_name }}">
-                                                            <label for="Company">Company</label>
+                                                            <label for="Company">Địa chỉ nhà</label>
                                                         </div>
                                                     </div>
                                                 </div>

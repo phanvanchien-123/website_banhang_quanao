@@ -10,8 +10,7 @@ class Order extends Model
 {
     use HasFactory;
     protected $table ='orders';
-    protected $fillable = ['user_id', 'first_name','last_name','country', 'street_address', 'town_city', 'email', 'phone','coupon_id','total','payment_type','status'];
-
+    protected $fillable = ['user_id','address','home_address', 'email', 'phone','coupon_id','total','payment_type','status'];
     protected $primaryKey ='id';
     protected $quarded =[];
 

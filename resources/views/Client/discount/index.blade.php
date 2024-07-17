@@ -150,21 +150,27 @@
            
             <div class="discount-item">
                 <h2>Code: <strong>{{$item->code}}</strong></h2>
-                <p>Kiểu giảm giá : {{$item->discount_type}}</p>
-                <p>Giá Trị Giảm Giá : {{$item->discount_value}} </p>
-                <p>Giảm Cho Đơn Hàng từ : {{$item->minimum_order_value}}</p>
-                @if ($item ->usage_limit-$item->used_count > 0)
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width:{{($item->used_count)}}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{{($item->used_count)}}%</div>
-                </div>
-                @else
-               <div>Đã Hết Lượt Sử Dụng</div>
-                @endif <br>
-                @if ($item ->usage_limit-$item->used_count > 0)
-                <button class="copy-button1" data-code="{{$item->code}}">Copy Code</button>
-                @else
-                <button class="copy-button" >Copy Code</button>
-                @endif
+                <p>Kiểu giảm giá : {{ $item->discount_type == 'fixed' ? 'Tiền mặt' : $item->discount_type }}</p>
+
+                <p>Giá Trị Giảm Giá : {{number_format($item->discount_value,3)}} VND </p>
+                <p>Giảm Cho Đơn Hàng từ : {{number_format($item->minimum_order_value,3)}} VND </p>
+                <p>Ngày hết hạn: {{ \Carbon\Carbon::parse($item->expires_at)->format('d-m-Y') }}</p>
+
+                @php
+    $isAvailable = $item->usage_limit - $item->used_count > 0 && now()->lt($item->expires_at);
+@endphp
+
+@if ($isAvailable)
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: {{ $item->used_count }}%;" aria-valuenow="{{ $item->used_count }}" aria-valuemin="0" aria-valuemax="100">{{ $item->used_count }}%</div>
+    </div>
+    <button class="copy-button1" data-code="{{ $item->code }}">Copy Code</button>
+@else
+    <div>Đã Hết Lượt Sử Dụng hoặc Hết Hạn</div>
+    <button class="copy-button">Copy Code</button>
+@endif
+<br>
+
             </div>  
           
             

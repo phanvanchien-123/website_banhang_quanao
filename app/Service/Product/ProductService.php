@@ -56,7 +56,7 @@ class ProductService extends BaseService implements ProductServiceInterface {
     public function getLatestFeaturedProduct($limit){
         return $this->repository->getLatestFeaturedProduct($limit);
     }
-    public function getProductsDiscountedOver30($limit = 10){
+    public function getProductsDiscountedOver30($limit = 8){
         return $this->repository->getProductsDiscountedOver30($limit);
     }
     public function getFeaturedProducts(){
@@ -74,5 +74,8 @@ class ProductService extends BaseService implements ProductServiceInterface {
     }
     public function getproductsviewlong($limit){
         return $this->repository->getproductsviewlong($limit);
+    }
+    public function getProductsSoldOverThreshold($threshold,$limit){
+        return $this->repository->getProductsSoldOverThreshold($threshold,$limit);
     }
 }

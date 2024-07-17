@@ -5,9 +5,9 @@
     <div class="page-header breadcrumb-wrap">
         <div class="container">
             <div class="breadcrumb">
-                <a href="index.html" rel="nofollow">Home</a>
-                <span></span> Blog
-                <span></span> Technology
+                <a href="/" rel="nofollow">Home</a>
+                <span></span> <a href="/blog">Blog</a>
+                <span></span> 
             </div>
         </div>
     </div>
@@ -34,7 +34,8 @@
                                     <div class="">
                                         <div>
                                             <span class="post-on"> <i class="fi-rs-clock"></i> {{$item->created_at}}</span>
-                                            <span class="hit-count has-dot">{{$item->view}} Views</span>
+                                            <span class="hit-count has-dot">{{$item->view}} lượt xem</span>
+                                            <span class="hit-count has-dot">{{count($item->blogComments)}} Bình luận</span>
                                         </div>
                                       
                                     </div>

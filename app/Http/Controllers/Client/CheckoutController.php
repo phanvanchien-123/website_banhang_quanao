@@ -36,6 +36,8 @@ class CheckoutController extends Controller
     }
     public function index(Request $request)
     {
+        
+      
         $coupons = Coupon::all(); 
         $userId = Auth::id();
         $cart = Carts::where('user_id', $userId)->firstOrFail();
@@ -71,13 +73,10 @@ class CheckoutController extends Controller
         
         $order = new Order();
         $order->user_id = auth()->id();
-        $order->first_name = $validated['first_name'];
-        $order->last_name = $validated['last_name'];
+        $order->address = $validated['address'];
+        $order->home_address = $validated['home_address'];
         $order->phone = $validated['phone'];
         $order->email = $validated['email'];
-        $order->street_address = $validated['street_address'];
-        $order->town_city = $validated['town_city'];
-        $order->country = $validated['country'];
         $order->status = Constant::order_status_ReceiveOrders;
         $order->payment_type = $validated['payment_type'];
         $order->coupon_id= $coupon->id ?? null;
@@ -141,7 +140,7 @@ class CheckoutController extends Controller
     
         if ($request->payment_type == 0) {
             // Gửi Email (nếu cần)
-            // $this->sendMail($order, $totalPrice);
+            $this->sendMail($order, $totalPrice);
     
             // Xóa giỏ hàng
             // Cart_items::whereHas('cart', function ($query) use ($userId) {
@@ -151,7 +150,7 @@ class CheckoutController extends Controller
 
     
             // Trả về kết quả thông báo
-            return "Thành Công";
+            return redirect('checkout/thanks');
         }
     }
 
@@ -159,18 +158,16 @@ class CheckoutController extends Controller
         $validated = $request->validated();
         $couponCode = $validated['applied_coupon_code'];
         $coupon = Coupon::where('code', $couponCode)->first();
+
         $order = new Order();
         $order->user_id = auth()->id();
-        $order->first_name = $validated['first_name'];
-        $order->last_name = $validated['last_name'];
+        $order->address = $validated['address'];
+        $order->home_address = $validated['home_address'];
         $order->phone = $validated['phone'];
         $order->email = $validated['email'];
-        $order->street_address = $validated['street_address'];
-        $order->town_city = $validated['town_city'];
-        $order->country = $validated['country'];
-        $order->status = Constant::order_status_Cancel;
+        $order->status = Constant::order_status_ReceiveOrders;
         $order->payment_type = $validated['payment_type'];
-        $order->coupon_id = $coupon->id ?? null;
+        $order->coupon_id= $coupon->id ?? null;
     
         $userId = Auth::id();
         $cart = Carts::where('user_id', $userId)->firstOrFail();
@@ -290,7 +287,8 @@ class CheckoutController extends Controller
     
             if ($order) {
                 if ($vnp_ResponseCode == '00') {
-
+                    $subtotal = $order->total;
+                    $this->sendMail($order, $subtotal);
                     // Notify admins about successful payment
                     $paymentDetails = [
                         'user' => auth()->user()->name,
@@ -306,8 +304,7 @@ class CheckoutController extends Controller
                     $this->orderService->update(['status'=>Constant::order_status_ReceiveOrders],$vnp_TxnRef);
                     $order->save();
     
-                    $subtotal = $order->total;
-                    $this->sendMail($order, $subtotal);
+                 
     
                     $userId = Auth::id();
                     $cart = Carts::where('user_id', $userId)->firstOrFail();
@@ -358,5 +355,8 @@ class CheckoutController extends Controller
             $message->to($email_to,$email_to);
             $message->subject('Order Notification');
         });
+    }
+    public function thanks(){
+        return view('Client.checkout.thanks');
     }
 }

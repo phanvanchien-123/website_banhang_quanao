@@ -143,12 +143,17 @@
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="nav-tab-two" data-bs-toggle="tab" data-bs-target="#tab-two"
                                     type="button" role="tab" aria-controls="tab-two" aria-selected="false">Sản Phẩm
-                                    SALE Trên 30%</button>
+                                    SALE 30%</button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="nav-tab-three" data-bs-toggle="tab"
                                     data-bs-target="#tab-three" type="button" role="tab" aria-controls="tab-three"
                                     aria-selected="false">Sản Phẩm Mới</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="nav-tab-three" data-bs-toggle="tab"
+                                    data-bs-target="#tab-for" type="button" role="tab" aria-controls="tab-for"
+                                    aria-selected="false">Sản phẩm có nhiều lượt xem  </button>
                             </li>
                         </ul>
                         <a href="/shop" class="view-more d-none d-md-flex">View More<i
@@ -163,7 +168,7 @@
                                         <div class="product-cart-wrap mb-30">
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
-                                                    <a href="product-details.html">
+                                                    <a href="/shop/details/{{ $item->id }}">
                                                         <img class="default-img"
                                                             src="{{ asset('storage/' . $item->avatar) }}" alt="">
                                                         <img class="hover-img" src="{{ asset('storage/' . $item->avatar) }}"
@@ -174,14 +179,13 @@
                                                     <a aria-label="Quick view" class="action-btn hover-up"
                                                         href="/shop/details/{{ $item->id }}"><i
                                                             class="fi-rs-eye"></i></a>
-                                                    <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                        href="wishlist.php"><i class="fi-rs-heart"></i></a>
+                                                   
                                                 </div>
-                                                @if ($item->discount != null)
+                                                
                                                     <div class="product-badges product-badges-position product-badges-mrg">
                                                         <span class="hot">HOT</span>
                                                     </div>
-                                                @endif
+                                               
                                             </div>
                                             <div class="product-content-wrap">
                                                 <div class="product-category">
@@ -193,22 +197,15 @@
                                                 <div class="label-section">
                                                     {{-- <span class="badge badge-grey-color">#1 Best seller</span>
                                             <span class="label-text">in fashion</span> --}}
-                                                    <ul class="rating my-2 d-inline-block">
-                                                        @for ($i = 1; $i <= 5; $i++)
-                                                            @if ($i <= $item->avgRating)
-                                                                <li>
-                                                                    <i class="fas fa-star theme-color"></i>
-                                                                </li>
-                                                            @else
-                                                                <li>
-                                                                    <i class="fas fa-star "></i>
-                                                                </li>
-                                                            @endif
-                                                        @endfor
-                                                        <li>
-                                                            (<span>{{ count($item->productComments) }}</span>)
-                                                        </li>
-                                                    </ul>
+                                            <ul class="rating my-2 d-inline-block">
+                                                <div class="product-rate-cover text-end">
+                                                    <div class="product-rate d-inline-block">
+                                                        <div class="product-rating" style="width:{{($item->avgRating)*2*10}}%">
+                                                        </div>
+                                                    </div>
+                                                    <span class="font-small ml-5 text-muted"> ({{ number_format($item->avgRating,1) }}/5)</span>
+                                                </div>
+                                            </ul>
                                                 </div>
                                                 <div class="product-price">
                                                     @if ($item->discount)
@@ -238,7 +235,7 @@
                                         <div class="product-cart-wrap mb-30">
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
-                                                    <a href="product-details.html">
+                                                    <a href="/shop/details/{{ $item->id }}">
                                                         <img class="default-img"
                                                             src="{{ asset('storage/' . $item->avatar) }}" alt="">
                                                         <img class="hover-img"
@@ -249,15 +246,18 @@
                                                     <a aria-label="Quick view" class="action-btn hover-up"
                                                         href="/shop/details/{{ $item->id }}"><i
                                                             class="fi-rs-eye"></i></a>
-                                                    <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                        href="wishlist.php"><i class="fi-rs-heart"></i></a>
+                                                   
                                                 </div>
-                                                @if ($item->discount / $item->price < 0.7)
+                                                {{-- @if ((($item->price - $item->discount)/$item->price * 100 )==30)
                                                     <div class="product-badges product-badges-position product-badges-mrg">
                                                         <span class="hot">SALE
-                                                            {{ round((($item->price - $item->discount) / $item->price) * 100) }}%</span>
+                                                            {{ 30}}%</span>
                                                     </div>
-                                                @endif
+                                                @endif --}}
+                                                <div class="product-badges product-badges-position product-badges-mrg">
+                                                    <span class="hot">SALE
+                                                        {{ 30}}%</span>
+                                                </div>
                                             </div>
                                             <div class="product-content-wrap">
                                                 <div class="product-category">
@@ -269,32 +269,25 @@
                                                 <div class="label-section">
                                                     {{-- <span class="badge badge-grey-color">#1 Best seller</span>
                                             <span class="label-text">in fashion</span> --}}
-                                                    <ul class="rating my-2 d-inline-block">
-                                                        @for ($i = 1; $i <= 5; $i++)
-                                                            @if ($i <= $item->avgRating)
-                                                                <li>
-                                                                    <i class="fas fa-star theme-color"></i>
-                                                                </li>
-                                                            @else
-                                                                <li>
-                                                                    <i class="fas fa-star "></i>
-                                                                </li>
-                                                            @endif
-                                                        @endfor
-                                                        <li>
-                                                            (<span>{{ count($item->productComments) }}</span>)
-                                                        </li>
-                                                    </ul>
+                                            <ul class="rating my-2 d-inline-block">
+                                                <div class="product-rate-cover text-end">
+                                                    <div class="product-rate d-inline-block">
+                                                        <div class="product-rating" style="width:{{($item->avgRating)*2*10}}%">
+                                                        </div>
+                                                    </div>
+                                                    <span class="font-small ml-5 text-muted"> ({{ number_format($item->avgRating,1) }}/5)</span>
+                                                </div>
+                                            </ul>
                                                 </div>
                                                 <div class="product-price">
                                                     @if ($item->discount)
                                                         <span> {{ number_format($item->discount, 3) }} VND </span>
-                                                        <span class="old-price">{{ number_format($item->price, 3) }}
+                                                        <span class="old-price">{{ number_format($item->price,3) }}
                                                             VND</span>
                                                     @else
                                                         <span>{{ number_format($item->price, 3) }} VND</span>
                                                     @endif
-
+                                                               
                                                 </div>
 
                                             </div>
@@ -314,7 +307,7 @@
                                         <div class="product-cart-wrap mb-30">
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
-                                                    <a href="product-details.html">
+                                                    <a href="/shop/details/{{ $item->id }}">
                                                         <img class="default-img"
                                                             src="{{ asset('storage/' . $item->avatar) }}" alt="">
                                                         <img class="hover-img"
@@ -325,14 +318,13 @@
                                                     <a aria-label="Quick view" class="action-btn hover-up"
                                                         href="/shop/details/{{ $item->id }}"><i
                                                             class="fi-rs-eye"></i></a>
-                                                    <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                        href="wishlist.php"><i class="fi-rs-heart"></i></a>
+                                                    
                                                 </div>
-                                                @if ($item->discount != null)
+{{--                                               
                                                     <div class="product-badges product-badges-position product-badges-mrg">
-                                                        <span class="hot">SALE</span>
-                                                    </div>
-                                                @endif
+                                                        <span class="hot"></span>
+                                                    </div> --}}
+                                              
                                             </div>
                                             <div class="product-content-wrap">
                                                 <div class="product-category">
@@ -344,22 +336,15 @@
                                                 <div class="label-section">
                                                     {{-- <span class="badge badge-grey-color">#1 Best seller</span>
                                             <span class="label-text">in fashion</span> --}}
-                                                    <ul class="rating my-2 d-inline-block">
-                                                        @for ($i = 1; $i <= 5; $i++)
-                                                            @if ($i <= $item->avgRating)
-                                                                <li>
-                                                                    <i class="fas fa-star theme-color"></i>
-                                                                </li>
-                                                            @else
-                                                                <li>
-                                                                    <i class="fas fa-star "></i>
-                                                                </li>
-                                                            @endif
-                                                        @endfor
-                                                        <li>
-                                                            (<span>{{ count($item->productComments) }}</span>)
-                                                        </li>
-                                                    </ul>
+                                            <ul class="rating my-2 d-inline-block">
+                                                <div class="product-rate-cover text-end">
+                                                    <div class="product-rate d-inline-block">
+                                                        <div class="product-rating" style="width:{{($item->avgRating)*2*10}}%">
+                                                        </div>
+                                                    </div>
+                                                    <span class="font-small ml-5 text-muted"> ({{ number_format($item->avgRating,1) }}/5)</span>
+                                                </div>
+                                            </ul>
                                                 </div>
                                                 <div class="product-price">
                                                     @if ($item->discount)
@@ -381,6 +366,71 @@
                             <!--End product-grid-4-->
                         </div>
                         <!--En tab three (New added)-->
+                         <div class="tab-pane fade" id="tab-for" role="tabpanel" aria-labelledby="tab-for">
+                            <div class="row product-grid-4">
+                                @foreach ( $productsview as $item)
+                                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6 col-6">
+                                        <div class="product-cart-wrap mb-30">
+                                            <div class="product-img-action-wrap">
+                                                <div class="product-img product-img-zoom">
+                                                    <a href="/shop/details/{{ $item->id }}">
+                                                        <img class="default-img"
+                                                            src="{{ asset('storage/' . $item->avatar) }}" alt="">
+                                                        <img class="hover-img"
+                                                            src="{{ asset('storage/' . $item->avatar) }}" alt="">
+                                                    </a>
+                                                </div>
+                                                <div class="product-action-1">
+                                                    <a aria-label="Quick view" class="action-btn hover-up"
+                                                        href="/shop/details/{{ $item->id }}"><i
+                                                            class="fi-rs-eye"></i></a>
+                                                    
+                                                </div>
+                                                {{-- @if ($item->discount != null)
+                                                    <div class="product-badges product-badges-position product-badges-mrg">
+                                                        <span class="hot">SALE</span>
+                                                    </div>
+                                                @endif --}}
+                                            </div>
+                                            <div class="product-content-wrap">
+                                                <div class="product-category">
+                                                    <a
+                                                        href="/shop/details/{{ $item->id }}">{{ $item->productCategory->name }}</a>
+                                                </div>
+                                                <h2><a href="/shop/details/{{ $item->id }}">{{ $item->name }}</a>
+                                                </h2>
+                                                <div class="label-section">
+                                                    {{-- <span class="badge badge-grey-color">#1 Best seller</span>
+                                            <span class="label-text">in fashion</span> --}}
+                                            <ul class="rating my-2 d-inline-block">
+                                                <div class="product-rate-cover text-end">
+                                                    <div class="product-rate d-inline-block">
+                                                        <div class="product-rating" style="width:{{($item->avgRating)*2*10}}%">
+                                                        </div>
+                                                    </div>
+                                                    <span class="font-small ml-5 text-muted"> ({{ number_format($item->avgRating,1) }}/5)</span>
+                                                </div>
+                                            </ul>
+                                                </div>
+                                                <div class="product-price">
+                                                    @if ($item->discount)
+                                                        <span> {{ number_format($item->discount, 3) }} VND </span>
+                                                        <span class="old-price">{{ number_format($item->price, 3) }}
+                                                            VND</span>
+                                                    @else
+                                                        <span>{{ number_format($item->price, 3) }} VND</span>
+                                                    @endif
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <!--End product-grid-4-->
+                        </div>
                     </div>
                     <!--End tab-content-->
                 </div>
@@ -435,47 +485,40 @@
     <section class="banners mb-15">
         <div class="container">
             <div class="row">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="title title-2 text-center">
+                            <h2>Bài viết tiêu biểu</h2>
+                            <h5 class="text-color"></h5>
+                        </div>
+                    </div>
+                </div>
+                @foreach ($blogs as $item)
                 <div class="col-lg-4 col-md-6">
                     <div class="banner-img wow fadeIn animated">
-                        <img src="assets/imgs/banner/banner-1.png" alt="">
+                        <img src="{{asset('storage/'.$item->image)}}" alt="">
                         <div class="banner-text">
-                            <span>Smart Offer</span>
-                            <h4>Save 20% on <br>Woman Bag</h4>
-                            <a href="shop.html">Shop Now <i class="fi-rs-arrow-right"></i></a>
+                            
+                            <a href="/blog/{{$item->id}}">Xem<i class="fi-rs-arrow-right"></i></a>
                         </div>
+                       <div class="">{{$item->title}}</div>
+                       <span class="post-on"> <i class="fi-rs-clock"></i> {{$item->created_at}}</span>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="banner-img wow fadeIn animated">
-                        <img src="assets/imgs/banner/banner-2.png" alt="">
-                        <div class="banner-text">
-                            <span>Sale off</span>
-                            <h4>Great Summer <br>Collection</h4>
-                            <a href="shop.html">Shop Now <i class="fi-rs-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 d-md-none d-lg-flex">
-                    <div class="banner-img wow fadeIn animated  mb-sm-0">
-                        <img src="assets/imgs/banner/banner-3.png" alt="">
-                        <div class="banner-text">
-                            <span>New Arrivals</span>
-                            <h4>Shop Today’s <br>Deals & Offers</h4>
-                            <a href="shop.html">Shop Now <i class="fi-rs-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
+                
+                
             </div>
         </div>
     </section>
 
     <section class="section-padding">
         <div class="container wow fadeIn animated">
-            <h3 class="section-title mb-20"><span>Sản Phẩm Được Nhiều Người Xem </h3>
+            <h3 class="section-title mb-20"><span>Sản phẩm bán chạy nhất</h3>
             <div class="carausel-6-columns-cover position-relative">
                 <div class="slider-arrow slider-arrow-2 carausel-6-columns-arrow" id="carausel-6-columns-2-arrows"></div>
                 <div class="carausel-6-columns carausel-arrow-center" id="carausel-6-columns-2">
-                    @foreach ($productsview as $item)
+                    @foreach ($best_selling as $item)
                     <div class="product-cart-wrap small hover-up">
                         <div class="product-img-action-wrap">
                             <div class="product-img product-img-zoom">
@@ -489,35 +532,29 @@
                                     <i class="fi-rs-eye"></i></a>
                                 <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="wishlist.php" tabindex="0"><i class="fi-rs-heart"></i></a>
                             </div>
-                            @if ($item->discount !=null)
+                            {{-- @if ($item->discount !=null)
                             <div class="product-badges product-badges-position product-badges-mrg">
                                 <span class="hot">SALE</span>
                             </div>
-                            @endif
+                            @endif --}}
                         </div>
                         <div class="product-content-wrap">
                             <div class="product-category">
                                 <a href="shop.html">{{$item->productCategory->name}}</a>
                             </div>
+                            <p>Đã bán : {{ $item->total_sold }} sản phẩm</p>
                             <h2><a href="product-details.html">{{$item->name}}</a></h2>
                             <div class="label-section">
                                 {{-- <span class="badge badge-grey-color">#1 Best seller</span>
                                 <span class="label-text">in fashion</span> --}}
                                 <ul class="rating my-2 d-inline-block">
-                                    @for($i =1 ;$i<=5;$i++)
-                                     @if($i <=$item->avgRating)
-                                        <li>
-                                            <i class="fas fa-star theme-color"></i>
-                                        </li>
-                                        @else
-                                        <li>
-                                            <i class="fas fa-star "></i>
-                                        </li>
-                                        @endif
-                                        @endfor
-                                        <li>
-                                            (<span>{{count($item->productComments)}}</span>)
-                                        </li>
+                                    <div class="product-rate-cover text-end">
+                                        <div class="product-rate d-inline-block">
+                                            <div class="product-rating" style="width:{{($item->avgRating)*2*10}}%">
+                                            </div>
+                                        </div>
+                                        <span class="font-small ml-5 text-muted"> ({{ number_format($item->avgRating,1) }}/5)</span>
+                                    </div>
                                 </ul>
                             </div>
                             <div class="product-price">

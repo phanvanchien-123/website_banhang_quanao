@@ -7,6 +7,7 @@ use App\Models\product;
 use App\Models\product_categorie;
 use App\Repositories\BaseRepositories;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductRepository extends BaseRepositories implements ProductRepositoryInterface
 {
@@ -21,6 +22,47 @@ class ProductRepository extends BaseRepositories implements ProductRepositoryInt
         }
         return $productsview;
     }
+    public function getProductsSoldOverThreshold($threshold, $limit)
+    {
+        $topSellingProducts = $this->model
+            ->join('order_details', 'products.id', '=', 'order_details.product_id')
+            ->join('orders', 'order_details.order_id', '=', 'orders.id') // Thêm join với bảng orders
+            ->select(
+                'products.id', 
+                'products.name',
+                'products.discount',
+                'products.avatar', 
+                'products.price', 
+                'products.product_category_id', 
+                'products.created_at', 
+                'products.updated_at', 
+                DB::raw('SUM(order_details.qty) as total_sold')
+            )
+            ->where('orders.status', '=', 7) // Lọc các đơn hàng có trạng thái là 7
+            ->groupBy(
+                'products.id', 
+                'products.name',
+                'products.discount',
+                'products.avatar', 
+                'products.price', 
+                'products.product_category_id', 
+                'products.created_at', 
+                'products.updated_at'
+            )
+            ->having('total_sold', '>', $threshold) // Lọc các sản phẩm bán được hơn $threshold sản phẩm
+            ->orderBy('total_sold', 'desc')
+            ->limit($limit) // Giới hạn kết quả trả về là $limit sản phẩm
+            ->get();
+    
+        foreach ($topSellingProducts as $product) {
+            $this->Evaluate($product);
+            
+        }
+    
+        return $topSellingProducts;
+    }
+    
+    
     public function getRelatedProducts($product, $limit = 4)
     {
 
@@ -73,20 +115,20 @@ class ProductRepository extends BaseRepositories implements ProductRepositoryInt
 
         return $featuredProducts;
     }
-    public function getProductsDiscountedOver30($limit = 10)
+    public function getProductsDiscountedOver30($limit = 8)
     {
-        // Lấy các sản phẩm có giá sau giảm thấp hơn 70% của giá gốc
-        $discountedProducts = $this->model->where('discount', '>', '0')
-                                        ->whereRaw('discount / price < 0.7')
-                                          ->orderByRaw('discount / price')
+        // Giả sử bảng sản phẩm có cột 'original_price' và 'discounted_price'
+        $discountedProducts = $this->model->whereRaw('(price - discount) / price = 0.3')
                                           ->limit($limit)
                                           ->get();
-        foreach ($discountedProducts as $Product) {
-            $this->Evaluate($Product);
+    
+        foreach ($discountedProducts as $product) {
+            $this->Evaluate($product);
         }
-
+    
         return $discountedProducts;
     }
+    
     public function getFeaturedProductsByCategory(int $categoryID)
     {
         $featuredProducts=  $this->model->where('featured', true)
@@ -129,10 +171,10 @@ class ProductRepository extends BaseRepositories implements ProductRepositoryInt
         $queryParams = $request->except('page');
         switch ($sortBy) {
             case 'latest':
-                $products = $products->orderBy('id');
+                $products = $products->orderByDesc('id');
                 break;
             case 'oldest':
-                $products = $products->orderByDesc('id');
+                $products = $products->orderBy('id');
                 break;
             case 'name-ascending':
                 $products = $products->orderBy('name');
@@ -167,23 +209,24 @@ class ProductRepository extends BaseRepositories implements ProductRepositoryInt
         $priceMax = $request->price_max;
         $priceMin = str_replace('$', '', $priceMin);
         $priceMax = str_replace('$', '', $priceMax);
+        
         $products = ($priceMin != null && $priceMax != null)
-        ? $products->where(function($query) use ($priceMin, $priceMax) {
-            $query->where(function($subQuery) use ($priceMin, $priceMax) {
-                // Điều kiện lọc sản phẩm có giảm giá nằm trong khoảng giá
-                $subQuery->whereBetween('discount', [$priceMin, $priceMax])
-                         ->orWhere(function($subSubQuery) use ($priceMin, $priceMax) {
-                             $subSubQuery->where('discount', '>', 0)  // Sản phẩm có giảm giá
-                                         ->whereBetween('price', [$priceMin, $priceMax]);
-                         });
+            ? $products->where(function($query) use ($priceMin, $priceMax) {
+                $query->where(function($subQuery) use ($priceMin, $priceMax) {
+                    // Điều kiện lọc sản phẩm có giảm giá nằm trong khoảng giá
+                    $subQuery->whereBetween('discount', [$priceMin, $priceMax])
+                             ->orWhere(function($subSubQuery) use ($priceMin, $priceMax) {
+                                 $subSubQuery->whereNotNull('discount')  // Sản phẩm có giảm giá
+                                             ->whereBetween('price', [$priceMin, $priceMax]);
+                             });
+                })
+                ->orWhere(function($subQuery) use ($priceMin, $priceMax) {
+                    // Điều kiện lọc sản phẩm không có giảm giá và giá gốc nằm trong khoảng giá
+                    $subQuery->whereNull('discount')  // Sản phẩm không có giảm giá
+                             ->whereBetween('price', [$priceMin, $priceMax]);
+                });
             })
-            ->orWhere(function($subQuery) use ($priceMin, $priceMax) {
-                // Điều kiện lọc sản phẩm không có giảm giá và giá gốc nằm trong khoảng giá
-                $subQuery->where('discount',0)  // Sản phẩm không có giảm giá
-                         ->whereBetween('price', [$priceMin, $priceMax]);
-            });
-        })
-        : $products;
+            : $products;
     
     
     

@@ -14,7 +14,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable 
 {
     use HasApiTokens, HasFactory, Notifiable;
     use HasRoles;
@@ -91,12 +91,19 @@ class User extends Authenticatable implements MustVerifyEmail
             return $address;
         }
 
-        return 'Không có địa chỉ'; // Hoặc bạn có thể trả về giá trị mặc định khác nếu muốn
+       
     }
 
     public function getProvince(){
         return $this ->hasOne(Province::class,'id','province_id');
 
+    }
+    public function district() {
+        return $this->belongsTo(District::class, 'district_id');
+    }
+    
+    public function ward() {
+        return $this->belongsTo(Ward::class, 'ward_id');
     }
 
     /**

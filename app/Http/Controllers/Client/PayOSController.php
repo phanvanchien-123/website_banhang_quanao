@@ -37,13 +37,10 @@ class PayOSController extends Controller
         $order = new Order();
         $order->id = $orderCode;
         $order->user_id = auth()->id();
-        $order->first_name = $request->input('first_name');
-        $order->last_name = $request->input('last_name');
-        $order->phone = $request->input('phone');
-        $order->email = $request->input('email');
-        $order->street_address = $request->input('street_address');
-        $order->town_city = $request->input('town_city');
-        $order->country = 'VietNam';
+        $order->address = $request['address'];
+        $order->home_address = $request['home_address'];
+        $order->phone = $request['phone'];
+        $order->email = $request['email'];
         $order->status = 1;
         $order->payment_type = '1';
         $order->total = $amount;

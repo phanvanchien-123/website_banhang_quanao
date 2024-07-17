@@ -108,8 +108,8 @@ margin-top: 10px;
     <div class="page-header breadcrumb-wrap">
         <div class="container">
             <div class="breadcrumb">
-                <a href="index.html" rel="nofollow">Home</a>
-                <span></span> Fashion
+                <a href="/" rel="nofollow">Home</a>
+                <span></span> <a href="/shop">Shop</a>
                 <span></span> {{$products->name}}
             </div>
         </div>
@@ -180,7 +180,7 @@ margin-top: 10px;
                                                 <div class="product-rating" style="width:{{($products->avgRating)*2*10}}%">
                                                 </div>
                                             </div>
-                                            <span class="font-small ml-5 text-muted"> ({{ number_format($products->avgRating) }}/5)</span>
+                                            <span class="font-small ml-5 text-muted"> ({{ number_format($products->avgRating,1) }}/5)</span>
                                         </div>
                                         
                                     </div>
@@ -417,7 +417,7 @@ if (!selectedQuantity) {
                             <ul class="nav nav-tabs text-uppercase">
                                 <li class="nav-item">
                                     <a class="nav-link active" id="Description-tab" data-bs-toggle="tab"
-                                        href="#Description">Description</a>
+                                        href="#Description">Thông tin sản phẩm</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" id="Additional-info-tab" data-bs-toggle="tab"
@@ -485,14 +485,17 @@ if (!selectedQuantity) {
                                     <div class="comments-area">
                                         <div class="row">
                                             <div class="col-lg-8">
-                                                <h4 class="mb-30">Customer questions & answers</h4>
+                                                <h4 class="mb-30">Đánh giá của khách hàng </h4>
                                                 <div class="comment-list">
                                                     @foreach ($comments as $item)
                                                     @if ($item->status ==1)
                                                     <div class="single-comment justify-content-between d-flex">
                                                         <div class="user justify-content-between d-flex">
                                                             <div class="thumb text-center">
-                                                                <img src="/assets/images/fashion/avatar/_default-user.png" alt="">
+                                                                {{-- /assets/images/fashion/avatar/_default-user.png --}}
+                                                                <img src="{{ $item->user->avatar ? asset('storage/'.$item->user->avatar) : asset('/assets/images/fashion/avatar/_default-user.png') }}" alt="User Avatar">
+
+                                                                {{-- <img src="{{asset('storage/'.$item->user->avatar)}} ??/assets/images/fashion/avatar/_default-user.png" alt=""> --}}
                                                                 <h6>{{$item->user->name}}</h6>
                                                                 <p class="font-xxs"></p>
                                                             </div>

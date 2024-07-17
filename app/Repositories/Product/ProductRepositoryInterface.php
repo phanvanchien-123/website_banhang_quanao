@@ -12,7 +12,8 @@ interface ProductRepositoryInterface  extends RepositoriesInterface
     public function getProductsByCategory($categoryName, $request);
     public function getLatestProducts($limit);
     public function getLatestFeaturedProduct($limit);
-    public function getProductsDiscountedOver30($limit = 10);
+    public function getProductsDiscountedOver30($limit = 8);
     public function getproductsviewlong($limit);
+    public function getProductsSoldOverThreshold($threshold,$limit);
     
 }
