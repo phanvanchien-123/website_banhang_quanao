@@ -100,7 +100,7 @@ class CartController extends Controller
             ]);
             // Lưu bản ghi mới vào cơ sở dữ liệu
             $cartItem->save();
-            return back()->with('success', 'Đã thêm mặt hàng vào giỏ hàng thành công.');
+            return back()->with(['success' => 'Thêm vào giỏ hàng thành công.']);
         }
     }
     
@@ -132,11 +132,11 @@ class CartController extends Controller
             ->first();
         // Kiểm tra nếu mục trong giỏ hàng không tồn tại
         if (!$cartItem) {
-            return back()->with('error', 'Cart item not found.');
+            return back()->with('error', 'Không tìm thấy mặt hàng giỏ hàng.');
         }
         // Xóa mục khỏi giỏ hàng
         $cartItem->delete();
-        return back()->with('success', 'Đã xóa mặt hàng khỏi giỏ hàng thành công.');
+        return back()->with('success', 'Xóa khỏi giỏ hàng thành công.');
     }
     public function clearCart()
     {
@@ -146,7 +146,7 @@ class CartController extends Controller
             $query->where('user_id', $userId);
         })
             ->delete();
-        return back()->with('success', 'Đã xóa giỏ hàng thành công.');
+        return back()->with('success', 'Xóa khỏi giỏ hàng thành công.');
     }
     public function orderSelected(Request $request)
 {

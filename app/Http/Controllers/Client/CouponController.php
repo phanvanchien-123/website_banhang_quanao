@@ -71,7 +71,7 @@ Phiếu giảm giá đã hết hạn.']);
           
     
             // Trả về phản hồi JSON
-            return response()->json(['success' => true, 'discount' => number_format($discountAmount, 2), 'total' => number_format($totalPrice, 2), 'message' => 'Phiếu giảm giá được áp dụng thành công']);
+            return response()->json(['success' => true, 'discount' => number_format($discountAmount, 3), 'total' => number_format($totalPrice, 3), 'message' => 'Phiếu giảm giá được áp dụng thành công']);
         } else {
             // Mã giảm giá không hợp lệ
             return response()->json(['success' => false, 'message' => 'Mã phiếu giảm giá không hợp lệ.']);

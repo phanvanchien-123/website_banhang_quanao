@@ -42,13 +42,13 @@ class CashierController extends Controller
         }
 
         $order = new Order();
-        $order->first_name = $request->input('data.customerName');
-        $order->last_name = 'x';
+        // $order->first_name = $request->input('data.customerName');
+        // $order->last_name = 'x';
         $order->phone = $request->input('data.customerPhone');
         $order->user_id = 999999999;
-        $order->country = 'VN';
-        $order->street_address = 'x';
-        $order->town_city = 'x';
+        // $order->country = 'VN';
+        $order->home_address = 'x';
+        $order->address = 'x';
         $order->email = 'x';
         $order->total = $total;
         $order->payment_type = '0';

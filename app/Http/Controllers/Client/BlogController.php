@@ -36,6 +36,7 @@ class BlogController extends Controller
     }
     public function postComment(Request $request){
         $this->blogcommentservice->create($request->all());
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Bình luận đã được đăng thành công!');
     }
+    
 }

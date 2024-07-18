@@ -36,7 +36,8 @@
                 @foreach ($users ?? [] as $item)
                     <tr>
                         <th scope="row">{{ $item->id }}</th>
-                        <td><img src="{{ asset('storage/' . $item->avatar) }}" alt="" width="60px" height="60px">
+                        <td><img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : Auth::user()->defaultAvatar() }}"
+                            alt="profile" height="75px" width="75px">
                         </td>
                         <td>{{ $item->name }}</td>
                         <td>{{ $item->email }}</td>

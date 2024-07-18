@@ -183,14 +183,14 @@
                             <div class="d-flex">
                                 <div class="form-check ms-5">
                                     <input class="form-check-input" type="radio" name="featured" value="1"
-                                        id="flexRadioDefault1">
+                                        id="flexRadioDefault1" {{ isset($product) && $product->featured == 1 ? 'checked' : '' }}>
                                     <label class="form-check-label" for="flexRadioDefault1">
                                         có
                                     </label>
                                 </div>
                                 <div class="form-check ms-5">
                                     <input class="form-check-input" type="radio" name="featured" value="0"
-                                        id="flexRadioDefault2" checked>
+                                        id="flexRadioDefault2" {{ isset($product) && $product->featured == 0 ? 'checked' : '' }}>
                                     <label class="form-check-label" for="flexRadioDefault2">
                                         không
                                     </label>

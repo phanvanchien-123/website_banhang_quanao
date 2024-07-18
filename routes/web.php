@@ -27,13 +27,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::prefix('/shop')->group(function(){
-        Route::get('',[ShopController::class,'index'])->name('client.shop.index');
-        Route::get('/details/{id}',[ShopController::class,'show'])->name('Client.shop.show');
-        Route::post('/details/{id}/Comment',[ShopController::class,'postComment'])->name('Client.Comment');
-       Route::post('/details/{id}',[ShopController::class,'show'])->name('Client.shop.show');
-       Route::get('category/{categoryName}',[ShopController::class,'category']);
-       Route::get('/details/{id}/sizes', [ShopController::class, 'getSizesByColor'])->name('shop.details.sizes');
+    Route::get('',[ShopController::class,'index'])->name('client.shop.index');
+    Route::get('/details/{id}',[ShopController::class,'show']);
+    Route::post('/details/{id}/Comment',[ShopController::class,'postComment'])->name('Client.Comment');
+    Route::post('/details/{id}',[ShopController::class,'show'])->name('Client.shop.show');
+    Route::get('category/{categoryName}',[ShopController::class,'category']);
+    Route::get('/details/{id}/sizes', [ShopController::class, 'getSizesByColor'])->name('shop.details.sizes');
 });
+
 Route::prefix('/blog')->group(function(){
     Route::get('',[BlogController::class,'index'])->name('blog.index');
     Route::get('/{id}',[BlogController::class,'show']);
@@ -72,10 +73,20 @@ Route::middleware('auth')->group(function(){
         Route::prefix('dashboard')->group(function(){
             Route::get('/',[AccountController::class,'index'])->name('dashboard.index');
             Route::get('{id}',[AccountController::class,'show']);
-            Route::delete('/cancel_order/{id}', [AccountController::class, 'cancelOrder'])->name('order.cancel');
+            Route::get('/cancel_order/{id}', [AccountController::class, 'cancelOrder'])->name('order.cancel');
             Route::post('/reorder/{id}', [AccountController::class, 'reorder'])->name('order.reorder');
 
         });
+    });
+
+    Route::group(['prefix' => 'profile'], function() {
+
+        Route::get('', [Admin\ProfileController::class, 'index'])->name('admin.profile.index');
+        
+        // Route::get('update', [Admin\ProfileController::class, 'edit']) ;
+        Route::patch('update', [Admin\ProfileController::class, 'update'])->name('admin.profile.update');
+        Route::get('changePassword', [Admin\ProfileController::class, 'changePassword']) ->name('admin.profile.changePassword');
+
     });
 });
 Auth::routes(
@@ -88,7 +99,7 @@ Route::group(['prefix' => 'auth' ], function ($router) {
 
 });
 
-Route::namespace('Admin')->prefix('admin')->middleware(['auth'])->group(function () {
+Route::namespace('Admin')->prefix('admin')->middleware(['auth', 'role:super-admin'])->group(function () {
     Route::get('home',[Admin\HomeController::class,'index']) ->name('admin.home.index');
     // Route::get('cashier',[Admin\CashierController::class,'index']) ->name('admin.cashier.index');
 
@@ -213,17 +224,17 @@ Route::namespace('Admin')->prefix('admin')->middleware(['auth'])->group(function
         Route::get('delete/{id}',[Admin\SupplierController::class,'delete']) ->name('admin.supplier.delete');      
     });
 
-    Route::group(['prefix' => 'profile'], function() {
+    // Route::group(['prefix' => 'profile'], function() {
 
-        Route::get('', [Admin\ProfileController::class, 'index'])->name('admin.profile.index');
+    //     Route::get('', [Admin\ProfileController::class, 'index'])->name('admin.profile.index');
         
-        // Route::get('update', [Admin\ProfileController::class, 'edit']) ;
-        Route::patch('update', [Admin\ProfileController::class, 'update'])->name('admin.profile.update');
-        Route::get('changePassword', [Admin\ProfileController::class, 'changePassword']) ->name('admin.profile.changePassword');
+    //     // Route::get('update', [Admin\ProfileController::class, 'edit']) ;
+    //     Route::patch('update', [Admin\ProfileController::class, 'update'])->name('admin.profile.update');
+    //     Route::get('changePassword', [Admin\ProfileController::class, 'changePassword']) ->name('admin.profile.changePassword');
 
-    });
+    // });
 
-    Route::group(['prefix' => 'role'] , function () {
+    Route::group(['prefix' => 'role', 'middleware' => 'role:super-admin'] , function () {
         Route::get('',[Admin\RoleController::class,'index']) ->name('admin.role.index');
 
         
@@ -236,7 +247,7 @@ Route::namespace('Admin')->prefix('admin')->middleware(['auth'])->group(function
         Route::get('delete/{id}',[Admin\RoleController::class,'delete']) ->name('admin.role.delete');
     });
 
-    Route::group(['prefix' => 'display'] , function () {
+    Route::group(['prefix' => 'display', 'middleware' => 'role:super-admin'] , function () {
         Route::get('',[Admin\DisplayController::class,'index']) ->name('admin.display.index');
         Route::post('/creatrOrUpdateLogo',[Admin\DisplayController::class,'creatrOrUpdateLogo']) ->name('admin.display.creatrOrUpdateLogo');
         Route::post('/creatrOrUpdateFlink',[Admin\DisplayController::class,'creatrOrUpdateFlink']) ->name('admin.display.creatrOrUpdateFlink');

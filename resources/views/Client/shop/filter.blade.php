@@ -3,28 +3,92 @@
         <div class="col-lg-12 col-mg-6"></div>
         <div class="col-lg-12 col-mg-6"></div>
     </div>
-    <form action="{{request()->segment(2) == 'details' ? '/shop' : ''}}">
-    <div class="widget-category mb-30">
-        <h5 class="section-title style-1 mb-30 wow fadeIn animated">Danh Mục</h5>
-        <h4>Quần</h4>
-       
-    <ul>
-        @foreach ($categories as $item)
-            @if (strpos($item->name, 'Quần') !== false)
-                <li><a href="/shop/category/{{$item->name}}" class="highlight">{{$item->name}}</a></li><br>
-            @endif
-        @endforeach
-    </ul>
+    <style>
+        /* Đặt các danh mục nằm ngang */
+.categories {
+    display: flex;
+    justify-content: space-between;
+}
 
-    <h4>Áo</h4>
-    <ul>
-        @foreach ($categories as $item)
-            @if (strpos($item->name, 'Áo') !== false)
-                <li><a href="/shop/category/{{$item->name}}" class="highlight">{{$item->name}}</a></li><br>
-            @endif
-        @endforeach
-    </ul>
-    </div>
+.category {
+    margin-right: 20px;
+}
+
+/* Ẩn các mục danh sách mặc định */
+.widget-category ul {
+    display: none;
+}
+
+/* Hiển thị các mục danh sách khi hover vào tiêu đề */
+.widget-category .category:hover ul {
+    display: block;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 1000;
+}
+
+/* Đảm bảo rằng các danh mục không bị tràn màn hình */
+.categories {
+    overflow: hidden;
+}
+
+.category ul li {
+    list-style-type: none;
+    margin: 5px 0;
+}
+
+
+    </style>
+    <form action="{{request()->segment(2) == 'details' ? '/shop' : ''}}">
+        <div class="widget-category mb-30">
+            <h5 class="section-title style-1 mb-30 wow fadeIn animated">Danh Mục</h5>
+            <div class="categories">
+                <div class="category">
+                    <h4>Quần</h4>
+                    <ul>
+                        @foreach ($categories as $item)
+                            @if (strpos($item->name, 'Quần') !== false)
+                                <li><a href="/shop/category/{{$item->name}}" class="highlight">{{$item->name}}</a></li><br>
+                            @endif
+                        @endforeach
+                    </ul>
+                </div>
+                <div class="category">
+                    <h4>Áo</h4>
+                    <ul>
+                        @foreach ($categories as $item)
+                            @if (strpos($item->name, 'Áo') !== false)
+                                <li><a href="/shop/category/{{$item->name}}" class="highlight">{{$item->name}}</a></li><br>
+                            @endif
+                        @endforeach
+                    </ul>
+                </div>
+                <div class="category">
+                    <h4>Váy</h4>
+                    <ul>
+                        @foreach ($categories as $item)
+                            @if (strpos($item->name, 'Váy') !== false)
+                                <li><a href="/shop/category/{{$item->name}}" class="highlight">{{$item->name}}</a></li><br>
+                            @endif
+                        @endforeach
+                    </ul>
+                </div>
+                <div class="category">
+                    <h4>Giày</h4>
+                    <ul>
+                        @foreach ($categories as $item)
+                            @if (strpos($item->name, 'Giày') !== false)
+                                <li><a href="/shop/category/{{$item->name}}" class="highlight">{{$item->name}}</a></li><br>
+                            @endif
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        
     </form>
   
     <!-- Fillter By Price -->

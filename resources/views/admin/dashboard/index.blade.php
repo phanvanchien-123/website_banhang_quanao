@@ -21,7 +21,7 @@
     </div>
     <div class="row">
         <div class="col-md-6 grid-margin stretch-card">
-            <div class="card tale-bg">
+            <div class="card tale-bg shadow">
                 <div class="weather-info" id="weather" style="z-index: 999">
                     <div class="d-flex">
                         <div>
@@ -42,7 +42,7 @@
         <div class="col-md-6 grid-margin transparent">
             <div class="row">
                 <div class="col-md-6 mb-4 stretch-card transparent">
-                    <div class="card card-tale">
+                    <div class="card card-tale shadow">
                         <div class="card-body">
                             <p class="mb-4">the number of products</p>
                             <p class="fs-30 mb-2 text-center">{{ $totalQty }}</p>
@@ -50,7 +50,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 mb-4 stretch-card transparent">
-                    <div class="card card-dark-blue">
+                    <div class="card card-dark-blue shadow">
                         <div class="card-body">
                             <p class="mb-4">the number of blog</p>
                             <p class="fs-30 mb-2 text-center">{{ $totalBlogs }}</p>
@@ -60,7 +60,7 @@
             </div>
             <div class="row">
                 <div class="col-md-6 mb-lg-0 stretch-card transparent">
-                    <div class="card card-light-blue">
+                    <div class="card card-light-blue shadow">
                         <div class="card-body">
                             <p class="mb-4">Number of user</p>
                             <p class="fs-30 mb-2 text-center">{{ $totalUsers }}</p>
@@ -69,10 +69,10 @@
                     </div>
                 </div>
                 <div class="col-md-6 stretch-card transparent">
-                    <div class="card card-light-danger">
+                    <div class="card card-light-danger shadow">
                         <div class="card-body">
-                            <p class="mb-4">Number of Customer</p>
-                            <p class="fs-30 mb-2 text-center">47033</p>
+                            <p class="mb-4">Number of Order</p>
+                            <p class="fs-30 mb-2 text-center">47</p>
                             {{-- <p>0.22% (30 days)</p> --}}
                         </div>
                     </div>
@@ -80,79 +80,47 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        {{-- <div class="row">
-            <div class="col-6 border-top-0 ">
-                <div class="rounded shadow p-3">
-                    <h3>Sản phẩm mới</h3>
-                    <img src="" alt="">
-                    @foreach ($products as $item)
-                        <div class="d-flex py-3 border-bottom">
-                            <div>
-                                <img class="border" src="{{ asset('storage/' . $item->avatar) }}" alt=""
-                                    height="75" width="75">
-                            </div>
-                            <div class="ps-4">
-                                <h5>{{ $item->name }}</h5>
-                                <p>giá:{{ $item->price }}</p>
+    <div class="d-flex">
+        <div class="rounded shadow p-3 w-50 me-4 align-self-start mt-5">
+            <h3>Thành viên mới</h3>
+            <img src="" alt="">
+            @foreach ($users as $item)
+                <div class="d-flex py-3 border-bottom">
+                    <div>
+                        <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : Auth::user()->defaultAvatar() }}"
+                        alt="profile" height="75px" width="75px">
+                    </div>
+                    <div class="ps-4">
+                        <h5>{{ $item->name }}</h5>
+                        <p>{{ $item->roles->first()->display_name ?? '' }}</p>
 
-                            </div>
-                            <p class="ms-auto align-self-end fw-light">{{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') }}</p>
-                        </div>
-                    @endforeach
+                    </div>
+                    <p class="ms-auto align-self-end fw-light">
+                        {{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') }}</p>
                 </div>
-            </div>
-            <div class="col-6">
-            </div>
-        </div> --}}
-        <div class="row">
-            <div class="col-6">
-            </div>
-            <div class="col-6 border-top-0 ">
-                <div class="rounded shadow p-3">
-                    <h3>Bài viết mới</h3>
-                    <img src="" alt="">
-                    @foreach ($blogs as $item)
-                        <div class="d-flex py-3 border-bottom">
-                            <div>
-                                <img class="border" src="{{ asset('storage/' . $item->image) }}" alt=""
-                                    height="75" width="75">
-                            </div>
-                            <div class="ps-4">
-                                <h5>{{ $item->title }}</h5>
-                                <p>subtitle:{{ $item->subtitle }}</p>
-
-                            </div>
-                            <p class="ms-auto align-self-end fw-light">{{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') }}</p>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
+            @endforeach
         </div>
-        <div class="row">
-            <div class="col-6 border-top-0 ">
-                <div class="rounded shadow p-3">
-                    <h3>Thành viên mới</h3>
-                    <img src="" alt="">
-                    @foreach ($users as $item)
-                        <div class="d-flex py-3 border-bottom">
-                            <div>
-                                <img class="border" src="{{ asset('storage/' . $item->avatar) }}" alt=""
-                                    height="75" width="75">
-                            </div>
-                            <div class="ps-4">
-                                <h5>{{ $item->name }}</h5>
-                                <p>{{ $item->roles->first()->display_name ?? ''}}</p>
 
-                            </div>
-                            <p class="ms-auto align-self-end fw-light">{{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') }}</p>
-                        </div>
-                    @endforeach
+        <div class="rounded shadow p-3 w-50 ms-4">
+            <h3>Bài viết mới</h3>
+            <img src="" alt="">
+            @foreach ($blogs as $item)
+                <div class="d-flex py-3 border-bottom">
+                    <div>
+                        <img class="border" src="{{ asset('storage/' . $item->image) }}" alt="" height="75"
+                            width="75">
+                    </div>
+                    <div class="ps-4">
+                        <h5>{{ $item->title }}</h5>
+                        <p>subtitle:{{ $item->subtitle }}</p>
+                        <p class="text-end fw-light">
+                            {{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') }}</p>
+                    </div>
+
                 </div>
-            </div>
-            <div class="col-6">
-            </div>
+            @endforeach
         </div>
+
     </div>
 
     {{-- <div class="row">
@@ -817,13 +785,13 @@
         const apiKey = '095020f308344bb7832163323240606';
         const city = '{{ auth()->user()->getProvince->name ?? '' }}';
         const formattedCity = city
-            .normalize('NFD') 
-            .replace(/[\u0300-\u036f]/g, '') 
-            .replace(/đ/g, 'd') 
-            .replace(/Đ/g, 'D') 
-            .replace(/[^a-zA-Z ]/g, ''); 
-        
-            console.log(formattedCity);
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd')
+            .replace(/Đ/g, 'D')
+            .replace(/[^a-zA-Z ]/g, '');
+
+        console.log(formattedCity);
 
         function getWeather(formattedCity) {
             const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${formattedCity}&lang=vi`;
@@ -864,5 +832,4 @@
         //     getWeather(city);
         // });
     </script>
-
 @endsection()
