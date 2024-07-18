@@ -50,20 +50,18 @@
                         <input type="hidden" name="amount" value="{{ $totalPrice - ($discount ?? 0) }}">
                         <div id="billingAddress" class="row g-4">
                             <h3 class="mb-3 theme-color">Billing address</h3>
-                        
+                            <a href="/my_account/dashboard">Thay đổi thông tin nhận hàng tại đây <i class="fi-rs-arrow-right"></i></a>
                             <div class="col-md-6">
                                 <label for="first_name" class="form-label">Name</label>
-                                <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="first_name" name="first_name" placeholder="First Name" value="{{ Auth::user()->name ?? '' }}">
+                                <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="first_name" name="first_name" placeholder="First Name" value="{{ Auth::user()->name ?? '' }}" readonly>
                                 @error('first_name')
                                     <div class="invalid-feedback">{{ $errors->first('first_name')}}</div>
                                 @enderror
                             </div>
                         
-                         
-                        
                             <div class="col-md-6">
                                 <label for="phone" class="form-label">Phone</label>
-                                <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="Enter Phone Number" value="{{  Auth::user()->phone ?? '' }}">
+                                <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="Enter Phone Number" value="{{  Auth::user()->phone ?? '' }}" readonly>
                                 @error('phone')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -71,37 +69,29 @@
                         
                             <div class="col-md-12">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="Email" value="{{ Auth::user()->email ?? '' }}">
+                                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="Email" value="{{ Auth::user()->email ?? '' }}" readonly>
                                 @error('email')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         
-                           
-                            
                             <div class="col-md-12">
                                 <label for="address" class="form-label">Địa chỉ</label>
-                                <input type="text" class="form-control @error('address') is-invalid @enderror" id="address" name="address" placeholder="Địa chỉ" value="{{ old('address', Auth::user()->getAddressFrom(auth()->id()) ?? '') }}">
+                                <input type="text" class="form-control @error('address') is-invalid @enderror" id="address" name="address" placeholder="Địa chỉ" value="{{ old('address', Auth::user()->getAddressFrom(auth()->id()) ?? '') }}" readonly>
                                 @error('address')
                                     <div class="invalid-feedback">{{ $message }}  <a href="/my_account/dashboard">Cập nhật tại đây<i class="fi-rs-arrow-right"></i></a></div>
                                 @enderror
                             </div>
+                        
                             <div class="col-md-12">
                                 <label for="home_address" class="form-label">Số nhà, khu phố</label>
-                                <input type="text" class="form-control @error('home_address') is-invalid @enderror" id="home_address" name="home_address" placeholder="Địa chỉ nhà " value="{{ old('home_address', Auth::user()->company_name ?? '') }}">
+                                <input type="text" class="form-control @error('home_address') is-invalid @enderror" id="home_address" name="home_address" placeholder="Địa chỉ nhà " value="{{ old('home_address', Auth::user()->company_name ?? '') }}" readonly>
                                 @error('home_address')
                                     <div class="invalid-feedback">{{ $message }}  <a href="/my_account/dashboard">Cập nhật tại đây</a></div>
                                 @enderror
                             </div>
-                            
-                            
-                        
-                            
-                        
-                           
-                        
-                            
                         </div>
+                        
                         <hr class="my-lg-5 my-4">
                         <h3 class="mb-3">Payment</h3>
                         <div class="d-block my-3">
