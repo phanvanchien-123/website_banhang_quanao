@@ -31,10 +31,10 @@
 <section class="cart-section section-b-space">
     <div class="container">
         <div class="row">
-            <div class="col-md-12 text-center">
+            <div class="col-md-12 text-center" style="max-height: 800px;overflow-y: scroll; overflow-x: hidden">
                 <form action="{{ route('cart.orderSelected') }}" method="POST">
                     @csrf
-                    <table class="table cart-table">
+                    <table class="table cart-table" >
                         <thead>
                             <tr class="table-head">
                              
@@ -57,12 +57,12 @@
                                         <input type="checkbox" name="selected_items[]" value="{{ $item->id }}" class="item-checkbox" data-price="{{ $item->price }}" data-quantity="{{ $item->quantity }}">
                                     </td>
                                     <td>
-                                        <a href="../product/details.html">
+                                        <a href="{{ route('Client.shop.show', $item->product->id) }}">
                                             <img src="{{ asset('storage/'.$item->product->avatar) }}" class="blur-up lazyloaded" alt="">
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="../product/details.html">
+                                        <a href="{{ route('Client.shop.show', $item->product->id) }}">
                                             {{ $item->product->name }} <br> {{ $item->color }} <br> Size: {{ $item->size }}
                                         </a>
                                     </td>
@@ -94,7 +94,7 @@
               
             </div>
             
-            <div class="row">
+            <div class="row mt-4">
                 <div class="col-sm-7 col-5 order-1">
                     <div class="left-side-button text-end d-flex d-block justify-content-end">
                         <button type="button" class="btn btn-danger" onclick="clearCart()">Clear Cart</button>

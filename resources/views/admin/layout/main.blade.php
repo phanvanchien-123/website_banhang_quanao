@@ -59,7 +59,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
+    <style>
+        .toast-top-custom {
+            top: 75px !important;
+            right: 12px !important;
+        }
+    </style>
 </head>
 
 <body class="">
@@ -115,6 +120,25 @@
     <script src="../../js/template.js"></script>
     <script src="../../js/settings.js"></script>
     <script src="../../js/todolist.js"></script> --}}
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-custom", // Sử dụng lớp tùy chỉnh
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+    </script>
     @if (session('success'))
         <script>
             toastr.success('{{ session('success') }}')
@@ -128,11 +152,11 @@
 
     <script>
         var fetchNotificationsUrl = "{{ route('notifications.fetch') }}";
-        @if(session('PaymentSuccess'))
+        @if (session('PaymentSuccess'))
             var paymentSuccessMessage = "{{ session('PaymentSuccess') }}";
         @endif
     </script>
-    
+
     <script src="{{ asset('theme_admin/theme/js/notifications.js') }}"></script>
     <script src="{{ asset('theme_admin/theme/js/previewFileImage.js') }}"></script>
     <script src="{{ asset('theme_admin/theme/js/confirmAlert.js') }}"></script>

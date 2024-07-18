@@ -49,6 +49,11 @@
                 max-width: 110px !important;
             }
         }
+
+        .toast-top-custom {
+            top: 75px !important;
+            right: 12px !important;
+        }
     </style>
     <link rel="stylesheet" href="{{ asset('/assets/css/custom.css') }}">
 
@@ -147,9 +152,10 @@
                                             <li><a href="/Cart" class="nav-link menu-title">Giỏ Hàng</a></li>
                                             <li><a href="{{ route('index.coupon') }}" class="nav-link menu-title">Mã
                                                     giảm Giá</a></li>
-                                        
+
                                             </li>
-                                            <li><a href="{{route('blog.index')}}" class="nav-link menu-title">Blog</a></li>
+                                            <li><a href="{{ route('blog.index') }}"
+                                                    class="nav-link menu-title">Blog</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -157,7 +163,7 @@
                             <div class="menu-right">
                                 <ul>
                                     <li>
-                                        
+
                                     </li>
                                     <li class="onhover-dropdown wislist-dropdown">
                                         <div class="cart-media">
@@ -269,7 +275,7 @@
                                                             </div>
                                                             <div class="shopping-cart-button">
                                                                 <a href="/Cart" class="outline">View cart</a>
-                                                                
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -287,7 +293,7 @@
                                             @endauth <i data-feather="user"></i>
                                         </div>
                                         <div class="onhover-div profile-dropdown">
-                                           
+
                                             <ul>
                                                 @if (Route::has('login'))
                                                     @auth
@@ -325,45 +331,45 @@
                                             </ul>
                                         </div>
                                     </li>
-                                    <li>
+                                    {{-- <li>
                                         @if (session('success'))
-                                        <div class="alert alert-success" id="success-alert">
-                                            {{ session('success') }}
-                                        </div>
-                                    @endif
-                                    
-                                    @if (session('error'))
-                                        <div class="alert alert-danger" id="error-alert">
-                                            {{ session('error') }}
-                                        </div>
-                                    @endif
-                                    
-                                    <script>
-                                        document.addEventListener('DOMContentLoaded', function() {
-                                            setTimeout(function() {
-                                                var successAlert = document.getElementById('success-alert');
-                                                if (successAlert) {
-                                                    successAlert.style.display = 'none';
-                                                }
-                                                
-                                                var errorAlert = document.getElementById('error-alert');
-                                                if (errorAlert) {
-                                                    errorAlert.style.display = 'none';
-                                                }
-                                            }, 5000); // 5000 milliseconds = 5 seconds
-                                        });
-                                    </script>
-                                    
-                                    </li>
+                                            <div class="alert alert-success" id="success-alert">
+                                                {{ session('success') }}
+                                            </div>
+                                        @endif
+
+                                        @if (session('error'))
+                                            <div class="alert alert-danger" id="error-alert">
+                                                {{ session('error') }}
+                                            </div>
+                                        @endif
+
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function() {
+                                                setTimeout(function() {
+                                                    var successAlert = document.getElementById('success-alert');
+                                                    if (successAlert) {
+                                                        successAlert.style.display = 'none';
+                                                    }
+
+                                                    var errorAlert = document.getElementById('error-alert');
+                                                    if (errorAlert) {
+                                                        errorAlert.style.display = 'none';
+                                                    }
+                                                }, 5000); // 5000 milliseconds = 5 seconds
+                                            });
+                                        </script>
+
+                                    </li> --}}
                                 </ul>
                             </div>
-                            
+
                             <div class="search-full">
                                 <form method="GET" class="search-full" action="shop">
                                     <div class="input-group">
                                         <span class="input-group-text">
                                             <button type="submit">
-                                            <i data-feather="search" class="font-light"></i></button>
+                                                <i data-feather="search" class="font-light"></i></button>
                                         </span>
                                         <input type="text" name="search" class="form-control search-type"
                                             value="{{ request('search') }}" placeholder="Search here..">
@@ -371,7 +377,7 @@
                                             <i data-feather="x" class="font-light"></i>
                                         </span>
                                     </div>
-                                  
+
                                 </form>
                             </div>
                         </div>
@@ -380,7 +386,7 @@
             </div>
         </div>
         <style>
-            .search{
+            .search {
                 width: 400px;
                 margin-left: 150px;
             }
@@ -389,12 +395,12 @@
             <div class="mobile-search search-style-3 mobile-header-border">
                 <form method="GET" action="shop">
                     <input type="text" name="search" class="form-control search-type"
-                value="{{ request('search') }}" placeholder="Tìm kiếm sản phẩm..">
+                        value="{{ request('search') }}" placeholder="Tìm kiếm sản phẩm..">
                     <button type="submit"><i class="fi-rs-search"></i></button>
                 </form>
             </div>
         </div>
-        
+
     </header>
 
     <div class="mobile-menu d-sm-none">
@@ -576,7 +582,7 @@
         </div> --}}
     </footer>
     <style>
-        .chatbot{
+        .chatbot {
             position: relative;
             right: 20px;
         }
@@ -593,7 +599,9 @@
     {{-- <div class="zalo-chat-widget" data-oaid="2824334511651503846" data-welcome-message="Rất vui khi được hỗ trợ bạn!" data-autopopup="0" data-width="" data-height=""></div>
 
 <script src="https://sp.zalo.me/plugins/sdk.js"></script> --}}
-<!--Start of Fchat.vn--><script type="text/javascript" src="https://cdn.fchat.vn/assets/embed/webchat.js?id=6680fae7254c0d605e503e84" async="async"></script><!--End of Fchat.vn-->
+    <!--Start of Fchat.vn-->
+    <script type="text/javascript" src="https://cdn.fchat.vn/assets/embed/webchat.js?id=6680fae7254c0d605e503e84"
+        async="async"></script><!--End of Fchat.vn-->
     <div class="tap-to-top">
         <a href="#home">
             <i class="fas fa-chevron-up"></i>
@@ -616,12 +624,65 @@
     <script src="{{ asset('assets/js/theme-setting.js') }}"></script>
     <script src="{{ asset('assets/js/script.js') }}"></script>
     <script src="{{ asset('theme_admin/theme/js/profile.js') }}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/toastr.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('theme_admin/theme/js/confirmAlert.js') }}"></script>
     <script>
         $(function() {
             $('[data-bs-toggle="tooltip"]').tooltip()
         });
     </script>
     @stack('script')
+
+
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-custom",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+    </script>
+    {{-- <script>
+        toastr.success('abc')
+    </script> --}}
+
+    {{-- @if (session('success'))
+        <script>
+            toastr.success('{{ session('success') }}')
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            toastr.error('{{ session('error') }}')
+        </script>
+    @endif --}}
+
+    {{-- <script>toastr.info('Are you the 6 fingered man?')</script> --}}
+
 </body>
+@if (session('success'))
+    <script>
+        toastr.success('{{ session('success') }}')
+    </script>
+@endif
+@if (session('error'))
+    <script>
+        toastr.error('{{ session('error') }}')
+    </script>
+@endif
 
 </html>

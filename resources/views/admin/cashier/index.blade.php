@@ -133,7 +133,7 @@
                                     const tr = document.createElement('tr');
                                     const imageUrl = `/storage/${product.avatar}`;
                                     tr.innerHTML = `
-                                        <td role="button"><img src="${imageUrl}" alt="${product.name}" width="30px" height="30px"></td>
+                                        <td role="button"><img src="${imageUrl}" width="30px" height="30px"></td>
                                         <td role="button">${product.name}</td>
                                         <td role="button">${product.price}</td>
                                     `;
@@ -255,46 +255,6 @@
     </script>
 
 <script>
-    // async function confirmCreate(event) {
-    //     event.preventDefault();
-
-    //     const swalWithBootstrapButtons = Swal.mixin({
-    //         customClass: {
-    //             confirmButton: "btn btn-success ms-4",
-    //             cancelButton: "btn btn-danger"
-    //         },
-    //         buttonsStyling: false
-    //     });
-
-    //     try {
-    //         const result = await swalWithBootstrapButtons.fire({
-    //             title: "Xác nhận tạo đơn hàng và in hóa đơn?",
-    //             icon: "warning",
-    //             showCancelButton: true,
-    //             confirmButtonText: "Yes, do it!",
-    //             cancelButtonText: "No, cancel!",
-    //             reverseButtons: true
-    //         });
-
-    //         if (result.isConfirmed) {
-    //             await new Promise(resolve => {
-    //                 document.getElementById('createInvoiceBtn').addEventListener('click', resolve, { once: true });
-    //                 document.getElementById('createInvoiceBtn').click();
-    //             });
-    //         } else if (result.dismiss === Swal.DismissReason.cancel) {
-    //             swalWithBootstrapButtons.fire({
-    //                 title: "Cancelled",
-    //                 text: "Your imaginary file is safe :)",
-    //                 icon: "error"
-    //             });
-    //         }
-    //     } catch (error) {
-    //         console.error('Error handling confirmation:', error);
-    //     }
-
-    //     $('.swal2-confirm.btn-success.ms-4').attr('id', 'createInvoiceBtn');
-    // }
-
     document.addEventListener('DOMContentLoaded', function() {
         const createInvoiceBtn = document.getElementById('createInvoiceBtn');
         const csrfToken = document.head.querySelector('meta[name="csrf-token"]').content;

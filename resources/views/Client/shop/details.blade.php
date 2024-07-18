@@ -104,6 +104,10 @@ cursor: not-allowed;
 margin-top: 10px;
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/toastr.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css" rel="stylesheet">
+
 <main class="main">
     <div class="page-header breadcrumb-wrap">
         <div class="container">

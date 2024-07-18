@@ -3,7 +3,8 @@
     <div class="d-flex align-items-center">
         <h2>Order ID: {{ $order->id }}</h2>
         <div class="ms-4">
-            <select class="form-select form-select-lg pt-2" aria-label="Large select example" data-comment-id="{{ $order->id }}">
+            <select class="form-select form-select-lg pt-2" aria-label="Large select example"
+                data-comment-id="{{ $order->id }}">
                 <option value="0" {{ $order->status == 0 ? 'selected' : '' }}>Hủy bỏ</option>
                 <option value="1" {{ $order->status == 1 ? 'selected' : '' }}>Chờ Xác nhận đơn hàng</option>
                 <option value="2" {{ $order->status == 2 ? 'selected' : '' }}>Chưa được xác nhận</option>
@@ -14,7 +15,8 @@
             </select>
         </div>
 
-        <a href="{{ route('admin.product.index') }}" class="text-decoration-none ms-auto"><i class="bi bi-box-arrow-left h4"></i> Trở về</a>
+        <a href="{{ route('admin.product.index') }}" class="text-decoration-none ms-auto"><i
+                class="bi bi-box-arrow-left h4"></i> Trở về</a>
 
     </div>
 
@@ -81,10 +83,11 @@
                                     @endforeach
                                     <tr>
                                         <td scope="row">coupon:</td>
-                                        @if(isset($order->coupon))
+                                        @if (isset($order->coupon))
                                             <td>{{ $order->coupon->code }}</td>
-                                            
-                                            <td>{{ optional($order->coupon)->discount_type == 'fixed' ? number_format($order->coupon->discount_value, 0, ',', '.').'đ' : $order->coupon->discount_value .'%' }}</td>
+
+                                            <td>{{ optional($order->coupon)->discount_type == 'fixed' ? number_format($order->coupon->discount_value, 0, ',', '.') . 'đ' : $order->coupon->discount_value . '%' }}
+                                            </td>
                                         @endif
                                     </tr>
                                     <tr>
@@ -156,10 +159,9 @@
                     </h2>
                     <div id="shippingAdsress" class="accordion-collapse collapse show">
                         <div class="accordion-body">
-                            <p><i class="bi bi-person-fill"></i> {{ $order->first_name }} {{ $order->last_name }}</p>
+                            <p><i class="bi bi-person-fill"></i> {{ $order->user->name }}</p>
                             <p><i class="bi bi-telephone-fill"></i> {{ $order->phone }}</p>
-                            <p><i class="bi bi-geo-alt-fill"></i> {{ $order->town_city }} - {{ $order->street_address }}
-                            </p>
+                            <p><i class="bi bi-geo-alt-fill"></i> {{ $order->home_address }} - {{ $order->address }}</p>
                         </div>
                     </div>
                 </div>

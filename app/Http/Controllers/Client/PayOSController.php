@@ -3,20 +3,21 @@ namespace App\Http\Controllers\Client;
 
 use Throwable;
 use PayOS\PayOS;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Carts;
-use App\Models\Cart_items;
 use App\Models\Order;
 use App\Models\Coupon;
 use App\Models\Product;
+use App\Models\Cart_items;
 use App\Untilities\Constant;
 use Illuminate\Http\Request;
 use App\Models\Order_Details;
 use App\Models\ProductDetail;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\PaymentSuccessNotification;
-use Illuminate\Support\Facades\Log;
 
 // use App\Service\PayOSService;
 
@@ -71,7 +72,8 @@ class PayOSController extends Controller
             "amount" => $amount,
             "description" => "Thanh toán đơn hàng",
             "returnUrl" => route('QRsuccess'),
-            "cancelUrl" => route('list')
+            "cancelUrl" => route('list'),
+            "expiryTime" => Carbon::now()->addMinutes(15)->toDateTimeString()
         ];
 
         error_log($data['orderCode']);
