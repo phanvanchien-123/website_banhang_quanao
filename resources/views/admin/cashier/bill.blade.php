@@ -36,7 +36,7 @@
     <div class="container bill">
         <div class="row pt-4 d-flex">
             <div class="col-7 avatar">
-                <img src="http://127.0.0.1:8000/storage/theme_admin/upload/photo/pGXYoynx3DNuMVglYQFcTMdSXMn6bXIPxsrjHGaF.png"
+                <img src="{{ asset('storage/' . $logo->path) }}"
                     alt="" class="img-fluid">
             </div>
             <div class="col-5 shopInfor">

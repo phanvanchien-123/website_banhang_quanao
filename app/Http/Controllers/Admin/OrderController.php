@@ -57,10 +57,10 @@ class OrderController extends Controller
                                         ->first();
 
             if ($productDetail) {
-                if ($initialStatus != 0 && $updatedStatus == 0) {
+                if ($initialStatus == 7 && $updatedStatus == 0) {
                     // Trả lại số lượng sản phẩm
                     $productDetail->qty += $orderDetail->qty;
-                } elseif ($initialStatus == 0 && $updatedStatus != 0) {
+                } elseif ($initialStatus == 0 && $updatedStatus == 7) {
                     // Trừ số lượng sản phẩm
                     $productDetail->qty -= $orderDetail->qty;
                 }

@@ -43,8 +43,7 @@
 
                     <div class="row pt-4">
                         <div class="col-7 avatar">
-                            <img src="{{ asset('storage/'.$logo->path )  }}"
-                                alt="" class="h-100 w-100">
+                            <img src="{{ asset('storage/' . $logo->path) }}" alt="" class="h-100 w-100">
                         </div>
                         <div class="col-5 shopInfor">
                             <p>Phone: +1 0000000000</p>
@@ -164,23 +163,28 @@
                         const tr = document.createElement('tr');
                         const imageUrl = `/storage/${product.avatar}`;
                         tr.innerHTML = `
-                    <th scope="row">${productList.children.length + 1}</th>
-                    <td><img src="${imageUrl}" alt="${product.name}" width="50"></td>
-                    <td>${product.name}</td>
-                    <td>${product.price}</td>
-                    <td>
-                        <select class="color-select">
-                            ${details.map(detail => `<option value="${detail.color}">${detail.color}</option>`).join('')}
-                        </select>
-                    </td>
-                    <td>
-                        <select class="size-select">
-                            <!-- Sizes will be populated based on selected color -->
-                        </select>
-                    </td>
-                    <td> <input class="quantity" type="text" placeholder="" size="4"></td>
-                    <td><button type="button" class="btn btn-outline-success add-bill-btn">Add bill</button></td>
-                `;
+                            <th scope="row">${productList.children.length + 1}</th>
+                            <td><img src="${imageUrl}" alt="${product.name}" width="50"></td>
+                            <td>${product.name}</td>
+                            <td>${product.price}</td>
+                            <td>
+                                <select class="color-select">
+                                    ${
+                                        // Lọc ra các màu sắc duy nhất
+                                        Array.from(new Set(details.map(detail => detail.color)))
+                                            .map(color => `<option value="${color}">${color}</option>`)
+                                            .join('')
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                <select class="size-select">
+                                    <!-- Sizes will be populated based on selected color -->
+                                </select>
+                            </td>
+                            <td><input class="quantity" type="text" placeholder="" size="4"></td>
+                            <td><button type="button" class="btn btn-outline-success add-bill-btn">Add bill</button></td>
+                        `;
 
                         const colorSelect = tr.querySelector('.color-select');
                         const sizeSelect = tr.querySelector('.size-select');
@@ -204,10 +208,14 @@
                     });
             }
 
+
             // Function to add product to the bill
             function addProductToBill(product, color, size, quantity) {
                 const total = product.price * quantity;
                 const tr = document.createElement('tr');
+                tr.setAttribute('data-color', color);
+                tr.setAttribute('data-size', size);
+                tr.setAttribute('data-productId', product.id);
                 tr.innerHTML = `
                     <th scope="row">${billItem.children.length + 1}</th>
                     <td>${product.name} (${color}, ${size})</td>
@@ -254,91 +262,94 @@
         document.getElementById('current-date').textContent = formatCurrentDate();
     </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const createInvoiceBtn = document.getElementById('createInvoiceBtn');
-        const csrfToken = document.head.querySelector('meta[name="csrf-token"]').content;
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const createInvoiceBtn = document.getElementById('createInvoiceBtn');
+            const csrfToken = document.head.querySelector('meta[name="csrf-token"]').content;
 
-        createInvoiceBtn.addEventListener('click', async function() {
-            const customerName = document.getElementById('customerName').value;
-            const customerPhone = document.getElementById('customerPhone').value;
-            const customerAddress = document.getElementById('customerAddress').value;
-            const creator = document.getElementById('creator').value;
-            const currentDate = new Date().toLocaleDateString('en-US');
+            createInvoiceBtn.addEventListener('click', async function() {
+                const customerName = document.getElementById('customerName').value;
+                const customerPhone = document.getElementById('customerPhone').value;
+                const customerAddress = document.getElementById('customerAddress').value;
+                const creator = document.getElementById('creator').value;
+                const currentDate = new Date().toLocaleDateString('en-US');
 
-            const billItems = [];
-            document.querySelectorAll('#billItem tr').forEach(
-                row => { // Lấy thông tin từ các hàng trong #billItem
-                    const productName = row.cells[1].innerText;
-                    const quantity = row.cells[2].innerText;
-                    const unitPrice = row.cells[3].innerText;
-                    const totalPrice = row.cells[4].innerText;
-                    billItems.push({
-                        productName,
-                        quantity,
-                        unitPrice,
-                        totalPrice
+                const billItems = [];
+                document.querySelectorAll('#billItem tr').forEach(
+                    row => { // Lấy thông tin từ các hàng trong #billItem
+                        const productName = row.cells[1].innerText;
+                        const quantity = row.cells[2].innerText;
+                        const unitPrice = row.cells[3].innerText;
+                        const totalPrice = row.cells[4].innerText;
+                        const color = row.getAttribute('data-color');
+                        const size = row.getAttribute('data-size');
+                        const productId = row.getAttribute('data-productId');
+                        billItems.push({
+                            productName,
+                            quantity,
+                            unitPrice,
+                            totalPrice,
+                            color,
+                            size,
+                            productId
+                        });
+                    }
+                );
+                const data = {
+                    customerName,
+                    customerPhone,
+                    customerAddress,
+                    creator,
+                    currentDate,
+                    billItems,
+                };
+
+                try {
+                    const createOrderResponse = await fetch('/admin/cashier/createOrder', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        body: JSON.stringify({
+                            data
+                        })
                     });
+
+                    if (!createOrderResponse.ok) {
+                        throw new Error('Failed to create order');
+                    }
+
+                    const printInvoiceResponse = await fetch('cashier/print-invoice', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        body: JSON.stringify({
+                            'invoiceData': data
+                        })
+                    });
+
+                    if (!printInvoiceResponse.ok) {
+                        throw new Error('Failed to print invoice');
+                    }
+
+                    const html = await printInvoiceResponse.text();
+                    const printWindow = window.open('', 'PRINT', 'height=600,width=800');
+                    printWindow.document.write(html);
+                    printWindow.document.close();
+                    printWindow.focus();
+
+                    setTimeout(() => {
+                        printWindow.print();
+                        printWindow.close();
+                    }, 1000);
+                } catch (error) {
+                    console.error('Error processing invoice:', error);
+                    // Xử lý khi có lỗi xảy ra
                 }
-            );
-
-            const data = {
-                customerName,
-                customerPhone,
-                customerAddress,
-                creator,
-                currentDate,
-                billItems
-            };
-
-            try {
-                const createOrderResponse = await fetch('/admin/cashier/createOrder', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify({
-                        data
-                    })
-                });
-
-                if (!createOrderResponse.ok) {
-                    throw new Error('Failed to create order');
-                }
-
-                const printInvoiceResponse = await fetch('cashier/print-invoice', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify({
-                        'invoiceData': data
-                    })
-                });
-
-                if (!printInvoiceResponse.ok) {
-                    throw new Error('Failed to print invoice');
-                }
-
-                const html = await printInvoiceResponse.text();
-                const printWindow = window.open('', 'PRINT', 'height=600,width=800');
-                printWindow.document.write(html);
-                printWindow.document.close();
-                printWindow.focus();
-
-                setTimeout(() => {
-                    printWindow.print();
-                    printWindow.close();
-                }, 1000);
-            } catch (error) {
-                console.error('Error processing invoice:', error);
-                // Xử lý khi có lỗi xảy ra
-            }
+            });
         });
-    });
-</script>
-
-
+    </script>
 @endsection

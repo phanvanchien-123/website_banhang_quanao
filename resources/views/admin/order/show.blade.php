@@ -122,9 +122,9 @@
                     </h2>
                     <div id="customer" class="accordion-collapse collapse show">
                         <div class="accordion-body">
-                            <p><i class="bi bi-person-fill"></i> {{ $order->user->name }}</p>
+                            <p><i class="bi bi-person-fill"></i> {{ $order->user->name ?? 'khách'}}</p>
                             <p><i class="bi bi-bag"></i> 5</p>
-                            <p><i class="bi bi-clock-history"></i> {{ $order->user->created_at }}</p>
+                            <p><i class="bi bi-clock-history"></i> {{ $order->user->created_at ?? ''}}</p>
                         </div>
                     </div>
                 </div>
@@ -140,10 +140,10 @@
                     </h2>
                     <div id="contact" class="accordion-collapse collapse show">
                         <div class="accordion-body">
-                            <p><i class="bi bi-envelope-fill"></i> {{ $order->user->email }}</p>
-                            <p><i class="bi bi-telephone-fill"></i> {{ $order->user->phone }}</p>
-                            <p><i class="bi bi-geo-alt-fill"></i> {{ $order->user->town_city }} -
-                                {{ $order->user->street_address }}</p>
+                            <p><i class="bi bi-envelope-fill"></i> {{ $order->user->email ?? ''}}</p>
+                            <p><i class="bi bi-telephone-fill"></i> {{ $order->user->phone ?? ''}}</p>
+                            <p><i class="bi bi-geo-alt-fill"></i> {{ $order->user->town_city ?? ''}} -
+                                {{ $order->user->street_address ?? ''}}</p>
                         </div>
                     </div>
                 </div>
@@ -159,7 +159,7 @@
                     </h2>
                     <div id="shippingAdsress" class="accordion-collapse collapse show">
                         <div class="accordion-body">
-                            <p><i class="bi bi-person-fill"></i> {{ $order->user->name }}</p>
+                            <p><i class="bi bi-person-fill"></i> {{ $order->user->name ?? 'khách'}}</p>
                             <p><i class="bi bi-telephone-fill"></i> {{ $order->phone }}</p>
                             <p><i class="bi bi-geo-alt-fill"></i> {{ $order->home_address }} - {{ $order->address }}</p>
                         </div>
