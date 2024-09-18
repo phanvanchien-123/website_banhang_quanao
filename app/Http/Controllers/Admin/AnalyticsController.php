@@ -18,6 +18,7 @@ class AnalyticsController extends Controller
     //
     public function index(Request $request)
     {
+        
         // Lấy giá trị ngày bắt đầu và kết thúc từ request
             $startDate = $request->input('start_date');
             $endDate = $request->input('end_date');
