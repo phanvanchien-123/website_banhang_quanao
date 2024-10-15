@@ -43,38 +43,6 @@ class ShopController extends Controller
         $orderCount =$this->orderdetails->countProductSold($products);
         return view ('Client.shop.shop',compact('products','categories','brands','countproducts','orderCount'));
     }
-    // public function show($id, Request $request)
-    // {
-    //     $products = $this->productServices->find($id);
-    //     $products->increment('view');     
-    //     $categories = $this->productCategoryServices->all();
-    //     $brands = $this->productBrands->all();
-    //     $selectedColor = $request->input('color');
-    //     $selectedSize = $request->input('size');
-    //     $sizes = [];
-    //     $quantity = 0;
-    //     $comments = $this->productCommentServices->getCommentsByProductId($id,2);
-    //     $relatedproducts= $this->productServices->getRelatedProducts($products);
-    //     if ($selectedColor) {
-    //         $sizes = ProductDetail::where('product_id', $id)
-    //             ->where('color', $selectedColor)
-    //             ->get(['size', 'qty']);
-
-    //         if ($selectedSize) {
-    //             $variant = ProductDetail::where('product_id', $id)
-    //                 ->where('color', $selectedColor)
-    //                 ->where('size', $selectedSize)
-    //                 ->first();
-
-    //             if ($variant) {
-    //                 $quantity = $variant->qty;
-    //             }
-    //         }
-    //     }
-      
-
-    //     return view('Client.shop.details', compact('products','selectedColor', 'selectedSize', 'sizes', 'quantity','comments','relatedproducts','categories','brands'));
-    // }
     public function show($id){
         $products = $this->productServices->find($id);
         $products->increment('view');     
